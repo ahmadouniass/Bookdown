@@ -1,0 +1,2 @@
+"0","ndvi_out <- render_indicator_raster(""ndvi"", palette = ""YlGn"")"
+"0","View(ndvi_out)"

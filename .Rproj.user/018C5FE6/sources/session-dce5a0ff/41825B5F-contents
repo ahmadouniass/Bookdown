@@ -1,0 +1,370 @@
+# Niger
+
+## Introduction
+
+Le **Niger**, situé au cœur de la bande sahélo-saharienne, est l’un des pays les plus vastes et les plus arides d’Afrique. Son territoire est dominé par des **milieux désertiques ou semi-désertiques**, avec une végétation souvent rare, saisonnière, et concentrée autour des zones habitées, des vallées et des oasis. Le pays est soumis à une **pression climatique extrême**, marquée par une **faible pluviométrie**, une **variabilité interannuelle élevée**, et une **forte sensibilité à la désertification**. Ces conditions font du Niger un **laboratoire naturel pour l’analyse des dynamiques écologiques en zone sèche**.
+
+Dans ce chapitre, nous mobilisons trois **indices spectraux adaptés aux environnements à faible couverture végétale et à forte contrainte hydrique**, afin de caractériser l’état écologique du Niger en 2024 :
+
+- Le **ATSAVI (Adjusted Transformed Soil Adjusted Vegetation Index)** est un indice optimisé pour mesurer la **végétation dans les milieux à forte présence de sol nu**. Il améliore la détection de la végétation éparse dans les zones arides, en réduisant l’influence des caractéristiques du sol sur le signal spectral.
+
+- Le **DBSI (Dry Bare Soil Index)** quantifie la **présence de sols nus et secs**, souvent associés à des processus de **dégradation avancée**. Il est particulièrement utile pour identifier les zones affectées par l’érosion, la sécheresse prolongée ou la perte de couverture végétale.
+
+- Le **WI2 (Water Index 2)** est un indice sensible à la **teneur en eau résiduelle des surfaces**, y compris dans les environnements à faible humidité. Il permet de cartographier les **zones humides ponctuelles**, les **mares saisonnières**, ou les **poches d’humidité dans les vallées et dépressions**.
+
+Ces indices sont extraits à partir de **rasters satellitaires haute résolution** et agrégés **par région administrative**. Ils sont analysés à travers des **cartes interactives**, des **tableaux comparatifs** et des **analyses spatialisées**. L’objectif est d’identifier les **zones les plus résilientes**, celles les plus exposées à la **dégradation écologique**, ainsi que les **poches d’humidité stratégique** dans un contexte climatique contraint.
+
+Ce chapitre offre ainsi une **lecture fine et contextualisée du territoire nigérien**, où la rareté des ressources naturelles et la pression climatique imposent des **stratégies de suivi et de gestion adaptées**, au service de la **résilience territoriale** et de la **sécurisation écologique**.
+
+
+------------------------------------------------------------------------
+
+## Végétation – ATSAVI
+
+Le **ATSAVI (Adjusted Transformed Soil Adjusted Vegetation Index)** est un indice spectral développé pour améliorer la détection de la végétation dans les **zones arides ou semi-arides**, où les **sols nus dominent** et peuvent fortement perturber la lecture des signaux de végétation. Contrairement au NDVI ou à ses dérivés, l’ATSAVI intègre un **coefficient de correction du fond de sol**, ce qui le rend plus fiable dans les milieux où la **couverture végétale est faible ou discontinue**, comme au **Niger**.
+
+L’ATSAVI est particulièrement utile dans les régions où la végétation est **saisonnière, éparse ou fragile**, car il permet de **réduire la surestimation ou la sous-estimation** liée à la réflectance du sol sec. Il est donc bien adapté à l’observation des **milieux sahéliens et sahariens**, en fournissant un indicateur robuste de **la densité végétale réellement active**.
+
+Dans le cas du **Niger**, nous avons extrait les **valeurs moyennes de l’ATSAVI pour l’année 2024** à partir d’images satellites haute résolution, puis agrégé les résultats **par région administrative**. Cet indice permet de **localiser les zones de verdure résiduelle**, de **comparer la densité de végétation entre régions**, et de mieux comprendre la dynamique spatiale de la végétation dans un environnement soumis à une forte contrainte climatique.
+
+
+```{r setup-raster-fonction-nig, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+## Fonctions de traitement raster et cartographie
+library(raster)
+library(tmap)
+library(leaflet)
+library(scales)
+library(sf)
+library(exactextractr)
+library(dplyr)
+library(DT)
+library(gt)
+library(gtExtras)
+
+# Fonction de chargement et visualisation de raster
+render_indicator_raster <- function(indicator_name, palette = "viridis") {
+  path <- paste0("data/", indicator_name, "/", indicator_name, "_niger.tif")
+  rast <- raster(path)
+  
+  static_map <- tm_shape(rast) +
+    tm_raster(style = "quantile", palette = palette, title = toupper(indicator_name)) +
+    tm_layout(main.title = paste0(toupper(indicator_name), " – niger (2024)"),
+              legend.outside = TRUE)
+  
+  pal_fun <- colorNumeric(palette = palette, domain = values(rast), na.color = "transparent")
+  interactive_map <- leaflet() %>%
+    addProviderTiles("CartoDB.Positron") %>%
+    addRasterImage(rast, colors = pal_fun, opacity = 0.8) %>%
+    addLegend(pal = pal_fun, values = values(rast), title = indicator_name, position = "bottomright")
+  
+  list(static = static_map, interactive = interactive_map, raster = rast)
+}
+
+# 🔹 Fonction d’extraction zonale
+extract_raster_by_region <- function(raster_obj, shapefile_path, region_id = "ADM1_FR", 
+                                     indicator_name = NULL, scale_if_needed = TRUE) {
+  regions <- st_read(shapefile_path, quiet = TRUE)
+  mean_vals <- exact_extract(raster_obj, regions, 'mean')
+  
+
+  to_normalize <- c("ndvi", "evi")
+  
+
+  if (scale_if_needed && !is.null(indicator_name) && tolower(indicator_name) %in% to_normalize) {
+    mean_vals <- mean_vals / 10000
+  }
+  
+  regions$mean_value <- round(mean_vals, 3)
+  return(regions)
+}
+
+# 🔹 Carte interactive enrichie avec Titre
+plot_raster_aggregated_leaflet <- function(raster_obj, shapefile_path, palette = "YlGn", 
+                                           region_id = "ADM1_FR", title = "Indice",
+                                           indicator_name = NULL, scale_if_needed = TRUE) {
+  
+  regions <- extract_raster_by_region(
+    raster_obj = raster_obj,
+    shapefile_path = shapefile_path,
+    region_id = region_id,
+    indicator_name = indicator_name,
+    scale_if_needed = scale_if_needed
+  )
+  
+  region_names <- regions[[region_id]]
+  mean_values <- regions$mean_value
+  
+  pal <- colorNumeric(palette = palette, domain = mean_values, na.color = "transparent")
+  
+  leaflet_map <- leaflet(regions) %>%
+    addProviderTiles("CartoDB.Positron") %>%
+    addPolygons(
+      fillColor = ~pal(mean_value),
+      weight = 1,
+      color = "#666",
+      fillOpacity = 0.7,
+      label = lapply(seq_along(region_names), function(i) {
+        paste0(region_names[i], " : ", mean_values[i])
+      }),
+      popup = lapply(seq_along(region_names), function(i) {
+        paste("<b>Région :</b>", region_names[i], "<br><b>Valeur moyenne :</b>", mean_values[i])
+      }),
+      labelOptions = labelOptions(direction = "auto")
+    ) %>%
+    addLegend(
+      pal = pal,
+      values = mean_values,
+      title = paste("Valeur moyenne –", title),
+      position = "bottomright"
+    ) %>%
+    addControl(
+      html = paste0(
+        "<div style='background:white;padding:6px 12px;border-radius:6px;
+                      box-shadow:0 0 5px rgba(0,0,0,0.3);
+                      font-size:16px;font-weight:bold'>", title, "</div>"
+      ),
+      position = "topright"
+    )
+  
+  return(leaflet_map)
+}
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+
+
+# 📂 Chargement unique du shapefile
+shapefile_path <- "data/shapes/regions_niger.shp"
+regions <- st_read(shapefile_path)
+
+# 🔁 Fonction générique pour calculer les moyennes régionales
+get_moyennes_region <- function(indicateur, suffixe = "_niger.tif", decimals = 3) {
+  raster_path <- paste0("data/", indicateur, "/", indicateur, suffixe)
+  rast <- raster(raster_path)
+  moyennes <- exact_extract(rast, regions, 'mean')
+  
+  regions %>%
+    st_drop_geometry() %>%
+    select(Région = ADM1_FR) %>%
+    mutate(!!toupper(indicateur) := round(moyennes, decimals))
+}
+
+# 📈 Génération des tableaux
+df_atsavi <- get_moyennes_region("atsavi", decimals = 3)
+df_dbsi  <- get_moyennes_region("dbsi",  decimals = 3)
+df_wi2 <- get_moyennes_region("wi2", decimals = 3)
+
+
+```
+
+###️ Carte interactive de l’ATSAVI au Niger en 2024
+
+```{r echo=FALSE, message=FALSE, include=FALSE}
+atsavi_out <- render_indicator_raster("atsavi", palette = "YlGn")
+```
+
+```{r vegetation-atsavi, echo=FALSE, message=FALSE, warning=FALSE}
+plot_raster_aggregated_leaflet(
+  raster_obj = atsavi_out$raster,
+  shapefile_path = "data/shapes/regions_niger.shp",
+  palette = "YlGn",
+  region_id = "ADM1_FR", 
+  title = "ATSAVI 2024 – Couverture végétale",
+  indicator_name = "atsavi",
+  scale_if_needed = TRUE
+)
+```
+
+### Tableau de la répartition de l’ATSAVI au Niger en 2024
+
+```{r Tableau-ATSAVI, echo=FALSE, message=FALSE, warning=FALSE}
+df_atsavi %>%
+  gt() %>%
+  tab_header(
+    title = md("**Moyennes régionales de l’ATSAVI**"),
+    subtitle = md("_Niger – Année 2024_")
+  ) %>%
+  fmt_number(columns = vars(ATSAVI), decimals = 3) %>%
+  data_color(
+    columns = vars(ATSAVI),
+    colors = col_numeric("YlGn", domain = NULL)
+  ) %>%
+  gt_theme_538()
+```
+
+### Analyse des résultats
+
+L’indice **ATSAVI** permet de mesurer la **densité réelle de la végétation** dans des milieux à **forte dominance de sol nu**, comme c’est le cas dans les zones sahéliennes et sahariennes du **Niger**. Il est particulièrement utile pour détecter des **signes de végétation active dans des contextes écologiquement fragiles**, où les signaux spectroscopiques peuvent être fortement influencés par la réflectance du sol.
+
+En 2024, les valeurs de l’ATSAVI au Niger varient de **0.054 à 0.066**, ce qui indique une **végétation très peu dense à faible**, mais **présente** dans certaines régions. L’amplitude des valeurs est **faible**, ce qui reflète la **rare couverture végétale** sur l’ensemble du territoire.
+
+Les **valeurs les plus élevées**, bien que modestes, sont relevées dans les régions **de Dosso (0.066)** et **Maradi (0.063)**. Ces deux zones sont situées dans la **bande sud du pays**, qui bénéficie d’une **pluviométrie plus favorable**, d’une **activité agricole importante**, et de **sols plus propices à la végétation**. Cela suggère une **végétation saisonnière encore fonctionnelle**, bien que vulnérable.
+
+Les **valeurs intermédiaires**, autour de **0.059 à 0.060**, sont observées dans des régions comme **Zinder (0.059)**, **Tillabéri (0.060)** et **Tahoua (0.059)**. Ces régions sont soumises à une **forte variabilité climatique**, avec une couverture végétale généralement **irrégulière**, liée à des usages agropastoraux extensifs et à une pression foncière croissante.
+
+Les **valeurs les plus faibles**, autour de **0.054 à 0.055**, concernent **Agadez (0.054)**, **Niamey (0.055)** et **Diffa (0.057)**. Ces résultats traduisent soit une **aridité structurelle** (Agadez, désert), soit une **urbanisation dominante** (Niamey), soit encore une **végétation fragmentée et en stress** (Diffa, aux confins du bassin du Tchad).
+
+Dans l’ensemble, cette cartographie de l’ATSAVI illustre une **distribution très limitée et localisée de la végétation active** au Niger, concentrée dans les régions sud et sud-ouest, et quasi absente dans les zones sahariennes du nord. Elle confirme la **forte dépendance du pays à des poches de verdure saisonnières**, et renforce la nécessité de **stratégies ciblées de reboisement, de gestion des terres, et de protection des écosystèmes fragiles**.
+
+Parfait ! Voici la section complète **🧠 Stress / dégradation – DBSI** pour le chapitre **Niger**, dans la même structure que les précédentes parties de ton atlas. Elle comprend :
+
+- une explication détaillée du DBSI,  
+- le bloc pour la **carte interactive**,  
+- le bloc pour le **tableau des valeurs régionales** en `gt()`.
+
+---
+
+## Santé de la végétation – DBSI
+
+Le **DBSI (Dry Bare Soil Index)** est un indice spectral conçu pour **quantifier la présence de sols nus et secs**, souvent associés à des phénomènes de **dégradation avancée**. Il est particulièrement utile dans les milieux arides comme le **Niger**, où la **végétation est rare**, et où l’identification des **zones à sol exposé** est essentielle pour évaluer le **niveau de fragilité écologique**.
+
+Le DBSI repose sur une combinaison de bandes du spectre optique, incluant le **proche infrarouge (NIR)** et le **SWIR**, sensibles aux **caractéristiques thermiques et texturales des sols nus**. Plus la valeur du DBSI est **élevée**, plus la **proportion de sol sec visible en surface est importante**, ce qui peut être interprété comme un **signal de dégradation**, de **surexploitation agricole**, ou de **pression pastorale excessive**.
+
+Dans le contexte du **Niger**, où les dynamiques de désertification sont omniprésentes, le DBSI permet de **cartographier les zones où la couverture végétale a disparu**, et d’identifier les **régions les plus exposées à l’érosion, à la compaction des sols et à la baisse de fertilité**.
+
+Pour cette analyse, nous avons extrait les **valeurs moyennes du DBSI pour l’année 2024** à partir de rasters satellites haute résolution, puis agrégé les résultats **par région administrative**. Cette approche permet de fournir un **état spatialisé de la dégradation écologique visible**, et d’appuyer les stratégies de **récupération des sols et de gestion durable des terres**.
+
+
+###️ Carte interactive du DBSI au Niger en 2024
+
+```{r echo=FALSE, message=FALSE, include=FALSE}
+dbsi_out <- render_indicator_raster("dbsi", palette = "Reds")
+```
+
+```{r stress-dbsi, echo=FALSE, message=FALSE, warning=FALSE}
+plot_raster_aggregated_leaflet(
+  raster_obj = dbsi_out$raster,
+  shapefile_path = "data/shapes/regions_niger.shp",
+  palette = "Reds",
+  region_id = "ADM1_FR", 
+  title = "DBSI 2024 – Dégradation des sols",
+  indicator_name = "dbsi",
+  scale_if_needed = TRUE
+)
+```
+
+
+### Tableau de la répartition du DBSI au Niger en 2024
+
+```{r Tableau-DBSI, echo=FALSE, message=FALSE, warning=FALSE}
+df_dbsi %>%
+  gt() %>%
+  tab_header(
+    title = md("**Moyennes régionales du DBSI**"),
+    subtitle = md("_Niger – Année 2024_")
+  ) %>%
+  fmt_number(columns = vars(DBSI), decimals = 3) %>%
+  data_color(
+    columns = vars(DBSI),
+    colors = col_numeric("Reds", domain = NULL)
+  ) %>%
+  gt_theme_538()
+```
+
+
+### Analyse des résultats
+
+L’indice **DBSI** permet d’estimer la **proportion de sol nu et sec** à la surface, ce qui en fait un excellent indicateur de **dégradation avancée des terres**, de **perte de couverture végétale** et de **fragilité écologique**. Des valeurs plus **élevées** du DBSI traduisent une **exposition accrue du sol**, souvent liée à la **désertification**, à la **surexploitation agropastorale**, ou à des conditions climatiques extrêmes.
+
+En 2024, les valeurs du DBSI au **Niger** varient de **0.221 à 0.296**, avec une tendance généralisée à la **présence dominante de sols nus dans presque toutes les régions**.
+
+Les **valeurs les plus élevées** sont observées dans les régions de **Niamey (0.296)**, **Tillabéri (0.292)**, et **Agadez (0.280)**. Ces chiffres reflètent une **exposition importante du sol**, due soit à une **urbanisation intense** (Niamey), soit à des **milieux très arides ou désertiques** (Agadez), ou encore à des pratiques agricoles intensives sans couverture végétale suffisante (Tillabéri). Ces régions peuvent être considérées comme des **points critiques de dégradation écologique visible**.
+
+Les **valeurs intermédiaires**, comprises entre **0.255 et 0.274**, sont relevées dans **Tahoua (0.274)**, **Dosso (0.273)**, et **Maradi (0.255)**. Ces régions du centre-sud du pays connaissent une **végétation saisonnière fragile** et sont soumises à une **pression agropastorale croissante**, ce qui entraîne une **diminution progressive de la couverture végétale** au profit de sols nus ou peu protégés.
+
+Les **valeurs les plus faibles**, bien qu’encore élevées, concernent **Zinder (0.238)** et **Diffa (0.221)**. Cela pourrait s’expliquer par une **couverture végétale légèrement plus présente** au moment de l’observation satellitaire, ou par des **caractéristiques de sol spécifiques** (texture, humidité résiduelle) atténuant la réflectance typique des sols nus. Toutefois, ces régions restent dans une **zone de vigilance élevée**, car même ces "faibles" valeurs dépassent les seuils généralement associés à des surfaces stables.
+
+Dans l’ensemble, le **DBSI confirme une exposition généralisée du sol nu à travers tout le territoire nigérien**, avec des **poches de dégradation avancée**, en particulier dans l’ouest et le centre du pays. Cette situation renforce l’urgence de mettre en place des **programmes de reboisement, de gestion anti-érosive et de régénération naturelle assistée**, notamment dans les régions les plus exposées.
+
+## Eau et humidité – WI2
+
+Le **WI2 (Water Index 2)** est un indice spectral conçu pour détecter la **présence d’eau ou d’humidité de surface**, même en très faibles quantités. Il repose sur une combinaison des bandes **NIR (infrarouge proche)** et **SWIR (infrarouge moyen)**, qui sont sensibles à la **teneur en eau des sols** et des surfaces végétales.
+
+Le WI2 est particulièrement utile dans les **milieux semi-arides et sahéliens**, comme ceux du **Niger**, où l’humidité est rare, diffuse, et difficile à détecter. Il permet d’identifier les **zones humides résiduelles**, les **vallées fluviales**, les **mares temporaires**, ou les **bas-fonds agricoles** présentant encore une capacité de rétention d’eau.
+
+Contrairement aux indices végétatifs classiques, le WI2 ne se limite pas à la végétation : il mesure directement les **contrastes d’absorption de l’eau** dans le spectre infrarouge, ce qui en fait un outil précieux pour le **suivi hydrologique**, la **gestion des terres agricoles**, et la **prévision des déficits hydriques**.
+
+Dans le cas du **Niger**, les **valeurs moyennes du WI2 pour l’année 2024** ont été extraites à partir d’images satellites haute résolution, puis **agrégées par région administrative**. Cette analyse permet de mettre en évidence les **régions disposant encore d’humidité résiduelle**, et celles déjà en **situation de stress hydrique sévère**.
+
+---
+
+### Carte interactive du WI2 au Niger en 2024
+
+```{r echo=FALSE, message=FALSE, include=FALSE}
+wi2_out <- render_indicator_raster("wi2", palette = "Blues")
+```
+
+```{r eau-wi2, echo=FALSE, message=FALSE, warning=FALSE}
+plot_raster_aggregated_leaflet(
+  raster_obj = wi2_out$raster,
+  shapefile_path = "data/shapes/regions_niger.shp",
+  palette = "Blues",
+  region_id = "ADM1_FR", 
+  title = "WI2 2024 – Teneur en humidité des surfaces",
+  indicator_name = "wi2",
+  scale_if_needed = TRUE
+)
+```
+
+---
+
+### Tableau de la répartition du WI2 au Niger en 2024
+
+```{r Tableau-WI2, echo=FALSE, message=FALSE, warning=FALSE}
+df_wi2 %>%
+  gt() %>%
+  tab_header(
+    title = md("**Moyennes régionales du WI2**"),
+    subtitle = md("_Niger – Année 2024_")
+  ) %>%
+  fmt_number(columns = vars(WI2), decimals = 3) %>%
+  data_color(
+    columns = vars(WI2),
+    colors = col_numeric("Blues", domain = NULL)
+  ) %>%
+  gt_theme_538()
+```
+
+
+------------------------------------------------------------------------
+
+### Analyse des résultats
+
+L’indice **WI2** permet de mesurer la **teneur en humidité de surface**, qu’il s’agisse d’eau libre, d’humidité des sols ou de traces hydriques résiduelles. Des valeurs **plus proches de zéro** indiquent une **meilleure humidité**, tandis que des valeurs **plus négatives** traduisent une **situation hydrique plus critique**, caractéristique de milieux très secs.
+
+En 2024, les valeurs du WI2 au **Niger** varient entre **–0.485 et –0.585**, traduisant une **situation hydrique globalement préoccupante sur l’ensemble du territoire**, avec des différences subtiles mais significatives entre les régions.
+
+Les **valeurs les moins négatives**, donc les plus "humides" relativement parlant, sont enregistrées dans les régions :
+- **Dosso (–0.485)**,
+- **Niamey (–0.492)**.
+
+Ces régions se situent dans le **sud-ouest du pays**, où la pluviométrie est légèrement plus élevée, et où l’on retrouve des **zones irriguées**, des **cours d’eau permanents** comme le fleuve Niger, ainsi qu’une **activité agricole structurée**. Cette situation suggère une **humidité résiduelle encore observable**, en dépit des conditions climatiques difficiles.
+
+Les **valeurs intermédiaires**, autour de **–0.505 à –0.525**, concernent les régions de **Zinder**, **Tillabéri**, **Maradi** et **Diffa**. Ces zones connaissent une **saison humide courte**, suivie d’une **évaporation rapide**, ce qui engendre une humidité de surface très limitée en dehors des périodes de pluie. Les valeurs observées traduisent un **équilibre fragile**, où l'humidité disponible ne permet qu'une **végétation saisonnière temporaire**.
+
+La région la plus sèche selon le WI2 est **Agadez (–0.585)**, suivie de **Tahoua (–0.542)**. Ces résultats sont cohérents avec la **domination saharienne et sub-saharienne** de ces zones, où les **sources d’humidité sont extrêmement rares**, les **sols très perméables**, et la **végétation quasi absente**. Ces régions cumulent les **conditions hydriques les plus défavorables** du pays.
+
+Globalement, cette cartographie du WI2 met en évidence une **teneur en eau de surface extrêmement faible dans l’ensemble du territoire nigérien**, confirmant la **sécheresse structurelle** du pays. Elle souligne l’importance de stratégies d’**adaptation hydrique**, de **gestion de l’eau agricole**, et de **surveillance spatialisée de l’humidité**, pour anticiper les **crises agro-hydrologiques** dans un contexte de changement climatique.
+
+
+------------------------------------------------------------------------
+
+
+## Conclusion 
+
+L’analyse conjointe des indices **ATSAVI**, **DBSI** et **WI2** offre une lecture nuancée et spatialement explicite de l’**état environnemental du Niger en 2024**. Dans un pays marqué par l’aridité, la fragilité des écosystèmes et la pression climatique, ces indicateurs révèlent des dynamiques contrastées entre **résilience végétale localisée**, **dégradation diffuse** et **raréfaction de l’humidité de surface**.
+
+L’**ATSAVI** met en lumière une **couverture végétale extrêmement faible**, concentrée dans les régions méridionales comme **Dosso** ou **Maradi**, où la végétation subsiste sous forme saisonnière, souvent liée à des activités agricoles localisées. Le reste du territoire montre une **végétation quasi absente**, conséquence directe de l’aridité structurelle et des pressions environnementales.
+
+Le **DBSI** confirme cette dégradation, avec des niveaux élevés de **sols nus et secs** dans presque toutes les régions. Des zones comme **Niamey**, **Tillabéri** ou **Agadez** affichent une exposition avancée des sols, symptôme de **surexploitation**, de **déforestation**, ou d’une **perte progressive de couverture protectrice**, accentuant les risques d’érosion et d’insécurité écologique.
+
+Enfin, le **WI2** indique une **teneur en humidité de surface extrêmement faible** dans l’ensemble du pays, avec des conditions hydriques particulièrement critiques dans des régions comme **Agadez** et **Tahoua**. Même dans les zones plus favorisées du sud-ouest, l’humidité reste marginale, renforçant la **vulnérabilité hydrique structurelle** du Niger.
+
+Ce chapitre met ainsi en évidence la **nécessité d’interventions ciblées** en matière de **reboisement, de sécurisation des sols, de gestion hydrique et d’agriculture résiliente**. Face aux défis combinés du climat, de la pression démographique et de la dégradation écologique, le suivi régulier de ces indicateurs apparaît comme un outil essentiel pour éclairer les décisions politiques et renforcer la **résilience des territoires**.
+
+---
+
+> *« Là où la pluie devient mémoire, l’avenir se dessine dans l’économie de chaque goutte. »*  
+> — **Issoufou Mahamadou**
+

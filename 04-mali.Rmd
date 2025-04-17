@@ -1,0 +1,369 @@
+# Mali
+
+## Introduction
+
+Le **Mali**, vaste pays sahélien enclavé, se caractérise par une extrême **diversité écologique nord-sud**. Du désert saharien au nord jusqu’aux savanes plus humides du sud, en passant par les zones de transition agropastorales du centre, le territoire malien est profondément marqué par des **dynamiques climatiques contrastées**, une **pression anthropique croissante**, et une **forte vulnérabilité environnementale**.
+
+Dans ce chapitre, nous mobilisons trois **indices spectraux avancés**, issus d’images satellites, afin de **caractériser les grands gradients écologiques du Mali en 2024** et d’identifier les zones les plus résilientes ou les plus fragiles du territoire :
+
+- Le **<span title="2.5 × (NIR - Red) / (NIR + 6×Red - 7.5×Blue + 1)">EVI</span>  (Enhanced Vegetation Index)** permet de mesurer la **productivité végétale** en améliorant les performances du NDVI dans les zones à forte densité ou à forte réflexion atmosphérique. Il est plus sensible aux variations de la végétation dense et moins saturé dans les zones forestières, ce qui en fait un outil de choix pour évaluer les **écosystèmes végétalisés du sud du pays** ;
+
+- Le **FAI (Fire Affected Index)** est utilisé comme un indicateur de **stress thermique ou post-incendie**. Il détecte les zones exposées à une chaleur résiduelle, à des brûlis agricoles ou à des épisodes de feu naturel ou anthropique, permettant de **repérer les espaces fortement perturbés** ;
+
+- Le **ANDWI (Atmospherically Normalized Difference Water Index)** quant à lui est une version corrigée atmosphériquement du NDWI, sensible à la **présence d’eau libre ou d’humidité de surface**, même en faibles concentrations. Il est adapté à la détection des **zones humides résiduelles, des zones agricoles irriguées** ou des **vallées fluviales**, comme celles du delta intérieur du Niger.
+
+Chacun de ces indices a été traité à partir de **rasters satellitaires haute résolution**, puis **agrégé par région administrative** afin d’en faciliter l’interprétation cartographique. À travers une combinaison de **cartes interactives**, de **tableaux de synthèse** et d’**analyses régionales**, ce chapitre offre une lecture intégrée des **dynamiques végétales, thermiques et hydriques** du Mali.
+
+Il constitue également un socle analytique pour comprendre les **transformations environnementales contemporaines du territoire malien**, et pour nourrir les réflexions sur les politiques de gestion durable, d’adaptation climatique et de sécurisation des ressources naturelles.
+
+------------------------------------------------------------------------
+
+```{r setup-raster-fonction-mal, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+## Fonctions de traitement raster et cartographie
+library(raster)
+library(tmap)
+library(leaflet)
+library(scales)
+library(sf)
+library(exactextractr)
+library(dplyr)
+library(DT)
+library(gt)
+library(gtExtras)
+
+# Fonction de chargement et visualisation de raster
+render_indicator_raster <- function(indicator_name, palette = "viridis") {
+  path <- paste0("data/", indicator_name, "/", indicator_name, "_mali.tif")
+  rast <- raster(path)
+  
+  static_map <- tm_shape(rast) +
+    tm_raster(style = "quantile", palette = palette, title = toupper(indicator_name)) +
+    tm_layout(main.title = paste0(toupper(indicator_name), " – Mali (2024)"),
+              legend.outside = TRUE)
+  
+  pal_fun <- colorNumeric(palette = palette, domain = values(rast), na.color = "transparent")
+  interactive_map <- leaflet() %>%
+    addProviderTiles("CartoDB.Positron") %>%
+    addRasterImage(rast, colors = pal_fun, opacity = 0.8) %>%
+    addLegend(pal = pal_fun, values = values(rast), title = indicator_name, position = "bottomright")
+  
+  list(static = static_map, interactive = interactive_map, raster = rast)
+}
+
+# 🔹 Fonction d’extraction zonale
+extract_raster_by_region <- function(raster_obj, shapefile_path, region_id = "ADM1_FR", 
+                                     indicator_name = NULL, scale_if_needed = TRUE) {
+  regions <- st_read(shapefile_path, quiet = TRUE)
+  mean_vals <- exact_extract(raster_obj, regions, 'mean')
+  
+
+  to_normalize <- c("ndvi", "evi")
+  
+
+  if (scale_if_needed && !is.null(indicator_name) && tolower(indicator_name) %in% to_normalize) {
+    mean_vals <- mean_vals / 10000
+  }
+  
+  regions$mean_value <- round(mean_vals, 3)
+  return(regions)
+}
+
+# 🔹 Carte interactive enrichie avec Titre
+plot_raster_aggregated_leaflet <- function(raster_obj, shapefile_path, palette = "YlGn", 
+                                           region_id = "ADM1_FR", title = "Indice",
+                                           indicator_name = NULL, scale_if_needed = TRUE) {
+  
+  regions <- extract_raster_by_region(
+    raster_obj = raster_obj,
+    shapefile_path = shapefile_path,
+    region_id = region_id,
+    indicator_name = indicator_name,
+    scale_if_needed = scale_if_needed
+  )
+  
+  region_names <- regions[[region_id]]
+  mean_values <- regions$mean_value
+  
+  pal <- colorNumeric(palette = palette, domain = mean_values, na.color = "transparent")
+  
+  leaflet_map <- leaflet(regions) %>%
+    addProviderTiles("CartoDB.Positron") %>%
+    addPolygons(
+      fillColor = ~pal(mean_value),
+      weight = 1,
+      color = "#666",
+      fillOpacity = 0.7,
+      label = lapply(seq_along(region_names), function(i) {
+        paste0(region_names[i], " : ", mean_values[i])
+      }),
+      popup = lapply(seq_along(region_names), function(i) {
+        paste("<b>Région :</b>", region_names[i], "<br><b>Valeur moyenne :</b>", mean_values[i])
+      }),
+      labelOptions = labelOptions(direction = "auto")
+    ) %>%
+    addLegend(
+      pal = pal,
+      values = mean_values,
+      title = paste("Valeur moyenne –", title),
+      position = "bottomright"
+    ) %>%
+    addControl(
+      html = paste0(
+        "<div style='background:white;padding:6px 12px;border-radius:6px;
+                      box-shadow:0 0 5px rgba(0,0,0,0.3);
+                      font-size:16px;font-weight:bold'>", title, "</div>"
+      ),
+      position = "topright"
+    )
+  
+  return(leaflet_map)
+}
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+
+
+# 📂 Chargement unique du shapefile
+shapefile_path <- "data/shapes/regions_mali.shp"
+regions <- st_read(shapefile_path)
+
+# 🔁 Fonction générique pour calculer les moyennes régionales
+get_moyennes_region <- function(indicateur, suffixe = "_mali.tif", decimals = 3) {
+  raster_path <- paste0("data/", indicateur, "/", indicateur, suffixe)
+  rast <- raster(raster_path)
+  moyennes <- exact_extract(rast, regions, 'mean')
+  
+  regions %>%
+    st_drop_geometry() %>%
+    select(Région = ADM1_FR) %>%
+    mutate(!!toupper(indicateur) := round(moyennes, decimals))
+}
+
+# 📈 Génération des tableaux
+df_evi <- get_moyennes_region("evi", decimals = 3)
+df_evi <- df_evi %>%
+  mutate(EVI = round(EVI / 10000, 3)) 
+df_fai  <- get_moyennes_region("fai",  decimals = 3)
+df_andwi <- get_moyennes_region("andwi", decimals = 3)
+
+
+```
+
+## Végétation – <span title="2.5 × (NIR - Red) / (NIR + 6×Red - 7.5×Blue + 1)">EVI</span> 
+
+Le **<span title="2.5 × (NIR - Red) / (NIR + 6×Red - 7.5×Blue + 1)">EVI</span>  (Enhanced Vegetation Index)** est une amélioration du NDVI développée pour mieux mesurer la **productivité végétale**, en particulier dans les zones à **forte densité de végétation** ou dans les **environnements perturbés par l’atmosphère**. Contrairement au NDVI, l’<span title="2.5 × (NIR - Red) / (NIR + 6×Red - 7.5×Blue + 1)">EVI</span>  est moins sensible à la saturation dans les forêts denses, et il corrige les effets liés à la **réflectance atmosphérique**, aux **ombres** et aux **variations du sol**.
+
+Ses valeurs sont également comprises entre **–1 et +1**, mais dans les écosystèmes naturels, elles se situent généralement entre **0** (absence de végétation) et **0.8 ou plus** (végétation dense et active). Certains produits raster l’expriment sous une échelle multipliée (ex. ×10 000), ce que nous avons corrigé ici.
+
+Dans le cas du **Mali**, nous avons extrait les **valeurs moyennes de l’<span title="2.5 × (NIR - Red) / (NIR + 6×Red - 7.5×Blue + 1)">EVI</span>  pour l’année 2024** à partir d’images satellitaires haute résolution, puis nous les avons **agrégées par région administrative**. Ces données permettent de **cartographier la densité végétale** sur l’ensemble du territoire, en révélant les **différences entre les zones sahariennes, sahéliennes et soudaniennes**.
+
+---
+
+### Carte interactive de l’<span title="2.5 × (NIR - Red) / (NIR + 6×Red - 7.5×Blue + 1)">EVI</span>  au Mali en 2024
+
+```{r, echo=FALSE, message=FALSE, include=FALSE}
+evi_out <- render_indicator_raster("evi", palette = "YlGn")
+```
+
+```{r vegetation-evi, echo=FALSE, message=FALSE, warning=FALSE}
+plot_raster_aggregated_leaflet(
+  raster_obj = evi_out$raster,
+  shapefile_path = "data/shapes/regions_mali.shp",
+  palette = "YlGn",
+  region_id = "ADM1_FR", 
+  title = "EVI 2024",
+  indicator_name = "evi",         
+  scale_if_needed = TRUE           
+)
+```
+
+---
+
+### Tableau de la répartition de l’<span title="2.5 × (NIR - Red) / (NIR + 6×Red - 7.5×Blue + 1)">EVI</span>  au Mali en 2024
+
+```{r Tableau-EVI, echo=FALSE, message=FALSE, warning=FALSE}
+df_evi %>%
+  gt() %>%
+  tab_header(
+    title = md("**Moyennes régionales de l’EVI**"),
+    subtitle = md("_Mali – Année 2024_")
+  ) %>%
+  fmt_number(columns = vars(EVI), decimals = 2) %>%
+  data_color(
+    columns = vars(EVI),
+    colors = scales::col_numeric("YlGn", domain = NULL)
+  ) %>%
+  gt_theme_538()
+```
+
+### Analyse des résultats
+
+L’analyse zonale de l’**<span title="2.5 × (NIR - Red) / (NIR + 6×Red - 7.5×Blue + 1)">EVI</span> ** permet de :
+
+- Évaluer la **densité et la vigueur de la végétation verte**, en particulier dans les zones à végétation dense,
+- Repérer les **régions à fort potentiel agricole ou forestier**,
+- Identifier les **zones arides ou désertiques** présentant une couverture végétale minimale,
+- Suivre les dynamiques écologiques entre les **zones sahariennes, sahéliennes et soudaniennes**.
+
+Au **Mali**, les valeurs de l’<span title="2.5 × (NIR - Red) / (NIR + 6×Red - 7.5×Blue + 1)">EVI</span>  en 2024 s’étendent de **0.08 à 0.30**, traduisant une **faible à modérée densité de végétation** sur l’ensemble du territoire. Ce spectre confirme l’influence forte du **gradient climatique nord-sud**.
+
+Les **valeurs les plus élevées** sont observées dans la région **de Sikasso (0.30)**, suivie de **Kayes (0.26)** et **Koulikoro (0.24)**. Ces régions du sud et de l’ouest du pays sont connues pour leur **climat plus humide**, leur **activité agricole soutenue** et une **couverture végétale plus continue**, notamment dans les zones de cultures pluviales, de savanes arborées ou de forêts-galeries.
+
+Les **valeurs intermédiaires**, comprises entre **0.16 et 0.21**, se situent dans les régions de **Ségou (0.21)** et **Bamako (0.16)**. Ces zones présentent une végétation **plus fragmentée**, liée à une **occupation du sol plus urbaine ou agropastorale**, mais conservent une certaine activité végétale grâce aux zones irriguées (Office du Niger, périmètres maraîchers).
+
+Les **valeurs les plus faibles**, inférieures à **0.15**, se concentrent dans les régions sahéliennes et sahariennes : **Gao (0.10)**, **Ménaka (0.10)**, **Tombouctou (0.09)**, et **Kidal (0.08)**. Ces valeurs traduisent une **quasi-absence de couverture végétale**, compatible avec la **prédominance de milieux désertiques**, une **aridité structurelle**, et une **végétation localisée** essentiellement le long des oueds, oasis ou zones fluviales ponctuelles.
+
+Globalement, la distribution spatiale de l’<span title="2.5 × (NIR - Red) / (NIR + 6×Red - 7.5×Blue + 1)">EVI</span>  au Mali en 2024 illustre avec clarté la **transition écologique du nord aride au sud végétalisé**. Ce gradient est essentiel pour **orienter les politiques d’aménagement du territoire, de gestion de l’eau et de planification agricole**, dans un pays fortement exposé à la variabilité climatique et à la dégradation des terres.
+
+------------------------------------------------------------------------
+
+## Santé de la végétation – FAI
+
+Le **FAI (Fire Affected Index)** est un indice spectral utilisé pour détecter les **zones affectées par des événements thermiques extrêmes**, comme les **feux de végétation**, les **brûlis agricoles**, ou encore les **stress thermiques sévères** liés à la dégradation des sols. Dans des contextes sahéliens et semi-arides comme celui du **Mali**, le FAI est particulièrement pertinent pour **repérer les signes avancés de stress écologique**, notamment dans les régions exposées à des températures élevées et à la raréfaction de la couverture végétale.
+
+Le FAI repose sur une combinaison de bandes du spectre optique, notamment l’**infrarouge proche** et l’**infrarouge moyen (SWIR)**, qui permettent de différencier les **zones saines** des **zones touchées par des perturbations thermiques**. Contrairement aux indices végétatifs classiques qui évaluent la verdure, le FAI s’intéresse aux **signaux spectrales d’altération ou de brûlure**, rendant visible ce qui ne l’est pas à l’œil nu.
+
+Dans le cas du **Mali**, nous avons extrait les **valeurs moyennes du FAI pour l’année 2024**, issues de rasters satellites haute résolution, puis agrégé ces données **par région administrative**. Cette approche permet de **localiser les territoires les plus affectés par des stress thermiques ou des pratiques de brûlis**, et de mieux cibler les actions de restauration écologique et de surveillance environnementale.
+
+
+###️ Carte interactive du FAI au Mali en 2024
+
+```{r echo=FALSE, message=FALSE, include=FALSE}
+fai_out <- render_indicator_raster("fai", palette = "OrRd")
+```
+
+```{r vegetation-fai, echo=FALSE, message=FALSE, warning=FALSE}
+plot_raster_aggregated_leaflet(
+  raster_obj = fai_out$raster,
+  shapefile_path = "data/shapes/regions_mali.shp",
+  palette = "OrRd",
+  region_id = "ADM1_FR", 
+  title = "FAI 2024 – Santé de la végétation",
+  indicator_name = "fai",
+  scale_if_needed = TRUE
+)
+```
+
+### Tableau de la répartition du FAI au Mali en 2024
+
+```{r Tableau-FAI, echo=FALSE, message=FALSE, warning=FALSE}
+df_fai %>%
+  gt() %>%
+  tab_header(
+    title = md("**Moyennes régionales du FAI**"),
+    subtitle = md("_Mali – Année 2024_")
+  ) %>%
+  fmt_number(columns = vars(FAI), decimals = 2) %>%
+  data_color(
+    columns = vars(FAI),
+    colors = col_numeric("Reds", domain = NULL)
+  ) %>%
+  gt_theme_538()
+```
+
+
+### Analyse des résultats
+
+L’indice **FAI** permet d’identifier les zones affectées par des **perturbations thermiques** telles que les **feux de brousse**, les **brûlis agricoles**, ou plus généralement les **stress écologiques sévères**. Des valeurs **plus négatives** du FAI indiquent une **affectation thermique plus marquée**, souvent liée à une **altération du couvert végétal**, à la **sécheresse**, ou à une **dégradation active des sols**.
+
+Au **Mali**, les valeurs du FAI en 2024 s’échelonnent de **–0.07 à –0.22**, suggérant un **niveau globalement modéré à élevé de stress thermique**, avec des disparités géographiques notables.
+
+Les **valeurs les moins négatives**, et donc les **zones les moins affectées**, se trouvent dans la région de **Bamako (–0.07)**, suivie de **Kayes (–0.14)** et **Sikasso (–0.14)**. Cela peut s’expliquer par une **végétation relativement plus stable**, une **occupation urbaine prédominante** (dans le cas de Bamako), ou une **intensité moindre des feux et du stress thermique**.
+
+Les **valeurs intermédiaires**, autour de **–0.17 à –0.19**, concernent les régions de **Koulikoro**, **Ségou**, **Mopti**, **Tombouctou**, **Ménaka**, et **Kidal**. Ces territoires se caractérisent par une **végétation discontinue**, une **vulnérabilité climatique élevée**, et des **pratiques de brûlis fréquentes**. Ils présentent des **signes clairs de dégradation thermique**, souvent accentués par la faible humidité et la pression anthropique.
+
+Les **valeurs les plus négatives**, représentant les **zones de stress les plus sévères**, sont observées dans la région de **Gao (–0.22)**. Cette valeur suggère une **intensité thermique particulièrement élevée**, probablement liée à une combinaison de **facteurs climatiques extrêmes**, de **perte de végétation**, et de **dégradation des sols**.
+
+Globalement, la carte du FAI reflète bien le **gradient nord-sud du stress environnemental** au Mali. Le **centre et le nord du pays** apparaissent comme les **zones les plus affectées par les perturbations thermiques**, tandis que le **sud-ouest** (Kayes, Sikasso) et la capitale (Bamako) présentent une **situation plus stable**. Ces résultats sont précieux pour cibler les **zones prioritaires de restauration écologique**, de **prévention des feux**, et d’**adaptation aux conditions extrêmes**.
+
+------------------------------------------------------------------------
+
+## Eau et humidité – ANDWI
+
+Le **ANDWI (Atmospherically Normalized Difference Water Index)** est une variante atmosphériquement corrigée du NDWI, spécialement conçue pour détecter la **présence d’eau libre ou d’humidité de surface** dans les environnements semi-arides ou sahéliens. Il permet de **compenser les effets atmosphériques**, souvent présents dans les régions poussiéreuses ou peu couvertes, afin de mieux localiser les **zones humides réelles**.
+
+L’ANDWI est calculé à partir des bandes **vertes** et **infrarouges proches** du spectre satellite, en ajustant le signal pour minimiser l’impact des particules en suspension. Il est couramment utilisé pour **identifier les zones d’eau saisonnières**, les **cultures irriguées**, les **bas-fonds**, ou encore pour **suivre les dynamiques hydrologiques dans les deltas et plaines alluviales**.
+
+Dans le cas du **Mali**, les **valeurs moyennes du ANDWI pour l’année 2024** ont été extraites à partir d’images satellites haute résolution, puis **agrégées par région administrative**. Cet indice permet d’identifier les **zones potentiellement favorables à l’agriculture irriguée**, de **surveiller les réserves hydriques superficielles**, et d’évaluer la **vulnérabilité hydrique régionale** dans un pays où l’accès à l’eau conditionne fortement la résilience socio-environnementale.
+
+
+### ️ Carte interactive de l'ANDWI au Mali en 2024
+
+```{r echo=FALSE, message=FALSE, include=FALSE}
+andwi_out <- render_indicator_raster("andwi", palette = "Blues")
+```
+
+```{r eau-andwi, echo=FALSE, message=FALSE, warning=FALSE}
+plot_raster_aggregated_leaflet(
+  raster_obj = andwi_out$raster,
+  shapefile_path = "data/shapes/regions_mali.shp",
+  palette = "Blues",
+  region_id = "ADM1_FR", 
+  title = "ANDWI 2024 – Humidité des surfaces",
+  indicator_name = "andwi",
+  scale_if_needed = TRUE
+)
+```
+
+
+### Tableau de la répartition de l'ANDWI au Mali en 2024
+
+```{r Tableau-ANDWI, echo=FALSE, message=FALSE, warning=FALSE}
+df_andwi %>%
+  gt() %>%
+  tab_header(
+    title = md("**Moyennes régionales du ANDWI**"),
+    subtitle = md("_Mali – Année 2024_")
+  ) %>%
+  fmt_number(columns = vars(ANDWI), decimals = 3) %>%
+  data_color(
+    columns = vars(ANDWI),
+    colors = col_numeric("Blues", domain = NULL)
+  ) %>%
+  gt_theme_538()
+```
+
+### Analyse des résultats
+
+L’indice **ANDWI** permet d’évaluer la **présence d’humidité à la surface du sol**, en corrigeant les effets atmosphériques souvent présents dans les milieux semi-arides. Des valeurs **moins négatives** indiquent une **meilleure disponibilité en eau**, tandis que des valeurs plus fortement négatives traduisent une **moindre humidité des sols et surfaces**, révélant potentiellement un **stress hydrique accru**.
+
+En 2024, les valeurs de l’**ANDWI au Mali** varient de **–0.3 à –0.464**, ce qui indique une **humidité globalement faible à très faible** à travers l’ensemble du territoire, avec cependant des **différences régionales significatives**.
+
+Les **valeurs les moins négatives**, traduisant une **teneur en eau relativement plus élevée**, sont observées dans :
+- **Bamako (–0.300)**,
+- **Tombouctou (–0.322)**,
+- **Kidal (–0.331)**.
+
+Dans le cas de Bamako, cela peut s’expliquer par une **présence d’infrastructures irriguées, de surfaces urbanisées retenant l’humidité**, ou d’espaces verts. Les cas de Tombouctou et Kidal peuvent sembler contre-intuitifs mais pourraient être liés à des **zones humides localisées**, comme les berges du fleuve Niger ou des oasis résiduelles.
+
+Les **valeurs intermédiaires**, autour de **–0.35 à –0.40**, sont relevées dans des régions comme **Gao (–0.350)**, **Mopti (–0.376)**, et **Ségou (–0.399)**. Ces régions, situées dans la zone sahélienne centrale, présentent des **contrastes hydriques forts**, avec des zones plus humides liées au réseau fluvial et des étendues très sèches autour.
+
+Les **valeurs les plus fortement négatives**, signalant une **humidité de surface très faible**, concernent :
+- **Kayes (–0.427)**,
+- **Koulikoro (–0.427)**,
+- **Sikasso (–0.464)**.
+
+Cela peut surprendre pour **Sikasso**, habituellement considérée comme une région plus humide, mais cela peut s'expliquer par la période de l'année au moment de l’observation (fin de saison sèche) ou par des **dynamiques d'évapotranspiration élevées dans des sols cultivés**.
+
+Globalement, cette carte du ANDWI révèle une **teneur hydrique très faible dans la majorité des régions maliennes en 2024**, ce qui confirme la **fragilité hydrologique** du pays, y compris dans certaines zones agricoles du sud. Ces résultats justifient l’importance d’un **suivi continu de l’humidité des sols**, en appui aux **décisions agricoles**, à la **gestion de l’eau** et aux **programmes d’adaptation climatique**.
+
+---
+
+## Conclusion 
+
+À travers l’étude combinée de l’**<span title="2.5 × (NIR - Red) / (NIR + 6×Red - 7.5×Blue + 1)">EVI</span> **, du **FAI** et du **ANDWI**, ce chapitre a permis de dresser un **état des lieux environnemental spatialement différencié** du **Mali** en 2024. Les résultats révèlent un pays marqué par une **forte hétérogénéité écologique**, où se confrontent **zones de résilience végétale**, **espaces dégradés** et **territoires soumis à un déficit hydrique chronique**.
+
+L’indice **<span title="2.5 × (NIR - Red) / (NIR + 6×Red - 7.5×Blue + 1)">EVI</span> ** met en évidence une **productivité végétale plus élevée dans le sud du pays**, notamment dans la région de **Sikasso**, qui conserve une activité biologique importante. À l’inverse, les régions sahariennes du nord présentent une **végétation quasi absente**, soulignant la sévérité des conditions climatiques et l’aridité structurelle.
+
+L’analyse du **FAI** révèle un **stress thermique généralisé**, avec des niveaux particulièrement élevés dans les régions **de Gao, Kidal, Mopti et Ménaka**, traduisant une **fragilité écologique avancée**, possiblement liée à la combinaison de **sécheresse, feux de brousse, et usage intensif des sols**.
+
+Enfin, l’indice **ANDWI**, centré sur la détection d’humidité de surface, confirme une **teneur hydrique très faible dans l’ensemble du territoire**, y compris dans certaines régions traditionnellement plus favorables comme **Sikasso ou Koulikoro**. Cette tendance signale un **affaiblissement des réserves hydriques superficielles**, posant un risque pour l’agriculture pluviale et la sécurité alimentaire.
+
+Dans l’ensemble, ce chapitre met en lumière la **complexité écologique du territoire malien**, soumis à des **dynamiques contrastées** entre dégradation, résilience locale, et pressions climatiques. Il souligne la nécessité d’**outils de suivi spatialisé** pour appuyer les **politiques d’adaptation**, la **gestion raisonnée des ressources**, et la **planification territoriale durable**.
+
+---
+
+> *« Quand le sol se fissure, ce n’est pas seulement la terre qui se fragmente, c’est aussi l’équilibre entre l’homme, la nature et le temps. »*  
+> — **Amadou Hampâté Bâ**
+

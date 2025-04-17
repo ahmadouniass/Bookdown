@@ -1,0 +1,2 @@
+"0","lswi_out <- render_indicator_raster(""lswi"", palette = ""Blues"")"
+"2","Avis : Some values were outside the color scale and will be treated as NA"

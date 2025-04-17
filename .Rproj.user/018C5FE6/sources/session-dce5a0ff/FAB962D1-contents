@@ -1,0 +1,366 @@
+# Sénégal
+
+## Introduction
+
+Le Sénégal occupe une position géographique stratégique à la croisée des écosystèmes sahéliens, savaniens et tropicaux. Ce pays présente une diversité écologique remarquable, depuis les zones arides du nord aux forêts humides et galeries fluviales du sud, en passant par les savanes agropastorales du centre. Cette mosaïque d’environnements en fait un terrain d’analyse privilégié pour l’étude des dynamiques végétales, hydriques et climatiques à partir d’indices spectraux.
+
+Dans ce chapitre, nous mobilisons trois grandes familles d’indices issus d’images satellites pour caractériser l’état écologique du territoire sénégalais en 2024 :
+
+Le NDVI (Normalized Difference Vegetation Index) pour mesurer la densité et la vigueur de la végétation verte ;
+
+L’ARI (Anthocyanin Reflectance Index) pour détecter le stress physiologique des plantes, souvent invisible dans les indices classiques ;
+
+Le LSWI (Land Surface Water Index) pour évaluer la teneur en eau des surfaces et la disponibilité hydrique.
+
+Chaque indicateur est analysé à l’échelle régionale, à travers des cartes interactives, des profils statistiques et des interprétations environnementales. Cette approche permet de dégager les régions les plus vulnérables, d’identifier les zones écologiquement stables, et d’alimenter la réflexion sur les politiques de gestion durable des terres et des ressources naturelles.
+
+Ce chapitre constitue ainsi une porte d’entrée vers la compréhension des dynamiques environnementales sahéliennes, en posant les bases d’une analyse comparative approfondie avec les autres pays de l’Atlas.
+
+------------------------------------------------------------------------
+
+```{r setup-raster-fonction-sn, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+## Fonctions de traitement raster et cartographie
+library(raster)
+library(tmap)
+library(leaflet)
+library(scales)
+library(sf)
+library(exactextractr)
+library(dplyr)
+library(DT)
+library(gt)
+library(gtExtras)
+
+# Fonction de chargement et visualisation de raster
+render_indicator_raster <- function(indicator_name, palette = "viridis") {
+  path <- paste0("data/", indicator_name, "/", indicator_name, "_senegal.tif")
+  rast <- raster(path)
+  
+  static_map <- tm_shape(rast) +
+    tm_raster(style = "quantile", palette = palette, title = toupper(indicator_name)) +
+    tm_layout(main.title = paste0(toupper(indicator_name), " – Sénégal (2024)"),
+              legend.outside = TRUE)
+  
+  pal_fun <- colorNumeric(palette = palette, domain = values(rast), na.color = "transparent")
+  interactive_map <- leaflet() %>%
+    addProviderTiles("CartoDB.Positron") %>%
+    addRasterImage(rast, colors = pal_fun, opacity = 0.8) %>%
+    addLegend(pal = pal_fun, values = values(rast), title = indicator_name, position = "bottomright")
+  
+  list(static = static_map, interactive = interactive_map, raster = rast)
+}
+
+# 🔹 Fonction d’extraction zonale
+extract_raster_by_region <- function(raster_obj, shapefile_path, region_id = "ADM1_FR", 
+                                     indicator_name = NULL, scale_if_needed = TRUE) {
+  regions <- st_read(shapefile_path, quiet = TRUE)
+  mean_vals <- exact_extract(raster_obj, regions, 'mean')
+  
+  # 🧠 Liste des indices à corriger (valeurs souvent multipliées par 10 000)
+  to_normalize <- c("ndvi")
+  
+  # Si demandé et si l’indice est dans la liste, on divise
+  if (scale_if_needed && !is.null(indicator_name) && tolower(indicator_name) %in% to_normalize) {
+    mean_vals <- mean_vals / 10000
+  }
+  
+  regions$mean_value <- round(mean_vals, 3)
+  return(regions)
+}
+
+# 🔹 Carte interactive enrichie avec Titre
+plot_raster_aggregated_leaflet <- function(raster_obj, shapefile_path, palette = "YlGn", 
+                                           region_id = "ADM1_FR", title = "Indice",
+                                           indicator_name = NULL, scale_if_needed = TRUE) {
+  
+  regions <- extract_raster_by_region(
+    raster_obj = raster_obj,
+    shapefile_path = shapefile_path,
+    region_id = region_id,
+    indicator_name = indicator_name,
+    scale_if_needed = scale_if_needed
+  )
+  
+  region_names <- regions[[region_id]]
+  mean_values <- regions$mean_value
+  
+  pal <- colorNumeric(palette = palette, domain = mean_values, na.color = "transparent")
+  
+  leaflet_map <- leaflet(regions) %>%
+    addProviderTiles("CartoDB.Positron") %>%
+    addPolygons(
+      fillColor = ~pal(mean_value),
+      weight = 1,
+      color = "#666",
+      fillOpacity = 0.7,
+      label = lapply(seq_along(region_names), function(i) {
+        paste0(region_names[i], " : ", mean_values[i])
+      }),
+      popup = lapply(seq_along(region_names), function(i) {
+        paste("<b>Région :</b>", region_names[i], "<br><b>Valeur moyenne :</b>", mean_values[i])
+      }),
+      labelOptions = labelOptions(direction = "auto")
+    ) %>%
+    addLegend(
+      pal = pal,
+      values = mean_values,
+      title = paste("Valeur moyenne –", title),
+      position = "bottomright"
+    ) %>%
+    addControl(
+      html = paste0(
+        "<div style='background:white;padding:6px 12px;border-radius:6px;
+                      box-shadow:0 0 5px rgba(0,0,0,0.3);
+                      font-size:16px;font-weight:bold'>", title, "</div>"
+      ),
+      position = "topright"
+    )
+  
+  return(leaflet_map)
+}
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+
+
+# 📂 Chargement unique du shapefile
+shapefile_path <- "data/shapes/regions_senegal.shp"
+regions <- st_read(shapefile_path)
+
+# 🔁 Fonction générique pour calculer les moyennes régionales
+get_moyennes_region <- function(indicateur, suffixe = "_senegal.tif", decimals = 3) {
+  raster_path <- paste0("data/", indicateur, "/", indicateur, suffixe)
+  rast <- raster(raster_path)
+  moyennes <- exact_extract(rast, regions, 'mean')
+  
+  regions %>%
+    st_drop_geometry() %>%
+    select(Région = ADM1_FR) %>%
+    mutate(!!toupper(indicateur) := round(moyennes, decimals))
+}
+
+# 📈 Génération des tableaux
+df_ndvi <- get_moyennes_region("ndvi", decimals = 3)
+df_ndvi <- df_ndvi %>%
+  mutate(NDVI = round(NDVI / 10000, 3)) 
+
+df_ari  <- get_moyennes_region("ari",  decimals = 4)
+df_lswi <- get_moyennes_region("lswi", decimals = 4)
+
+
+```
+
+## Végétation – NDVI
+
+Le **NDVI (Normalized Difference Vegetation Index)** est l’un des indices spectraux les plus utilisés pour l’étude de la végétation. Il permet de mesurer la **densité et la vigueur de la végétation verte active**, à partir des bandes rouge et proche infrarouge des capteurs satellites.\
+Les valeurs du NDVI s’étendent généralement de –1 à +1, mais dans les milieux naturels, elles se situent entre 0 (sol nu) et 1 (végétation dense).
+
+Dans le cas du Sénégal, nous avons extrait les valeurs **moyennes du NDVI pour l’année 2024** par région administrative à partir des rasters satellites haute résolution.
+
+### Carte interactive du NDVI au Sénégal en 2024
+
+```{r, echo=FALSE, message=FALSE, include=FALSE}
+ndvi_out <- render_indicator_raster("ndvi", palette = "YlGn")
+```
+
+```{r vegetation-ndvi, echo=FALSE, message=FALSE, warning=FALSE}
+plot_raster_aggregated_leaflet(
+  raster_obj = ndvi_out$raster,
+  shapefile_path = "data/shapes/regions_senegal.shp",
+  palette = "YlGn",
+  region_id = "ADM1_FR", 
+  title = "NDVI 2024",
+  indicator_name = "ndvi",         
+  scale_if_needed = TRUE           
+)
+
+```
+
+### Tableau de la répartition du NDVI au Sénégal en 2024
+
+```{r Tableau-NDVI, echo=FALSE, message=FALSE, warning=FALSE}
+df_ndvi %>%
+  gt() %>%
+  tab_header(
+    title = md("**Moyennes régionales du NDVI**"),
+    subtitle = md("_Sénégal – Année 2024_")
+  ) %>%
+  fmt_number(columns = vars(NDVI), decimals = 2) %>%
+  data_color(
+    columns = vars(NDVI),
+    colors = scales::col_numeric("YlGn", domain = NULL)
+  ) %>%
+  gt_theme_538()
+```
+
+###  Analyse des résultats
+
+L’analyse zonale du NDVI permet de :
+
+-   Quantifier la productivité végétale régionale,
+
+-   Identifier les zones à faible couverture végétale susceptibles d’être vulnérables à la désertification,
+
+-   Appuyer des décisions en matière d’agriculture, reforestation ou gestion des terres,
+
+-   Comparer les dynamiques entre zones sahéliennes, agropastorales et tropicales.
+
+La répartition géographique du NDVI au Sénégal en 2024 fait apparaître des contrastes marqués entre les régions :
+
+Les **valeurs les plus élevées (jusqu’à 0,52**) sont observées dans les régions méridionales telles que **Ziguinchor, Kolda et Sédhiou**, où la couverture végétale est dense, notamment en raison des forêts galeries, de l’agriculture pluviale et des zones humides.
+
+Les **valeurs intermédiaires** concernent des régions comme **Kaffrine, Kaolack ou Tambacounda**, caractérisées par une végétation saisonnière, une couverture mixte savane-agriculture, et une certaine régularité des précipitations.
+
+Les **valeurs les plus faibles** **(autour de 0,23 à 0,30)** sont enregistrées dans les régions sahéliennes du nord : **Matam, Saint-Louis, Louga**. Cela s’explique par :
+
+-   une aridité structurelle (précipitations faibles, sols pauvres),
+
+-   une pression foncière liée au pastoralisme extensif,
+
+-   et une végétation discontinue.
+
+Globalement, cette carte reflète la transition écologique nord-sud du Sénégal : plus on descend vers le sud, plus la végétation devient dense, continue et active.
+
+------------------------------------------------------------------------
+
+## Santé de la végétation – ARI
+
+L’ARI (Anthocyanin Reflectance Index) est un indice spectral utilisé pour estimer la concentration d’anthocyanines, des pigments végétaux jouant un rôle important dans les mécanismes de défense et de stress des plantes. Il est particulièrement utile pour évaluer la santé physiologique de la végétation, en détectant des signaux de stress avant même qu’ils ne soient visibles à l’œil nu.
+
+L’indice ARI est calculé à partir des bandes rouges et proches-infrarouges, mais contrairement au NDVI qui mesure la densité du couvert végétal, l’ARI permet de détecter des altérations subtiles liées à des changements biochimiques internes chez les plantes.
+
+Dans le cas du Sénégal, nous avons extrait les valeurs moyennes de l’ARI pour l’année 2024, à partir de rasters satellites haute résolution, puis agrégé les résultats par région administrative.
+
+### Carte interactive de l'ARI au Sénégal en 2024
+
+```{r echo=FALSE, message=FALSE, include=FALSE}
+ari_out <- render_indicator_raster("ari", palette = "OrRd")
+```
+
+```{r vegetation-ari, echo=FALSE, message=FALSE, warning=FALSE}
+plot_raster_aggregated_leaflet(
+  raster_obj = ari_out$raster,
+  shapefile_path = "data/shapes/regions_senegal.shp",
+  palette = "OrRd",
+  region_id = "ADM1_FR", 
+  title = "ARI 2024 – Santé de la végétation"
+)
+```
+
+### Tableau de la répartition de l'ARI au Sénégal en 2024
+
+```{r Tableau-ARI, echo=FALSE, message=FALSE, warning=FALSE}
+df_ari %>%
+  gt() %>%
+  tab_header(
+    title = md("** Moyennes régionales de l'ARI **"),
+    subtitle = md("_Sénégal – Année 2024_")
+  ) %>%
+  fmt_number(columns = vars(ARI), decimals = 3) %>%
+  data_color(
+    columns = vars(ARI),
+    colors = col_numeric("Reds", domain = NULL)
+  ) %>%
+  gt_theme_538()
+
+```
+
+### Analyse des résultats
+
+L’ARI permet d’identifier les zones où la végétation est soumise à des stress environnementaux (sécheresse, pollution, maladies, etc.). Il complète ainsi le NDVI en fournissant une information sur la qualité de la végétation, au-delà de sa seule quantité.
+
+On observe d'abord un **stress végétal** marqué dans les régions où l'ARI dépasse **–0.15**, indiquant une concentration élevée d’anthocyanines. Ces pigments sont souvent révélateurs d’un stress physiologique important chez les plantes. C’est le cas de **Kédougou (–0.1069)**, qui apparaît comme la région la plus touchée. Cela peut s’expliquer par la présence de forêts secondaires en dégradation ou encore par une végétation soumise à des pressions liées à l’agriculture minière ou de subsistance. **Dakar (–0.1297)** présente également un niveau élevé de stress, probablement en lien avec la végétation urbaine soumise à un stress hydrique chronique. Les cas de **Tambacounda (–0.1397)** et **Ziguinchor (–0.1438)** peuvent sembler paradoxaux, car ce sont des zones théoriquement bien végétalisées. Pourtant, cela suggère que la végétation dense dans ces zones subit un stress réel, possiblement lié à la déforestation, aux variations hydriques saisonnières ou à une intensification agricole.
+
+Un **stress modéré**, avec des valeurs d’ARI comprises entre **–0.15 et –0.18**, est observé dans des régions comme **Sédhiou, Kolda et Fatick**. Ces zones agricoles ou forestières en transition présentent une végétation active mais déjà soumise à certaines pressions, comme la saison sèche ou la pression anthropique. De leur côté, **Kaolack et Matam** affichent également des valeurs intermédiaires, avec des situations contrastées : Kaolack est marquée par une végétation saisonnière influencée par la régularité des pluies, tandis que Matam, plus sahélienne, possède une végétation clairsemée mais relativement stable.
+
+Enfin, certaines régions présentent des valeurs **très faibles** de l’ARI, proches de **–0.20,** comme **Diourbel, Kaffrine et Louga**. Ces régions, situées dans des zones semi-arides ou sahéliennes, ne doivent pas être interprétées hâtivement comme bénéficiant d’une bonne santé végétale. En réalité, leur faible score ARI s’explique par une couverture végétale très réduite. Moins il y a de végétation, moins il y a de pigments à détecter, ce qui entraîne mécaniquement un indice faible. Cela traduit davantage une absence de végétation mesurable qu’un véritable état de santé écologique favorable.
+
+------------------------------------------------------------------------
+
+## Eau et humidité – LSWI
+
+Le LSWI (Land Surface Water Index) est un indice spectral conçu pour détecter la présence d’humidité dans la végétation et dans le sol. Il est sensible à l’eau contenue dans les feuilles et à la teneur en eau des surfaces, ce qui en fait un indicateur précieux pour évaluer les conditions hydriques des écosystèmes. Le LSWI est particulièrement utile dans les zones agricoles et humides, car il permet de suivre les variations saisonnières de l’humidité des sols et des plantes.
+
+Contrairement au NDVI, qui met l’accent sur la densité du couvert végétal, ou à l’ARI qui explore les stress biochimiques internes, le LSWI renseigne directement sur l’état hydrique du couvert terrestre.
+
+Dans le cas du Sénégal, les valeurs moyennes du LSWI pour l’année 2024 ont été extraites à partir de rasters satellitaires à haute résolution, puis agrégées par région administrative.
+
+### Carte interactive du LSWI au Sénégal en 2024
+
+```{r echo=FALSE, message=FALSE, include=FALSE}
+lswi_out <- render_indicator_raster("lswi", palette = "Blues")
+```
+
+```{r eau-lswi, echo=FALSE, message=FALSE, warning=FALSE}
+plot_raster_aggregated_leaflet(
+  raster_obj = lswi_out$raster,
+  shapefile_path = "data/shapes/regions_senegal.shp",
+  palette = "Blues",
+  region_id = "ADM1_FR", 
+  title = "LSWI 2024 – Humidité des surfaces"
+)
+```
+
+### Tableau de la répartition du LSWI au Sénégal en 2024
+
+```{r Tableau-LSWI, echo=FALSE, message=FALSE, warning=FALSE}
+df_lswi %>%
+  gt() %>%
+  tab_header(
+    title = md("**Moyennes régionales du LSWI**"),
+    subtitle = md("_Sénégal – Année 2024_")
+  ) %>%
+  fmt_number(columns = vars(LSWI), decimals = 3) %>%
+  data_color(
+    columns = vars(LSWI),
+    colors = col_numeric("Blues", domain = NULL)
+  ) %>%
+  gt_theme_538()
+```
+
+### Analyse des résultats
+
+Les résultats montrent une variabilité spatiale importante entre le sud tropical humide et le nord sahélien du Sénégal.
+
+**Régions à forte humidité (LSWI \> 0)**
+
+La seule région présentant une valeur positive est **Ziguinchor (0.1354)**, ce qui traduit une très forte teneur en eau dans les surfaces végétalisées et les sols. Cette valeur confirme le caractère très humide de la région, qui bénéficie de précipitations abondantes, d’un couvert forestier dense et de nombreuses zones humides (bolongs, forêts galeries, rizières). Elle représente la zone la plus hydratée du pays selon cet indice.
+
+**Régions modérément humides (LSWI entre –0.05 et –0.1)**
+
+**Sédhiou (–0.0127)** et **Kolda (–0.0737)** affichent également des niveaux élevés d’humidité relative, bien que les valeurs soient légèrement négatives. Cela traduit un environnement encore bien alimenté en eau, probablement en saison humide, avec une végétation active et des sols encore hydratés.
+
+**Fatick (–0.0651)** suit cette tendance, en lien avec la présence de zones de mangrove et de marigots dans le Sine-Saloum.
+
+Ces régions constituent donc un socle écologique important, où l’accès à l’eau reste favorable à l’agriculture et à la biodiversité.
+
+**Régions de transition hydrique** **(LSWI entre –0.10 et –0.13)**
+
+On retrouve ici **Kédougou (–0.1155)**, **Tambacounda (–0.1146)**, **Saint-Louis (–0.1099)**, **Matam (–0.1171)** et **Dakar (–0.1178)**.
+
+Ce sont des régions qui subissent des variations hydriques saisonnières importantes, voire des contrastes locaux (zones humides vs. sèches).
+
+À Saint-Louis ou Matam, la proximité du fleuve Sénégal peut créer des poches d’humidité malgré un environnement plus aride.
+
+À Dakar, l’urbanisation limite la rétention d’eau, mais certains espaces verts et zones côtières conservent une humidité relative.
+
+**Régions les plus sèches (LSWI \< –0.13)**
+
+**Kaolack (–0.1449)**, **Thiès (–0.1400)**, **Louga (–0.1425)**, **Diourbel (–0.1572)** et **Kaffrine (–0.1319)** enregistrent les valeurs LSWI les plus basses.
+
+Cela traduit une faible humidité des sols et de la végétation, cohérente avec des précipitations faibles, une végétation discontinue, et un stress hydrique plus marqué.
+
+## Conclusion
+
+L’analyse des dynamiques environnementales du Sénégal en 2024 à travers les indices spectraux NDVI, ARI et LSWI met en évidence des contrastes écologiques marqués entre les régions, révélateurs d’un gradient climatique, végétal et hydrique du nord au sud.
+
+L’indice NDVI montre une densité de végétation élevée dans les régions méridionales telles que Ziguinchor, Kolda et Sédhiou, reflet de conditions agro-écologiques favorables. À l’inverse, les régions sahéliennes du nord comme Matam, Louga ou Saint-Louis affichent des valeurs nettement plus faibles, traduisant une couverture végétale clairsemée et des sols plus dégradés.
+
+L’ARI, indicateur de stress végétal, complète cette lecture en soulignant que certaines zones pourtant verdoyantes (ex. Kédougou, Ziguinchor, Tambacounda) présentent une végétation soumise à un stress biochimique non négligeable, probablement lié à l’intensification agricole, aux pressions anthropiques ou à la variabilité climatique. À l’inverse, des régions arides affichent un ARI faible, non pas par bonne santé, mais en raison de la rareté de végétation détectable.
+
+Enfin, l’indice LSWI permet d’évaluer la teneur en eau des surfaces et des végétaux. Il révèle une forte humidité dans les zones tropicales du sud (notamment Ziguinchor et Sédhiou), des niveaux intermédiaires dans les zones de transition (Kolda, Fatick), et une situation de déficit hydrique croissant en remontant vers le nord.
+
+En somme, ce chapitre offre une lecture écologique intégrée du territoire sénégalais, où chaque indice apporte un éclairage complémentaire : le NDVI mesure la quantité de végétation, l’ARI en évalue la santé, et le LSWI renseigne sur l’humidité disponible. Leur croisement permet d’identifier les zones de résilience écologique, mais aussi les régions vulnérables aux dégradations, appelant à des actions de gestion ciblées. Ces résultats serviront de base pour les comparaisons inter-pays présentées dans les chapitres suivants.
+
+> *“Chaque pixel est une parcelle d’histoire écologique. Ensemble, ils dessinent la carte du vivant.”*

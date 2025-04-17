@@ -1,0 +1,352 @@
+# Burkina-Faso
+
+
+
+## Introduction
+
+Le **Burkina Faso**, situé au cœur du **Sahel**, est un territoire à la fois stratégique et fragile sur le plan écologique. Son environnement est caractérisé par une transition marquée entre les zones arides du nord, soumises à la désertification, et les régions sud-soudaniennes plus humides et agricoles. Cette diversité spatiale, combinée à une forte pression démographique et à des aléas climatiques récurrents, fait du Burkina Faso un terrain d’étude privilégié pour analyser les dynamiques environnementales en contexte sahélien.
+
+Dans ce chapitre, trois indices spectraux issus d’images satellitaires sont mobilisés pour caractériser l’état écologique du Burkina Faso en 2024, chacun apportant un éclairage complémentaire :
+
+Le <span title="(NIR - Blue) / (NIR + Blue)">BNDVI</span> (Blue Normalized Difference Vegetation Index) permet d’évaluer la couverture végétale en intégrant la bande bleue du spectre, ce qui en fait un indice particulièrement sensible dans les zones à faible végétation — typiques des régions sahéliennes ;
+
+Le <span title="1 / ((0.1 - Red)² + (0.06 - NIR)²)">BAI</span> (Burned Area Index) est ici utilisé comme un indicateur de stress extrême ou de dégradation écologique, notamment en lien avec les feux de brousse, la sécheresse ou la surexploitation des sols ;
+
+Le <span title="4 × (Green - SWIR) - (0.25 × NIR + 2.75 × Red)">AWEInsh</span> (Automated Water Extraction Index – non-shaded) détecte la présence d’humidité dans les sols et la végétation, un facteur clé dans un pays où l’accès à l’eau reste un enjeu environnemental et socio-économique majeur.
+
+Ces indices sont analysés à l’échelle régionale, à travers des cartes interactives, des tableaux statistiques et des commentaires interprétatifs. Cette approche permet de repérer les zones écologiquement stables, d’identifier les régions sous stress ou à risque de dégradation, et de proposer des lectures spatialisées de la vulnérabilité environnementale.
+
+Ce chapitre constitue ainsi une lecture écologique intégrée du Burkina Faso, en apportant une vision à la fois descriptive et analytique des conditions végétales, hydriques et dégradatives du territoire, dans une logique de comparaison avec les autres pays de l’Atlas.
+
+------------------------------------------------------------------------
+
+```{r setup-raster-fonction-bf, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+## Fonctions de traitement raster et cartographie
+library(raster)
+library(tmap)
+library(leaflet)
+library(scales)
+library(sf)
+library(exactextractr)
+library(dplyr)
+library(DT)
+library(gt)
+library(gtExtras)
+
+# Fonction de chargement et visualisation de raster
+render_indicator_raster <- function(indicator_name, palette = "viridis") {
+  path <- paste0("data/", indicator_name, "/", indicator_name, "_burkina.tif")
+  rast <- raster(path)
+  
+  static_map <- tm_shape(rast) +
+    tm_raster(style = "quantile", palette = palette, title = toupper(indicator_name)) +
+    tm_layout(main.title = paste0(toupper(indicator_name), " – Burkina (2024)"),
+              legend.outside = TRUE)
+  
+  pal_fun <- colorNumeric(palette = palette, domain = values(rast), na.color = "transparent")
+  interactive_map <- leaflet() %>%
+    addProviderTiles("CartoDB.Positron") %>%
+    addRasterImage(rast, colors = pal_fun, opacity = 0.8) %>%
+    addLegend(pal = pal_fun, values = values(rast), title = indicator_name, position = "bottomright")
+  
+  list(static = static_map, interactive = interactive_map, raster = rast)
+}
+
+# 🔹 Fonction d’extraction zonale
+extract_raster_by_region <- function(raster_obj, shapefile_path, region_id = "ADM1_FR", 
+                                     indicator_name = NULL, scale_if_needed = TRUE) {
+  regions <- st_read(shapefile_path, quiet = TRUE)
+  mean_vals <- exact_extract(raster_obj, regions, 'mean')
+  
+
+  to_normalize <- c("ndvi")
+  
+
+  if (scale_if_needed && !is.null(indicator_name) && tolower(indicator_name) %in% to_normalize) {
+    mean_vals <- mean_vals / 10000
+  }
+  
+  regions$mean_value <- round(mean_vals, 3)
+  return(regions)
+}
+
+# 🔹 Carte interactive enrichie avec Titre
+plot_raster_aggregated_leaflet <- function(raster_obj, shapefile_path, palette = "YlGn", 
+                                           region_id = "ADM1_FR", title = "Indice",
+                                           indicator_name = NULL, scale_if_needed = TRUE) {
+  
+  regions <- extract_raster_by_region(
+    raster_obj = raster_obj,
+    shapefile_path = shapefile_path,
+    region_id = region_id,
+    indicator_name = indicator_name,
+    scale_if_needed = scale_if_needed
+  )
+  
+  region_names <- regions[[region_id]]
+  mean_values <- regions$mean_value
+  
+  pal <- colorNumeric(palette = palette, domain = mean_values, na.color = "transparent")
+  
+  leaflet_map <- leaflet(regions) %>%
+    addProviderTiles("CartoDB.Positron") %>%
+    addPolygons(
+      fillColor = ~pal(mean_value),
+      weight = 1,
+      color = "#666",
+      fillOpacity = 0.7,
+      label = lapply(seq_along(region_names), function(i) {
+        paste0(region_names[i], " : ", mean_values[i])
+      }),
+      popup = lapply(seq_along(region_names), function(i) {
+        paste("<b>Région :</b>", region_names[i], "<br><b>Valeur moyenne :</b>", mean_values[i])
+      }),
+      labelOptions = labelOptions(direction = "auto")
+    ) %>%
+    addLegend(
+      pal = pal,
+      values = mean_values,
+      title = paste("Valeur moyenne –", title),
+      position = "bottomright"
+    ) %>%
+    addControl(
+      html = paste0(
+        "<div style='background:white;padding:6px 12px;border-radius:6px;
+                      box-shadow:0 0 5px rgba(0,0,0,0.3);
+                      font-size:16px;font-weight:bold'>", title, "</div>"
+      ),
+      position = "topright"
+    )
+  
+  return(leaflet_map)
+}
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+
+
+# 📂 Chargement unique du shapefile
+shapefile_path <- "data/shapes/regions_burkina.shp"
+regions <- st_read(shapefile_path)
+
+# 🔁 Fonction générique pour calculer les moyennes régionales
+get_moyennes_region <- function(indicateur, suffixe = "_burkina.tif", decimals = 3) {
+  raster_path <- paste0("data/", indicateur, "/", indicateur, suffixe)
+  rast <- raster(raster_path)
+  moyennes <- exact_extract(rast, regions, 'mean')
+  
+  regions %>%
+    st_drop_geometry() %>%
+    select(Région = ADM1_FR) %>%
+    mutate(!!toupper(indicateur) := round(moyennes, decimals))
+}
+
+# 📈 Génération des tableaux
+df_bndvi <- get_moyennes_region("bndvi", decimals = 3)
+
+df_bai  <- get_moyennes_region("bai",  decimals = 4)
+df_aweinsh <- get_moyennes_region("aweinsh", decimals = 4)
+
+
+```
+## Végétation – <span title="(NIR - Blue) / (NIR + Blue)">BNDVI</span>
+
+Le **<span title="(NIR - Blue) / (NIR + Blue)">BNDVI</span> (Blue Normalized Difference Vegetation Index)** est une variante du NDVI qui utilise la bande bleue au lieu de la bande rouge dans son calcul. Il permet de mesurer la densité et la vigueur de la végétation verte, en particulier dans les zones à faible couverture végétale ou soumises à des effets atmosphériques importants comme les aérosols ou la poussière, fréquents dans les environnements sahéliens.
+
+Ses valeurs sont généralement comprises entre **–1** et **+1**, mais dans les milieux naturels, elles se situent plutôt entre **0 (sol nu ou zones dégradées)** et **1 (végétation dense et active)**. En raison de la manière dont certains rasters sont enregistrés, les valeurs sont parfois multipliées par 10 000, ce qui est corrigé dans notre analyse.
+
+Dans le cas du Burkina Faso, nous avons extrait les valeurs moyennes du <span title="(NIR - Blue) / (NIR + Blue)">BNDVI</span> pour l’année 2024 par région administrative, à partir de rasters satellitaires haute résolution. Ces valeurs permettent de dresser une cartographie précise de la répartition de la végétation sur le territoire, et de mettre en évidence les contrastes écologiques entre les régions du nord, plus arides, et celles du sud, plus verdoyantes.
+
+### Carte interactive du <span title="(NIR - Blue) / (NIR + Blue)">BNDVI</span> au Burkina-Faso en 2024
+
+```{r, echo=FALSE, message=FALSE, include=FALSE}
+bndvi_out <- render_indicator_raster("bndvi", palette = "YlGn")
+```
+
+```{r vegetation-bndvi, echo=FALSE, message=FALSE, warning=FALSE}
+plot_raster_aggregated_leaflet(
+  raster_obj = bndvi_out$raster,
+  shapefile_path = "data/shapes/regions_burkina.shp",
+  palette = "YlGn",
+  region_id = "ADM1_FR", 
+  title = "BNDVI 2024",
+  indicator_name = "bndvi",         
+  scale_if_needed = TRUE           
+)
+
+```
+
+### Tableau de la répartition du <span title="(NIR - Blue) / (NIR + Blue)">BNDVI</span> au Burkina en 2024
+
+```{r Tableau-BNDVI, echo=FALSE, message=FALSE, warning=FALSE}
+df_bndvi %>%
+  gt() %>%
+  tab_header(
+    title = md("**Moyennes régionales du BNDVI**"),
+    subtitle = md("_Burkina-Faso – Année 2024_")
+  ) %>%
+  fmt_number(columns = vars(BNDVI), decimals = 2) %>%
+  data_color(
+    columns = vars(BNDVI),
+    colors = scales::col_numeric("YlGn", domain = NULL)
+  ) %>%
+  gt_theme_538()
+```
+
+### Analyse des résultats
+
+L’analyse zonale du **<span title="(NIR - Blue) / (NIR + Blue)">BNDVI</span>** permet de :
+
+-   Quantifier la **productivité végétale régionale** dans un contexte sahélien soumis à de fortes pressions climatiques,
+-   Détecter les **zones à faible couverture végétale**, potentiellement exposées à la désertification et à l’érosion des sols,
+-   Orienter les **politiques agricoles, forestières et pastorales** en tenant compte des disparités régionales,
+-   Comparer les **dynamiques écologiques** entre le nord aride, les savanes centrales et les zones soudaniennes du sud-ouest.
+
+La répartition régionale du <span title="(NIR - Blue) / (NIR + Blue)">BNDVI</span> au **Burkina Faso en 2024** révèle une **variabilité modérée** de la couverture végétale, avec des valeurs comprises entre **0.55 et 0.64**, mais elle met en évidence un **gradient écologique sud-ouest / nord-est**.
+
+Les **valeurs les plus élevées**, supérieures à **0.60**, sont enregistrées dans les régions du **Sud-Ouest (0.61)**, des **Hauts-Bassins (0.61)** et des **Cascades (0.64)**. Ces zones bénéficient d’une **pluviométrie plus abondante**, d’un **sol plus fertile**, et d’une **densité forestière plus importante**. Elles concentrent également une part importante de la production agricole nationale.
+
+Les **valeurs intermédiaires**, autour de **0.56 à 0.57**, sont observées dans des régions de transition comme la **Boucle du Mouhoun**, le **Nord**, le **Centre-Ouest**, ou encore le **Centre-Nord**. Ces zones présentent généralement une **végétation saisonnière**, composée de savanes, de jachères et de zones cultivées.
+
+Les **valeurs les plus faibles** du <span title="(NIR - Blue) / (NIR + Blue)">BNDVI</span>, bien qu’elles restent relativement élevées (autour de **0.55**), sont relevées dans des régions plus arides ou urbanisées telles que le **Plateau-Central**, le **Centre**, l’**Est**, et la région sahélienne du **Sahel**. Dans ces territoires, la couverture végétale est **plus clairsemée**, souvent soumise à un **stress hydrique chronique**, à une **déforestation progressive**, ou à une **occupation du sol plus anthropisée**.
+
+Globalement, cette carte illustre une **transition écologique ouest-sud / nord-est** caractéristique du Burkina Faso : les zones méridionales et occidentales concentrent la **végétation la plus dense et active**, tandis que les régions du centre et du nord, plus exposées aux aléas climatiques et à la pression démographique, affichent une **couverture végétale plus fragile**.
+
+------------------------------------------------------------------------
+
+## Santé de la végétation – <span title="1 / ((0.1 - Red)² + (0.06 - NIR)²)">BAI</span>
+
+Le **<span title="1 / ((0.1 - Red)² + (0.06 - NIR)²)">BAI</span> (Burned Area Index)** est un indice spectral développé à l’origine pour **détecter les zones brûlées** par les incendies de végétation. Toutefois, dans les contextes sahéliens comme celui du **Burkina Faso**, le <span title="1 / ((0.1 - Red)² + (0.06 - NIR)²)">BAI</span> est également utilisé comme un **indicateur de stress ou de dégradation avancée**, car il met en évidence des sols nus, sombres, souvent liés à une **perte de couvert végétal**, à la **sécheresse**, ou à une **surexploitation agricole et pastorale**.
+
+Le <span title="1 / ((0.1 - Red)² + (0.06 - NIR)²)">BAI</span> est calculé à partir des bandes **rouge** et **infrarouge moyen (SWIR)**, avec une sensibilité particulière aux zones où la végétation a disparu ou subi une altération profonde. Contrairement aux indices comme le <span class="tooltip-index">NDVI<span class="tooltiptext">(NIR - Red) / (NIR + Red)</span></span> ou le <span title="(NIR - Blue) / (NIR + Blue)">BNDVI</span>, qui mesurent la densité de la végétation, le <span title="1 / ((0.1 - Red)² + (0.06 - NIR)²)">BAI</span> met plutôt en évidence les **signes visibles de perturbation ou d'appauvrissement de la surface terrestre**.
+
+Dans le cas du **Burkina Faso**, nous avons extrait les **valeurs moyennes du <span title="1 / ((0.1 - Red)² + (0.06 - NIR)²)">BAI</span> pour l’année 2024** à partir d’images satellites haute résolution, puis agrégé ces résultats **par région administrative**. L’analyse permet d’identifier les zones **écologiquement les plus fragilisées**, où les pressions climatiques et anthropiques ont laissé des traces visibles dans la structure du sol et du couvert végétal.
+
+### Carte interactive du <span title="1 / ((0.1 - Red)² + (0.06 - NIR)²)">BAI</span> au Burkina-Faso en 2024
+
+```{r echo=FALSE, message=FALSE, include=FALSE}
+bai_out <- render_indicator_raster("bai", palette = "OrRd")
+```
+
+```{r vegetation-bai, echo=FALSE, message=FALSE, warning=FALSE}
+plot_raster_aggregated_leaflet(
+  raster_obj = bai_out$raster,
+  shapefile_path = "data/shapes/regions_burkina.shp",
+  palette = "OrRd",
+  region_id = "ADM1_FR", 
+  title = "BAI 2024 – Santé de la végétation"
+)
+```
+
+### Tableau de la répartition du <span title="1 / ((0.1 - Red)² + (0.06 - NIR)²)">BAI</span> au Burkina en 2024
+
+```{r Tableau-BAI, echo=FALSE, message=FALSE, warning=FALSE}
+df_bai %>%
+  gt() %>%
+  tab_header(
+    title = md("**Moyennes régionales du BAI**"),
+    subtitle = md("_Burkina-Faso – Année 2024_")
+  ) %>%
+  fmt_number(columns = vars(BAI), decimals = 2) %>%
+  data_color(
+    columns = vars(BAI),
+    colors = col_numeric("Reds", domain = NULL)
+  ) %>%
+  gt_theme_538()
+```
+
+### Analyse des résultats
+
+L’analyse zonale du **<span title="1 / ((0.1 - Red)² + (0.06 - NIR)²)">BAI</span>** permet de :
+
+-   Repérer les zones **écologiquement dégradées ou perturbées**, qu’il s’agisse de **surfaces brûlées**, de **sols nus**, ou de **végétation fortement altérée** ;
+-   Détecter les **régions les plus sensibles** à la **déforestation, à la sécheresse**, ou à l’**érosion des terres** ;
+-   Mieux comprendre l’impact cumulé des **activités humaines** (agriculture extensive, feux de brousse) et des **aléas climatiques** dans la dynamique environnementale du pays.
+
+La répartition des valeurs du **<span title="1 / ((0.1 - Red)² + (0.06 - NIR)²)">BAI</span>** au Burkina Faso en 2024 fait apparaître des contrastes significatifs entre les régions :
+
+Les **valeurs les plus élevées** sont enregistrées dans les régions **sahéliennes et septentrionales**, notamment dans le **Sahel (0.37)**, le **Centre-Nord (0.32)**, le **Nord (0.31)** et le **Plateau-Central (0.30)**. Ces zones présentent des **signes marqués de dégradation** du couvert végétal, probablement liés à la **répétition des sécheresses**, aux **incendies de brousse**, et à une **pression humaine forte** sur les ressources naturelles. Elles constituent des **zones critiques de vulnérabilité écologique**.
+
+Les **valeurs intermédiaires**, comprises entre **0.25 et 0.29**, concernent des régions comme le **Centre (0.28)**, l’**Est (0.27)**, ou le **Centre-Ouest (0.25)**. Ces territoires connaissent une **pression environnementale modérée**, où les surfaces altérées cohabitent avec des zones encore fonctionnelles sur le plan écologique.
+
+Enfin, les **valeurs les plus faibles** du <span title="1 / ((0.1 - Red)² + (0.06 - NIR)²)">BAI</span>, indicatives de **moindre perturbation**, sont observées dans les **régions méridionales et plus humides** : **Cascades (0.17)**, **Sud-Ouest (0.18)** et **Hauts-Bassins (0.21)**. Ces zones bénéficient d’une **pluviométrie plus régulière**, d’une **couverture végétale plus dense**, et d’une **moindre intensité des perturbations de surface** — ce qui en fait des **réservoirs de résilience écologique** pour le pays.
+
+Ainsi, la carte du <span title="1 / ((0.1 - Red)² + (0.06 - NIR)²)">BAI</span> illustre une **dégradation croissante du nord au sud**, et permet de cibler les régions prioritaires pour des **actions de reforestation, de lutte contre l’érosion, ou de gestion durable des ressources**.
+
+------------------------------------------------------------------------
+
+## Eau et humidité – <span title="4 × (Green - SWIR) - (0.25 × NIR + 2.75 × Red)">AWEInsh</span>
+
+Le **<span title="4 × (Green - SWIR) - (0.25 × NIR + 2.75 × Red)">AWEInsh</span> (Automated Water Extraction Index – non-shaded)** est un indice spectral conçu pour détecter la **présence d’humidité et d’eau libre** à la surface du sol, en particulier dans les **zones non ombragées**. Il est particulièrement adapté aux environnements sahéliens où l’**eau est souvent peu visible**, diffuse ou en faible quantité. Le <span title="4 × (Green - SWIR) - (0.25 × NIR + 2.75 × Red)">AWEInsh</span> est largement utilisé pour **identifier les zones humides**, les **mares temporaires**, les **vallées inondables** ou encore la **teneur en eau résiduelle** dans les surfaces agricoles.
+
+Contrairement au NDVI ou au <span title="(NIR - Blue) / (NIR + Blue)">BNDVI</span> qui mesurent la densité du couvert végétal, et au <span title="1 / ((0.1 - Red)² + (0.06 - NIR)²)">BAI</span> qui signale les zones dégradées, le <span title="4 × (Green - SWIR) - (0.25 × NIR + 2.75 × Red)">AWEInsh</span> renseigne directement sur la **disponibilité en eau à la surface** du territoire, qu’il s’agisse d’eau libre ou d’humidité stockée dans les premiers centimètres du sol.
+
+Dans le cas du **Burkina Faso**, les **valeurs moyennes du <span title="4 × (Green - SWIR) - (0.25 × NIR + 2.75 × Red)">AWEInsh</span> pour l’année 2024** ont été extraites à partir de **rasters satellites à haute résolution**, puis **agrégées par région administrative**. L’analyse de ces données permet d’identifier les **zones à forte ou faible disponibilité en eau**, de suivre les **gradients d’humidité**, et d’anticiper les **zones à risque de stress hydrique** ou de **déficit agricole**. Cet indice est ainsi un outil stratégique pour le **suivi agro-hydrologique** dans un pays confronté à une vulnérabilité climatique croissante.
+
+### Carte interactive de l'<span title="4 × (Green - SWIR) - (0.25 × NIR + 2.75 × Red)">AWEInsh</span> au Burkina-Faso en 2024
+
+```{r echo=FALSE, message=FALSE, include=FALSE}
+aweinsh_out <- render_indicator_raster("aweinsh", palette = "OrRd")
+```
+
+```{r eau-aweinsh, echo=FALSE, message=FALSE, warning=FALSE}
+plot_raster_aggregated_leaflet(
+  raster_obj = aweinsh_out$raster,
+  shapefile_path = "data/shapes/regions_burkina.shp",
+  palette = "OrRd",
+  region_id = "ADM1_FR", 
+  title = "AWEInsh 2024 – Humidité des surfaces"
+)
+```
+
+### Tableau de la répartition d l'<span title="4 × (Green - SWIR) - (0.25 × NIR + 2.75 × Red)">AWEInsh</span> au Burkina-Faso en 2024
+
+```{r Tableau-Aweinsh, echo=FALSE, message=FALSE, warning=FALSE}
+df_aweinsh %>%
+  gt() %>%
+  tab_header(
+    title = md("**Moyennes régionales de l'AWEInsh**"),
+    subtitle = md("_Burkina-Faso – Année 2024_")
+  ) %>%
+  fmt_number(columns = vars(AWEINSH), decimals = 3) %>%
+  data_color(
+    columns = vars(AWEINSH),
+    colors = col_numeric("Blues", domain = NULL)
+  ) %>%
+  gt_theme_538()
+```
+
+
+### Analyse des résultats
+
+L’analyse zonale du **<span title="4 × (Green - SWIR) - (0.25 × NIR + 2.75 × Red)">AWEInsh</span>** permet de :
+
+-   Identifier les **zones à forte ou faible disponibilité en eau** dans les sols et à la surface,
+-   Détecter les **zones humides résiduelles** dans un contexte sahélien soumis à des stress hydriques fréquents,
+-   Orienter les **politiques de gestion de l’eau, d’irrigation, et d’adaptation agricole** face à la variabilité climatique,
+-   Observer les **différences régionales dans la capacité de rétention hydrique des écosystèmes**.
+
+En 2024, les valeurs du **<span title="4 × (Green - SWIR) - (0.25 × NIR + 2.75 × Red)">AWEInsh</span>** au Burkina Faso varient globalement entre **–0.324 et –0.247**, indiquant une **humidité de surface globalement faible** sur l’ensemble du territoire, ce qui est cohérent avec les conditions semi-arides dominantes du pays. Toutefois, on observe des **variations régionales notables**.
+
+Les **valeurs les plus négatives**, indiquant une **teneur en eau particulièrement faible**, sont relevées dans les **Cascades (–0.324)**, les **Hauts-Bassins (–0.311)** et le **Centre-Est (–0.293)**. Bien que certaines de ces régions soient plus humides d’un point de vue pluviométrique, ces valeurs peuvent traduire une **baisse de l’humidité résiduelle en fin de saison sèche**, ou des **dynamiques de drainage et d’évaporation rapides**.
+
+Les **valeurs intermédiaires**, situées autour de **–0.274 à –0.284**, sont observées dans des régions comme l’**Est (–0.274)**, le **Nord (–0.281)**, le **Centre-Nord (–0.286)** ou le **Plateau-Central (–0.284)**. Ces régions présentent une **humidité modérée**, probablement liée à une combinaison de **zones agricoles saisonnières** et de **poches de rétention hydrique limitée**.
+
+Enfin, les **valeurs les moins négatives** (c’est-à-dire les plus "humides") se situent dans le **Centre-Ouest (–0.247)**, le **Centre (–0.257)** et le **Centre-Sud (–0.255)**. Ces résultats suggèrent que ces zones disposent d’une **meilleure capacité de rétention d’humidité**, possiblement liée à des types de sol plus perméables, une végétation stabilisatrice, ou une infrastructure hydrologique plus développée.
+
+De manière générale, l’analyse du <span title="4 × (Green - SWIR) - (0.25 × NIR + 2.75 × Red)">AWEInsh</span> montre que **la quasi-totalité du territoire burkinabé affiche des niveaux d’humidité faibles à très faibles**, avec des **différences régionales subtiles** mais significatives. Ces données confirment la **fragilité hydrique du pays** et soulignent l’intérêt de **mécanismes de suivi continu** pour anticiper les périodes de stress hydrique, planifier les cultures, et orienter les politiques d’adaptation climatique.
+
+## Conclusion
+
+L’analyse des dynamiques environnementales du Burkina Faso à partir des indices spectraux <span title="(NIR - Blue) / (NIR + Blue)">BNDVI</span>, <span title="1 / ((0.1 - Red)² + (0.06 - NIR)²)">BAI</span> et <span title="4 × (Green - SWIR) - (0.25 × NIR + 2.75 × Red)">AWEInsh</span> met en lumière des contrastes écologiques marqués entre les régions, révélateurs des tensions structurelles entre végétation, dégradation et disponibilité en eau.
+
+Le <span title="(NIR - Blue) / (NIR + Blue)">BNDVI</span> révèle une végétation plus dense dans les régions méridionales et soudaniennes (Cascades, Sud-Ouest, Hauts-Bassins), en lien avec une pluviométrie plus favorable et une occupation agricole diversifiée. À l’inverse, les régions centrales et septentrionales présentent des valeurs plus modérées, indiquant une couverture végétale plus clairsemée et souvent saisonnière.
+
+Le <span title="1 / ((0.1 - Red)² + (0.06 - NIR)²)">BAI</span> met en évidence une dégradation écologique plus avancée dans le nord du pays, notamment dans les régions du Sahel, du Nord et du Centre-Nord, où les conditions climatiques, les feux récurrents et les pressions anthropiques contribuent à une perte significative de végétation et à l’exposition des sols. Ces zones apparaissent comme écologiquement vulnérables, avec des signaux forts d’alerte pour les politiques de reforestation et de gestion des terres.
+
+Enfin, l’analyse du <span title="4 × (Green - SWIR) - (0.25 × NIR + 2.75 × Red)">AWEInsh</span> souligne une disponibilité en eau de surface faible à très faible sur l’ensemble du territoire, avec des variations régionales modestes. Même les régions habituellement considérées comme plus humides présentent des valeurs négatives, traduisant une teneur hydrique résiduelle insuffisante pour garantir une résilience écologique à long terme.
+
+Dans son ensemble, ce chapitre offre une lecture intégrée du territoire burkinabé, où la végétation active, la dégradation écologique et la ressource hydrique s’entrelacent pour façonner les dynamiques environnementales régionales. Cette lecture spatialisée constitue une base solide pour orienter les stratégies d’adaptation au changement climatique, de gestion des ressources naturelles et de planification territoriale durable.
+
+> *“Là où l’eau se retire, la mémoire de la terre s’efface. Et c’est à l’homme d’inventer de nouveaux équilibres avec le vivant.”— Souleymane Bachir Diagne*

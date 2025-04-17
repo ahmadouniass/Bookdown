@@ -1,0 +1,27 @@
+bookdown::gitbook:
+  css: style.css
+  includes:
+    in_header: favicon.html #Pour mettre le favicon 
+    after_body: footer.html     # Footer pour le HTML
+  config:
+    toc:
+      before: |
+        <li style="text-align:center;">
+          <img src="images/logo_atlas.jpg" style="max-width:120px; margin-bottom: 0.5em;">
+        </li>
+        <li><a href = "index.html">Atlas interactif des dynamiques <br> environnementales en Afrique <br> de l’Ouest</a></li>
+      collapse: section
+    toolbar:
+      search: true
+    download: ["pdf", "epub"]
+    sharing: no
+
+bookdown::pdf_book:
+  includes:
+    in_header: preamble.tex
+    after_body: footer.html     # Footer pour le PDF
+  latex_engine: xelatex
+  citation_package: natbib
+  keep_tex: yes
+
+bookdown::epub_book: default

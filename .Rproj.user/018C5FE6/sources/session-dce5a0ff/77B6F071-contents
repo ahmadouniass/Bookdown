@@ -1,0 +1,483 @@
+# Exploration des indicateurs
+
+
+## Introduction
+
+L’objectif de ce chapitre est de comparer les dynamiques environnementales entre les quatre pays étudiés — **Sénégal**, **Burkina Faso**, **Mali** et **Niger** — à partir d’une sélection d’**indicateurs spectraux homogènes**, calculés sur l’ensemble du territoire national de chaque pays à l’échelle régionale.
+
+Contrairement aux chapitres précédents qui abordaient chaque pays individuellement, l’approche ici est **transversale** : elle vise à identifier les **points communs**, les **disparités**, et les **profils écologiques contrastés** à travers l’espace sahélien ouest-africain.
+
+Nous nous focalisons sur trois dimensions fondamentales :
+
+- **La vigueur de la végétation** à travers l’indice **NDVI** (Normalized Difference Vegetation Index), indicateur standard de la couverture végétale active ;
+- **Le stress ou la dégradation écologique** via le **BAI** (Burned Area Index), utilisé comme proxy de la perturbation de surface (sols nus, végétation appauvrie, zones brûlées) ;
+- **L’humidité résiduelle des surfaces** à travers l’indice **WI2** (Water Index 2), mesurant la présence d’eau ou d’humidité dans le sol et la végétation.
+
+Pour chaque indicateur, nous présentons :
+
+- Des **cartes par pays**,
+- Un **graphique comparatif** des moyennes nationales,
+- Un **tableau régional détaillé** des valeurs.
+
+Cette démarche permet d'établir un **diagnostic spatial comparé**, et d’alimenter une réflexion plus large sur la résilience écologique, les pressions climatiques et les marges d’action pour une gestion durable des ressources naturelles à l’échelle régionale.
+
+
+```{r raster-functions-compar, include=FALSE}
+library(raster)
+library(sf)
+library(leaflet)
+library(exactextractr)
+library(dplyr)
+library(tmap)   
+library(ggplot2)
+library(DT)
+
+# Fonction générique pour tout pays et tout indicateur
+render_indicator_raster <- function(indicator_name, country, palette = "viridis", extension = ".tif") {
+  raster_path <- paste0("data/", indicator_name, "/", indicator_name, "_", tolower(country), extension)
+
+  if (!file.exists(raster_path)) {
+    stop("❌ Fichier raster introuvable : ", raster_path)
+  }
+
+  rast <- raster(raster_path)
+
+  static_map <- tm_shape(rast) +
+    tm_raster(style = "quantile", palette = palette, title = toupper(indicator_name)) +
+    tm_layout(main.title = paste0(toupper(indicator_name), " – ", tools::toTitleCase(country), " (2024)"),
+              legend.outside = TRUE)
+
+  pal_fun <- colorNumeric(palette = palette, domain = values(rast), na.color = "transparent")
+  interactive_map <- leaflet() %>%
+    addProviderTiles("CartoDB.Positron") %>%
+    addRasterImage(rast, colors = pal_fun, opacity = 0.8) %>%
+    addLegend(pal = pal_fun, values = values(rast), title = indicator_name, position = "bottomright")
+
+  list(static = static_map, interactive = interactive_map, raster = rast)
+}
+
+plot_country_map <- function(indicator, country, palette = "YlGn", shape_path, region_id = "ADM1_FR") {
+  raster_out <- render_indicator_raster(indicator_name = indicator, country = country, palette = palette)
+  
+  plot_raster_aggregated_leaflet(
+    raster_obj = raster_out$raster,
+    shapefile_path = shape_path,
+    palette = palette,
+    region_id = region_id,
+    title = paste(toupper(indicator), "-", tools::toTitleCase(country), "2024")
+  )
+}
+plot_raster_aggregated_leaflet <- function(raster_obj, shapefile_path, palette = "YlGn", region_id = "ADM1_FR", title = "Carte") {
+  regions <- st_read(shapefile_path, quiet = TRUE)
+  mean_vals <- exact_extract(raster_obj, regions, 'mean')
+  regions$mean_value <- round(mean_vals, 3)
+  region_names <- regions[[region_id]]
+
+  pal <- colorNumeric(palette = palette, domain = mean_vals, na.color = "transparent")
+
+  leaflet(regions) %>%
+    addProviderTiles("CartoDB.Positron") %>%
+    addPolygons(
+      fillColor = ~pal(mean_value),
+      color = "#444", weight = 1, fillOpacity = 0.7,
+      label = paste0(region_names, ": ", mean_vals),
+      popup = paste("<b>Région :</b>", region_names, "<br><b>Valeur moyenne :</b>", mean_vals)
+    ) %>%
+    addLegend(pal = pal, values = mean_vals, title = title, position = "bottomright") %>%
+    addControl(
+      html = paste0("<div style='background:white;padding:6px 12px;border-radius:6px;
+                     box-shadow:0 0 5px rgba(0,0,0,0.3);
+                     font-size:16px;font-weight:bold'>", title, "</div>"),
+      position = "topright"
+    )
+}
+
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+library(raster)
+library(sf)
+library(exactextractr)
+library(dplyr)
+library(ggplot2)   
+library(DT)        
+get_indicator_data <- function(indicator, country, raster_path, shapefile_path, region_id = "ADM1_FR", scale = FALSE) {
+  rast <- raster(raster_path)
+  regions <- st_read(shapefile_path, quiet = TRUE)
+  vals <- exact_extract(rast, regions, 'mean')
+  if (scale) vals <- vals / 10000
+  
+  tibble(
+    Pays = country,
+    Région = regions[[region_id]],
+    Indicateur = toupper(indicator),
+    Valeur = round(vals, 4)
+  )
+}
+
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+# Exemple pour 3 indicateurs – ajoute-en autant que tu veux
+indicator_config <- list(
+  ndvi = list(
+    scale = TRUE,
+    countries = list(
+      list(pays = "Sénégal",       raster = "data/ndvi/ndvi_senegal.tif",       shapefile = "data/shapes/regions_senegal.shp"),
+      list(pays = "Burkina Faso",  raster = "data/ndvi/ndvi_burkina.tif",       shapefile = "data/shapes/regions_burkina.shp"),
+      list(pays = "Mali",          raster = "data/ndvi/ndvi_mali.tif",          shapefile = "data/shapes/regions_mali.shp"),
+      list(pays = "Niger",         raster = "data/ndvi/ndvi_niger.tif",         shapefile = "data/shapes/regions_niger.shp")
+    )
+  ),
+  bai = list(
+    scale = TRUE,
+    countries = list(
+      list(pays = "Sénégal",       raster = "data/bai/bai_senegal.tif",         shapefile = "data/shapes/regions_senegal.shp"),
+      list(pays = "Burkina Faso",  raster = "data/bai/bai_burkina.tif",         shapefile = "data/shapes/regions_burkina.shp"),
+      list(pays = "Mali",          raster = "data/bai/bai_mali.tif",            shapefile = "data/shapes/regions_mali.shp"),
+      list(pays = "Niger",         raster = "data/bai/bai_niger.tif",           shapefile = "data/shapes/regions_niger.shp")
+    )
+  ),
+  wi2 = list(
+    scale = FALSE,
+    countries = list(
+      list(pays = "Sénégal",       raster = "data/wi2/wi2_senegal.tif",         shapefile = "data/shapes/regions_senegal.shp"),
+      list(pays = "Burkina Faso",  raster = "data/wi2/wi2_burkina.tif",         shapefile = "data/shapes/regions_burkina.shp"),
+      list(pays = "Mali",          raster = "data/wi2/wi2_mali.tif",            shapefile = "data/shapes/regions_mali.shp"),
+      list(pays = "Niger",         raster = "data/wi2/wi2_niger.tif",           shapefile = "data/shapes/regions_niger.shp")
+    )
+  )
+)
+
+
+```
+
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+all_indicators_data <- list()
+
+for (ind_name in names(indicator_config)) {
+  conf <- indicator_config[[ind_name]]
+  message("Traitement de : ", ind_name)
+  
+  for (pays_info in conf$countries) {
+    df <- get_indicator_data(
+      indicator = ind_name,
+      country = pays_info$pays,
+      raster_path = pays_info$raster,
+      shapefile_path = pays_info$shapefile,
+      scale = conf$scale
+    )
+    
+    all_indicators_data[[length(all_indicators_data) + 1]] <- df
+  }
+}
+
+df_global <- bind_rows(all_indicators_data)
+
+```
+---
+
+## Introduction
+
+L’objectif de ce chapitre est de comparer les dynamiques environnementales entre les quatre pays étudiés — **Sénégal**, **Burkina Faso**, **Mali** et **Niger** — à partir d’une sélection d’**indicateurs spectraux homogènes**, calculés sur l’ensemble du territoire national de chaque pays à l’échelle régionale.
+
+Contrairement aux chapitres précédents qui abordaient chaque pays individuellement, l’approche ici est **transversale** : elle vise à identifier les **points communs**, les **disparités**, et les **profils écologiques contrastés** à travers l’espace sahélien ouest-africain.
+
+Nous nous focalisons sur trois dimensions fondamentales :
+
+-  **La vigueur de la végétation** à travers l’indice **NDVI** (Normalized Difference Vegetation Index), indicateur standard de la couverture végétale active ;
+- **Le stress ou la dégradation écologique** via le **BAI** (Burned Area Index), utilisé comme proxy de la perturbation de surface (sols nus, végétation appauvrie, zones brûlées) ;
+- **L’humidité résiduelle des surfaces** à travers l’indice **WI2** (Water Index 2), mesurant la présence d’eau ou d’humidité dans le sol et la végétation.
+
+Pour chaque indicateur, nous présentons :
+
+- Des **cartes par pays**,
+- Un **graphique comparatif** des moyennes nationales,
+- Un **tableau régional détaillé** des valeurs.
+
+Cette démarche permet d'établir un **diagnostic spatial comparé**, et d’alimenter une réflexion plus large sur la résilience écologique, les pressions climatiques et les marges d’action pour une gestion durable des ressources naturelles à l’échelle régionale.
+
+
+
+## Comparaison de la couverture végétale 
+
+L’indice NDVI (Normalized Difference Vegetation Index) est un indicateur standard de la densité de la végétation verte active. Il permet d’observer les zones à fort potentiel de biomasse ainsi que les zones dégradées. Dans ce cadre comparatif, nous utilisons le NDVI pour analyser les différences de couverture végétale entre les pays sahéliens.
+
+
+### Cartes NDVI par pays
+
+
+```{r ndvi-cartes, echo=FALSE, message=FALSE, warning=FALSE}
+plot_country_map("ndvi", "senegal",  palette = "YlGn", shape_path = "data/shapes/regions_senegal.shp")
+plot_country_map("ndvi", "burkina",  palette = "YlGn", shape_path = "data/shapes/regions_burkina.shp")
+plot_country_map("ndvi", "mali",     palette = "YlGn", shape_path = "data/shapes/regions_mali.shp")
+plot_country_map("ndvi", "niger",    palette = "YlGn", shape_path = "data/shapes/regions_niger.shp")
+
+```
+### Moyenne NDVI par pays
+```{r ndvi-plot, echo=FALSE}
+df_global %>%
+  filter(Indicateur == "NDVI") %>%
+  group_by(Pays) %>%
+  summarise(Moyenne = mean(Valeur)) %>%
+  ggplot(aes(x = reorder(Pays, Moyenne), y = Moyenne, fill = Pays)) +
+  geom_col(width = 0.6) +
+  coord_flip() +
+  labs(title = "NDVI moyen par pays (2024)", y = "NDVI", x = NULL) +
+  theme_minimal()
+```
+
+### Tableau des valeurs régionales NDVI
+```{r ndvi-table, echo=FALSE}
+df_global %>%
+  filter(Indicateur == "NDVI") %>%
+  datatable(
+    filter = "top",
+    options = list(
+      pageLength = 10,
+      dom = 't<"bottom"ip>',
+      className = "stripe hover cell-border order-column",
+      autoWidth = TRUE
+    ),
+    rownames = FALSE,
+    colnames = c("Pays", "Région", "Indicateur", "Valeur")
+  ) %>%
+  formatStyle(
+    "Valeur",
+    background = styleColorBar(range(df_global$Valeur, na.rm = TRUE), "lightgreen"),
+    backgroundSize = "80% 60%",
+    backgroundRepeat = "no-repeat",
+    backgroundPosition = "center"
+  )
+```
+
+
+###  Analyse comparative 
+
+Le **NDVI (Normalized Difference Vegetation Index)** est un indicateur de référence pour estimer la **densité de végétation active** à la surface terrestre. Calculé à partir des bandes rouge et proche infrarouge des satellites, il permet de quantifier la **vigueur photosynthétique des plantes**. Plus la valeur est élevée, plus la couverture végétale est dense, verte et en bonne santé.
+
+---
+
+#### Lecture interne (intra-pays)
+
+Dans chacun des pays sahéliens étudiés (🇸🇳 Sénégal, 🇧🇫 Burkina Faso, 🇲🇱 Mali, 🇳🇪 Niger), on observe un **gradient écologique du nord vers le sud** :
+
+- **Au nord** : zones sahéliennes, plus sèches, avec une végétation clairsemée voire absente.
+- **Au sud** : zones soudaniennes ou guinéennes, plus humides, avec forêts, savanes denses et cultures.
+
+Cette dynamique se vérifie dans chaque territoire :
+
+- **Sénégal** : NDVI élevé au sud (Ziguinchor, Sédhiou, Kolda), plus faible au nord (Matam, Saint-Louis).
+- **Mali** : végétation dense au sud (Sikasso), quasi absente au nord (Kidal, Tombouctou).
+- **Burkina Faso** : valeurs plus élevées dans le Sud-Ouest et les Cascades, plus faibles dans le Sahel burkinabè.
+- **Niger** : contraste extrême entre les régions méridionales (Maradi, Dosso) et les étendues désertiques du nord (Agadez).
+
+>**Conclusion intra-pays** : dans chacun des pays étudiés, **la végétation devient plus abondante et plus vigoureuse à mesure qu’on se dirige vers le sud**, conformément à la distribution des précipitations et des biomes.
+
+---
+
+#### Lecture externe (inter-pays)
+
+Le graphique comparatif inter-pays révèle des écarts significatifs :
+
+- **Sénégal** : NDVI moyen le plus élevé, en raison de la forte végétation au sud-ouest (forêts galeries, bolongs, agriculture pluviale).
+- **Burkina Faso** : NDVI stable, reflétant un territoire écologiquement diversifié, bien que soumis à des pressions croissantes.
+- **Mali** : NDVI intermédiaire, marqué par une hétérogénéité importante entre le sud et les zones désertiques.
+- **Niger** : NDVI le plus faible, témoignant d’un territoire très aride avec une végétation clairsemée, voire inexistante dans certaines régions.
+
+ Le **Sénégal** et le **Burkina Faso** apparaissent comme les pays les plus végétalisés en moyenne, tandis que le **Niger reste le plus vulnérable à la désertification**.
+
+
+---
+
+## Comparaison du stress écologique 
+
+L’indice BAI (Burned Area Index) est conçu pour détecter les zones brûlées ou fortement dégradées, en mettant en évidence les sols sombres, nus ou perturbés. Bien qu’initialement utilisé pour cartographier les feux de végétation, le BAI est aussi un indicateur pertinent du stress écologique dans les environnements sahéliens, où il révèle les zones de déforestation, surpâturage, sécheresse prolongée ou dégradation des sols.
+
+
+### Cartes BAI par pays 
+
+```{r bai-cartes, echo=FALSE, message=FALSE, warning=FALSE}
+plot_country_map("bai", "senegal",  palette = "YlGn", shape_path = "data/shapes/regions_senegal.shp")
+plot_country_map("bai", "burkina",  palette = "YlGn", shape_path = "data/shapes/regions_burkina.shp")
+plot_country_map("bai", "mali",     palette = "YlGn", shape_path = "data/shapes/regions_mali.shp")
+plot_country_map("bai", "niger",    palette = "YlGn", shape_path = "data/shapes/regions_niger.shp")
+
+```
+
+### Moyenne BAI par pays
+```{r bai-plot, echo=FALSE}
+df_global %>%
+  filter(Indicateur == "BAI") %>%
+  group_by(Pays) %>%
+  summarise(Moyenne = mean(Valeur, na.rm = TRUE)) %>%
+  ggplot(aes(x = reorder(Pays, Moyenne), y = Moyenne)) +
+  geom_segment(aes(xend = Pays, y = 0, yend = Moyenne), color = "grey70", size = 1) +
+  geom_point(aes(color = Pays), size = 5) +
+  geom_text(aes(label = round(Moyenne, 3)), hjust = -0.4, size = 4.2) +
+  coord_flip() +
+  labs(title = "BAI moyen par pays (2024)", y = "BAI", x = NULL) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+```
+
+### Tableau des valeurs régionales du BAI
+
+```{r bai-table, echo=FALSE}
+df_global %>%
+  filter(Indicateur == "BAI") %>%
+  datatable(
+    filter = "top",
+    options = list(
+      pageLength = 10,
+      dom = 't<"bottom"ip>',
+      className = "stripe hover cell-border order-column",
+      autoWidth = TRUE
+    ),
+    rownames = FALSE,
+    colnames = c("Pays", "Région", "Indicateur", "Valeur")
+  ) %>%
+  formatStyle(
+    "Valeur",
+    background = styleColorBar(range(df_global$Valeur[df_global$Indicateur == "BAI"], na.rm = TRUE), "tomato"),
+    backgroundSize = "80% 60%",
+    backgroundRepeat = "no-repeat",
+    backgroundPosition = "center"
+  )
+```
+
+
+### Analyse comparative du stress écologique
+
+L’indice **BAI (Burned Area Index)** met en évidence les zones soumises à une **dégradation végétale avancée**, qu’il s’agisse de zones brûlées, de sols nus, de végétation en stress ou de perturbations écologiques diverses. Plus sa valeur est élevée, plus l’environnement est altéré ou vulnérable. Cet indice est donc un excellent proxy pour identifier les **zones écologiquement fragiles**, où la végétation est dégradée ou menacée.
+
+
+#### Lecture interne (intra-pays)
+
+À l’intérieur de chaque pays, on observe une **tendance géographique nord-sud bien marquée**, reflétant les gradients climatiques et les dynamiques d’usage des terres.
+
+- Au **Sénégal**, le stress écologique est **modéré** dans les régions du centre-est, comme **Tambacounda** et **Matam**, mais il reste **faible dans le sud** plus humide, notamment dans les zones forestières de **Ziguinchor**.
+
+- Au **Burkina Faso**, les niveaux de BAI sont **élevés dans le Centre-Nord et la zone sahélienne**, où la pression anthropique est intense (pâturage, déforestation, agriculture extensive), tandis que les régions du sud-ouest affichent des niveaux plus faibles.
+
+- Au **Mali**, les régions **sahariennes du nord** comme **Tombouctou** ou **Kidal** présentent un **stress très élevé**, tandis que le sud agricole (ex. **Sikasso**) conserve une couverture végétale plus stable.
+
+- Au **Niger**, le **stress est généralisé** sur l’ensemble du territoire. Des valeurs élevées sont notamment observées à l’est (**Diffa**) et dans les régions désertiques du nord (**Agadez**), traduisant une forte vulnérabilité écologique.
+
+**Conclusion intra-pays** : dans tous les pays analysés, **plus on se dirige vers le nord, plus le stress écologique augmente**. Ce phénomène s’explique par une **réduction des précipitations**, une **aridité structurelle des sols**, et des **pressions humaines accrues** dans les zones sahéliennes et désertiques.
+
+#### Lecture externe (inter-pays)
+
+Sur le plan comparatif, les écarts entre pays sont également significatifs :
+
+- Le **Niger** enregistre le **BAI moyen le plus élevé**, ce qui reflète une **dégradation généralisée du couvert végétal**, accentuée par des conditions climatiques extrêmes et un contexte socio-environnemental fragile.
+
+- Le **Mali** suit, avec un niveau de stress élevé, notamment dans ses vastes zones arides du nord.
+
+- Le **Burkina Faso** présente une situation **intermédiaire**, marquée par de fortes disparités régionales, entre un nord dégradé et un sud plus résilient.
+
+- Le **Sénégal**, enfin, affiche un **stress végétal relativement faible**, notamment grâce à la **vitalité des écosystèmes du sud**, qui maintiennent une dynamique écologique plus stable.
+
+---
+
+## Comparaison de l’humidité des surfaces 
+
+
+L’**indice WI2 (Water Index 2)** est un indicateur spectral conçu pour mesurer la **présence d’eau ou d’humidité dans les surfaces terrestres**, qu’il s’agisse de sols, de végétation ou de plans d’eau peu profonds. Contrairement aux indices de végétation, le WI2 **ne capte pas la vigueur des plantes**, mais plutôt leur **contenu en eau** ou la **teneur en humidité résiduelle du sol**.
+
+Un WI2 faible traduit une **situation de sécheresse ou de faible disponibilité hydrique**, tandis qu’un WI2 élevé indique une **humidité importante des surfaces**. Cet indice est donc essentiel pour détecter les zones en **stress hydrique**, et comprendre les contrastes hydrologiques dans les pays sahéliens.
+
+### Cartes WI2 par pays
+
+```{r wi2-carte, echo=FALSE}
+wi2_out <- render_indicator_raster("wi2", country = "senegal", palette = "Blues")
+plot_raster_aggregated_leaflet(
+  raster_obj = wi2_out$raster,
+  shapefile_path = "data/shapes/regions_senegal.shp",
+  palette = "Blues",
+  region_id = "ADM1_FR", 
+  title = "WI2 – Sénégal 2024"
+)
+```
+
+### Moyenne des valeurs du WI2 par pays
+
+```{r wi2-plot, echo=FALSE}
+df_global %>%
+  filter(Indicateur == "BAI") %>%
+  group_by(Pays) %>%
+  summarise(Moyenne = mean(Valeur, na.rm = TRUE)) %>%
+  ggplot(aes(x = Moyenne, y = reorder(Pays, Moyenne), color = Pays)) +
+  geom_point(size = 5) +
+  geom_text(aes(label = round(Moyenne, 3)), hjust = -0.3) +
+  labs(title = "BAI moyen par pays (2024)", x = "Valeur moyenne", y = NULL) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+```
+
+### Moyenne des tableaux du WI2 par pays
+```{r wi2-table, echo=FALSE}
+df_global %>%
+  filter(Indicateur == "WI2") %>%
+  datatable(filter = "top", options = list(pageLength = 10)) %>%
+  formatStyle(
+    "Valeur",
+    background = styleColorBar(range(df_global$Valeur, na.rm = TRUE), "lightblue"),
+    backgroundSize = "80% 50%",
+    backgroundRepeat = "no-repeat",
+    backgroundPosition = "center"
+  )
+```
+### Lecture interne (intra-pays)
+
+À l’intérieur de chaque pays, le WI2 révèle des **disparités importantes entre les régions**, largement conditionnées par les précipitations, le couvert végétal, les sols et la topographie.
+
+- Au **Sénégal**, les régions méridionales comme **Ziguinchor** ou **Sédhiou** présentent des WI2 nettement plus élevés, en lien avec la forte pluviométrie, la densité végétale et la présence de zones humides (bolongs, rizières). À l’inverse, les régions sahéliennes du nord (Saint-Louis, Louga) affichent des niveaux d’humidité faibles.
+
+- Au **Burkina Faso**, une humidité relative est conservée dans les régions du **Sud-Ouest**, des **Cascades** et des **Hauts-Bassins**, tandis que le Centre-Nord et le Sahel sont beaucoup plus secs.
+
+- Au **Mali**, on observe une structure similaire : **le sud (Sikasso, Koulikoro)** concentre l’essentiel de l’humidité résiduelle, alors que les zones sahariennes (Tombouctou, Kidal) restent extrêmement sèches, avec des WI2 très bas.
+
+- Au **Niger**, l’humidité est faible de manière généralisée. Les **régions de Maradi, Dosso ou Tillabéri** présentent des valeurs légèrement meilleures, mais le reste du territoire affiche une situation hydrique préoccupante, en particulier à l’est (Diffa) et au nord désertique (Agadez).
+
+**Conclusion intra-pays** : dans tous les pays, l’humidité des surfaces **décroît progressivement du sud vers le nord**, en lien direct avec la baisse des précipitations, la réduction du couvert végétal et la structure climatique zonale.
+
+---
+
+### Lecture externe (inter-pays)
+
+La comparaison des WI2 moyens entre pays permet d’identifier les territoires les **plus exposés à la sécheresse** :
+
+- Le **Niger** est, sans surprise, le pays avec le **WI2 le plus faible**, confirmant son exposition structurelle à l’aridité et sa très faible disponibilité en eau de surface.
+
+- Le **Mali** et le **Burkina Faso** se situent dans une zone intermédiaire, avec des contrastes marqués selon les régions, mais une vulnérabilité réelle au stress hydrique.
+
+- Le **Sénégal** présente le **WI2 moyen le plus élevé**, grâce aux écosystèmes du sud qui conservent une humidité résiduelle importante, malgré un nord plus sec.
+
+**Conclusion inter-pays** : parmi les pays analysés, le **Sénégal bénéficie d’un avantage hydrique relatif**, tandis que le **Niger cumule faiblesse du couvert végétal et déficit hydrique**, faisant de lui le territoire le plus fragile sur le plan agro-hydrologique.
+
+
+
+
+
+
+
+
+---
+
+## Conclusion
+
+Ce chapitre a permis de dresser un portrait comparatif des dynamiques environnementales dans quatre pays de la bande sahélienne ouest-africaine : Sénégal, Burkina Faso, Mali et Niger. En mobilisant des indicateurs spectraux harmonisés (NDVI, BAI, WI2), nous avons mis en évidence les contrastes écologiques majeurs, tant à l’intérieur de chaque pays qu’entre eux.
+
+Sur le plan de la végétation active (NDVI), le Sénégal et le Burkina Faso apparaissent comme les territoires les plus densément végétalisés, notamment dans leurs régions méridionales. À l’opposé, le Niger et le Mali, confrontés à une aridité plus prononcée, affichent une végétation plus clairsemée, avec une prédominance de zones semi-arides voire désertiques au nord.
+
+Concernant le stress écologique (BAI), les cartes et les valeurs moyennes révèlent une vulnérabilité croissante vers le nord dans tous les pays. Le Niger se distingue par une dégradation généralisée du sol et de la couverture végétale, traduisant à la fois les effets du climat et des pressions humaines. Le Sénégal, en revanche, présente une meilleure résilience écologique, surtout dans ses zones humides du sud.
+
+Enfin, l’analyse de l’humidité des surfaces (WI2) montre des gradients similaires. Le Sénégal bénéficie d’un profil hydrique relativement favorable grâce à ses zones fluviales et forestières. Le Burkina Faso et le Mali présentent des contrastes internes forts, tandis que le Niger concentre les plus faibles niveaux d’humidité, confirmant sa forte exposition au stress hydrique.
+
+
+
+> *“Comparer les espaces, c’est comprendre les trajectoires. Et comprendre, c’est déjà agir.”*
+

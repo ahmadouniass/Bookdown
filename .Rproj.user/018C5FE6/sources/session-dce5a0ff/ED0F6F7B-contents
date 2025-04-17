@@ -1,0 +1,81 @@
+# Présentation du projet
+
+Ce document présente l’Atlas Spectral du Sahel, un outil interactif d’analyse environnementale reposant sur des indices spectraux dérivés d’images satellites. Construit avec Bookdown et articulé autour de visualisations dynamiques, cet atlas propose une lecture spatiale et temporelle des dynamiques écologiques en Afrique de l’Ouest, avec un focus sur quatre pays : le Sénégal, le Burkina Faso, le Niger et le Mali.
+
+L’objectif principal de ce travail est de mettre en lumière les contrastes environnementaux, les transitions écologiques et les zones sensibles à partir d’indicateurs spectraux synthétiques. Les données utilisées proviennent de traitements d’images multispectrales (Sentinel-2, Landsat), agrégées sous forme de rasters régionaux à haute résolution, puis intégrées dans un environnement interactif pour faciliter la visualisation, l’analyse comparative et l’interprétation.
+
+## Objectifs de l’atlas
+Cet atlas vise à :
+
+Suivre les dynamiques végétales à travers des indices comme le NDVI (végétation verte), le SAVI ou l’ARVI ;
+
+Détecter les zones de stress ou de dégradation écologique via des indices sensibles comme l’ARI ou le BAI ;
+
+Évaluer la santé physiologique de la végétation et sa capacité à résister aux perturbations climatiques ;
+
+Cartographier les zones humides et les gradients d’humidité des sols à travers des indices comme le LSWI, l’ANDWI ou le WI2 ;
+
+Offrir une plateforme de lecture claire et reproductible des dynamiques environnementales à l’échelle infranationale.
+
+## Méthodologie
+Chaque indice spectral repose sur une combinaison spécifique de bandes du spectre optique (rouge, vert, infrarouge, etc.) et permet de caractériser une propriété écologique ou biophysique. Les rasters ont été traités et standardisés, puis agrégés à l’échelle des régions administratives, pour permettre une lecture multi-échelles (locale, nationale, régionale).
+
+Les cartes présentées dans chaque chapitre ont été générées à l’aide de Leaflet (pour les visualisations interactives) et de tmap (pour les rendus statiques). Une attention particulière a été portée à l’esthétique, à l’harmonisation des palettes de couleurs et à la précision des découpages administratifs.`
+
+
+Les images satellites ont été pré-traitées et les indices calculés à l’aide de **packages R spécialisés**, notamment :
+
+``` r
+library(sf)
+library(raster)
+library(terra)
+library(tmap)
+library(leaflet)
+library(tidyverse)
+library(exactextractr)
+library(gtsummary)
+```
+
+Les valeurs ont ensuite été agrégées **par région administrative** à l’aide de shapefiles standardisés (`shapes/`), permettant une comparaison cohérente à travers les pays.
+
+---
+
+## Structure du livre
+
+Le Bookdown est divisé en **quatre grands chapitres**, chacun dédié à un pays :
+
+1. **Chapitre 1 – Sénégal**  
+2. **Chapitre 2 – Burkina Faso**  
+3. **Chapitre 3 – Niger**  
+4. **Chapitre 4 – Mali**
+5. **Chapitre 5 – Exploration des indcateurs sur les 4 pays**
+
+Chaque chapitre présente :
+- Les **cartes thématiques** (par indicateur et par année)
+- Les **profils d’évolution temporelle** par région
+- Des **comparaisons spatiales** et **interprétations environnementales**
+
+---
+
+## À qui s’adresse ce projet ?
+
+- Aux **étudiants** en statistique, environnement, géomatique ;
+- Aux **enseignants-chercheurs** explorant les outils open source en analyse spatiale ;
+- Aux **décideurs** souhaitant disposer d’un appui analytique régional ;
+- À toute personne curieuse de comprendre les **mutations écologiques** du Sahel.
+
+---
+
+## Remerciements
+
+Nous adressons nos remerciements à **M. Aboubacar Hema** pour son accompagnement rigoureux, ses suggestions méthodologiques et son engagement pour une formation appliquée et innovante.
+
+---
+
+## Commencez l’exploration 🌍
+
+Ce livre vous invite à **explorer, comparer et interpréter les dynamiques écologiques** de l’Afrique de l’Ouest à travers les indices spectraux.  
+Bonne lecture, et surtout, **bonne exploration** !
+
+> *“Ce n’est qu’en observant les territoires dans leur complexité spatiale que l’on peut éclairer les politiques publiques et favoriser un développement durable ancré dans la réalité des terrains.”*
+
