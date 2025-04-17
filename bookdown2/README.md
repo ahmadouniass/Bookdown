@@ -4,6 +4,8 @@ Ce projet est un **livre interactif** développé avec **R Bookdown**. Il vise �
 
 📘 L'atlas propose une lecture **multi-échelle** des dynamiques végétales, hydriques et de stress écologique, avec un accent particulier sur les contrastes régionaux et les vulnérabilités environnementales.
 
+🔗 **Accéder au livre en ligne** : [Cliquez-ici](https://bookdown.org/ahmadouniass2/Atlas_des_dynamiques_environnementales_du_Sahel/)
+
 ---
 
 ## 📦 Structure du projet
@@ -70,14 +72,10 @@ Ce projet est développé sous **R** avec les packages suivants :
 - **Samba Sow**  
 Élèves à l’ENSAE Pierre Ndiaye de Dakar
 
-**Encadrant** : [M. Aboubacar HEMA](#) – Research Analyst
+**Encadrant** : [M. Aboubacar HEMA](https://github.com/Abson-dev) – Research Analyst
 
 ---
 
 ## 📚 Licence
 
 Ce projet est librement consultable à des fins pédagogiques. Toute reproduction à grande échelle doit être autorisée par les auteurs.
-
----
-
-
