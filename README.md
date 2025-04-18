@@ -1,15 +1,3 @@
-Parfait ! Voici un **README.md global** pour ton dépôt GitHub `Bookdown`, qui contient à la fois :
-
-1. 📘 Un **tutoriel Bookdown** dans `bookdown1_tuto/`
-2. 🧭 Une **application pratique Bookdown** dans `bookdown2/`
-
-Ce README est structuré pour refléter **clairement l’organisation du dépôt**, avec des liens directs vers les dossiers, une présentation des contenus, et une section "En ligne" si tu publies un ou les deux projets.
-
----
-
-## 📄 `README.md` à placer à la racine de ton dépôt GitHub
-
-```markdown
 # 📚 Projet Bookdown — Tutoriel + Application
 
 Bienvenue dans ce dépôt dédié à **Bookdown**, un outil puissant pour créer des livres interactifs, des rapports scientifiques et des documents multi-formats avec R Markdown.
