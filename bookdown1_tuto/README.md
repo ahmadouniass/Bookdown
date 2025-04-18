@@ -30,12 +30,11 @@ Chaque chapitre est contenu dans un fichier `.Rmd` listé dans `_bookdown.yml`.
 
 ## 🛠️ Technologies utilisées
 
-- [R](https://cran.r-project.org/)
-- [RStudio](https://posit.co/)
-- [bookdown](https://bookdown.org/)
-- [Pandoc](https://pandoc.org/)
-- [TinyTeX](https://yihui.org/tinytex/)
-- [GitHub Pages / Netlify](https://pages.github.com/), pour le déploiement
+- [R]([https://cran.r-project.org/])
+- [RStudio]([https://posit.co/])
+- [bookdown][https://bookdown.org/])
+- [Pandoc]([https://pandoc.org/])
+- [TinyTeX]([https://yihui.org/tinytex/])
 
 ---
 
