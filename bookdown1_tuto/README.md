@@ -25,14 +25,6 @@ Le livre est organisé en plusieurs chapitres :
 
 Chaque chapitre est contenu dans un fichier `.Rmd` listé dans `_bookdown.yml`.
 
----
-
-## 🌍 Visualiser le livre
-
-Tu peux consulter le livre en ligne (si publié) :
-
-🔗 [Version HTML interactive](https://tonpseudo.github.io/nom-du-livre/)  
-📄 [Télécharger la version PDF](docs/nom-du-livre.pdf)
 
 ---
 
