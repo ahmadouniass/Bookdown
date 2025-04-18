@@ -1,0 +1,185 @@
+# Pour aller plus loin
+
+Ce chapitre rassemble des **astuces utiles et avancées** pour enrichir ton livre Bookdown, améliorer l’expérience utilisateur et maîtriser des fonctionnalités plus poussées. Ces éléments sont optionnels, mais très utiles pour **professionnaliser ton rendu**.
+
+
+
+## Ajouter des bulles d'information au survol (infobulles)
+
+Pour afficher un texte explicatif au survol d’un mot ou d’un concept, tu peux utiliser la balise HTML native suivante :
+
+```html
+<span title="Texte affiché au survol">Mot ou expression</span>
+```
+
+Exemple :
+
+
+Le <span title="Langage de balisage utilisé pour la configuration">YAML</span> permet de configurer le format du document.
+
+
+Cela fonctionne dans les formats **HTML** (gitbook, bs4), mais pas dans PDF.De plus lorsque le bookdown est hébergé sur bookdown.org ca n'apparait pas malheureusement.
+
+
+
+## Astuce alternative avec le package `tippy` (plus stylé)
+
+Le package `tippy` permet de créer des infobulles plus jolies, mais nécessite un peu de configuration JS/CSS. Exemple :
+
+```r
+tippy::tippy("NDVI", tooltip = "Normalized Difference Vegetation Index")
+```
+
+Tu peux aussi l’utiliser dans des tableaux interactifs ou des légendes.
+
+> Fonctionne uniquement dans le **rendu HTML**, et nécessite que `tippy.js` soit bien chargé.
+
+---
+
+## Appliquer des styles personnalisés aux titres
+
+Tu peux modifier l’apparence des titres `##` pour les rendre visuellement plus lisibles (ex : ligne verticale, couleur, fond...). Par exemple, dans ton `style.css` :
+
+```css
+.book .book-body h2 {
+  border-left: 4px solid #a0d6b4;
+  padding-left: 10px;
+  color: #0077cc;
+  font-weight: 600;
+}
+```
+
+
+## Références croisées internes
+
+Bookdown permet de créer des **liens internes dynamiques** :
+
+```
+# Introduction {#intro}
+
+Voir la [section d’introduction](#intro) pour plus d’explications.
+```
+
+Ou encore des figures et tableaux référencés automatiquement :
+
+```
+```{r fig-example, fig.cap = "Un exemple de graphique"}
+plot(cars)
+```
+
+> Voir la figure \@ref(fig:fig-example)
+```
+
+
+
+## Utiliser des expressions dynamiques R dans le texte
+
+Tu peux inclure des valeurs R **directement dans le texte** avec les backticks R :
+
+```markdown
+Le jeu de données contient `r nrow(mtcars)` lignes.
+```
+
+Ce qui donne :  
+➡️ Le jeu de données contient **32 lignes**.
+
+---
+
+## 🚀 Générer plusieurs formats à la fois
+
+Tu peux compiler ton livre en HTML, PDF et EPUB avec :
+
+```r
+bookdown::render_book("index.Rmd", output_format = "all")
+```
+
+Et personnaliser les options de chaque format dans `_output.yml`.
+
+---
+
+## Créer ton propre modèle Bookdown
+
+Tu peux créer un **template réutilisable** en :
+
+1. Créant un dossier modèle (`bookdown_template/`) avec tous les fichiers de base
+2. Le copiant à chaque nouveau projet
+3. Ou même en créant un **package R** avec un squelette prêt à déployer
+
+
+## Bonus : Réorganiser les fichiers générés
+
+Tu peux modifier le dossier de sortie des fichiers HTML en changeant dans `_bookdown.yml` :
+
+```yaml
+output_dir: "docs"
+```
+
+Cela est utile pour publier via GitHub Pages, Netlify, etc.
+
+
+## Ajouter un pied de page (footer) dans Bookdown
+
+Tu peux personnaliser ton livre Bookdown en ajoutant un **pied de page** visible sur toutes les pages HTML. Ce footer peut contenir : des infos sur l’auteur, un lien vers GitHub, un copyright, une licence, ou même un logo.
+
+
+### Étape 1 – Créer un fichier `footer.html`
+
+Crée un fichier à la racine de ton projet (ou dans un dossier `includes/`) que tu appelles `footer.html`. Voici un exemple de contenu :
+
+```html
+<div style="text-align: center; font-size: 0.9em; padding-top: 20px; color: #888;">
+  © 2025 — Réalisé avec <strong>Bookdown</strong> par Ahmadou Niass & Samba Sow <br/>
+  <a href="https://github.com/tonpseudo/ton-repo-bookdown" target="_blank">Voir sur GitHub</a> | Tous droits réservés.
+</div>
+```
+
+Tu peux y ajouter du style, des liens, des images, ou même des logos.
+
+
+### Étape 2 – Ajouter le footer dans `_output.yml`
+
+Dans ton fichier `_output.yml`, ajoute la référence à `footer.html` via l'option `includes: after_body` :
+
+```yaml
+bookdown::gitbook:
+  css: style.css
+  includes:
+    after_body: footer.html
+  config:
+    toc:
+      collapse: section
+    download: ["pdf"]
+    sharing: no
+```
+
+`after_body` signifie que le contenu du `footer.html` sera ajouté **en bas de chaque page HTML** du livre.
+
+---
+
+###  Étape 3 – Recompiler le livre
+
+Dans RStudio ou via la console :
+
+```r
+bookdown::render_book("index.Rmd")
+```
+
+Ouvre ensuite `_book/index.html` dans ton navigateur : tu devrais voir le pied de page affiché sur toutes les pages.
+
+---
+
+### Astuces supplémentaires
+
+- Tu peux aussi créer un `footer.html` **différent selon la version du livre**, en utilisant des blocs conditionnels HTML si besoin.
+- Pour styliser le footer de manière plus poussée, ajoute des règles CSS dans ton fichier `style.css` :
+
+```css
+.book .book-body .page-wrapper .page-inner > div:last-child {
+  margin-top: 50px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+  font-size: 0.9em;
+  color: #777;
+}
+```
+

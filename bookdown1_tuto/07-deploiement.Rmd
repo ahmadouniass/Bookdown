@@ -1,0 +1,189 @@
+# Déploiement d’un livre Bookdown
+
+Une fois ton livre généré (HTML, PDF ou EPUB), tu peux le **diffuser facilement** à ton public. Bookdown permet plusieurs méthodes de **déploiement**, que tu choisiras selon tes besoins :
+
+-   Publication sur le web (lecture en ligne)
+-   Partage de fichiers en local (clé USB, mail…)
+-   Diffusion académique (GitHub Pages, Netlify, Bookdown.org…)
+
+Dans ce chapitre, nous passons en revue les **alternatives principales**, avec les **étapes détaillées pour chacune**.
+
+## Publication avec GitHub Pages (idéal pour HTML)
+
+**GitHub Pages** permet d’héberger gratuitement ton livre HTML. Tu n’as besoin que d’un compte GitHub et d’un projet Bookdown.
+
+### Etapes à suivre
+
+1.  Dans le fichier `_bookdown.yml`, change le dossier de sortie :
+
+``` yaml
+output_dir: "docs"
+```
+
+2.  Compile ton livre en HTML :
+
+``` r
+bookdown::render_book("index.Rmd", output_format = "bookdown::gitbook")
+```
+
+3.  Initialise un dépôt Git dans ton projet (si ce n’est pas déjà fait) :
+
+``` bash
+git init
+git add .
+git commit -m "Initial commit"
+```
+
+4.  Crée un nouveau dépôt sur GitHub (ex : `monlivre`), puis connecte-le :
+
+``` bash
+git remote add origin https://github.com/tonpseudo/monlivre.git
+git push -u origin main
+```
+
+5.  Sur GitHub, va dans **Settings \> Pages**\
+    → Choisis la branche `main` et le dossier `/docs/`
+
+🎉 Ton livre sera visible à l’adresse :\
+`https://tonpseudo.github.io/monlivre/`
+
+### Vidéo tutorielle
+
+<!-- only in HTML -->
+
+::: {style="text-align:center; margin-top: 1em;"}
+<iframe width="560" height="315"
+          src="https://www.youtube.com/embed/RdSmYvbQkhs?si=8KTJu8_zqdOJcCC3"
+          title="YouTube video player" frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen> </iframe>
+:::
+
+## Publication avec Netlify (flexible et automatisé)
+
+Netlify est une plateforme de déploiement moderne qui se connecte à GitHub et compile automatiquement ton livre à chaque modification.
+
+### Etapes à suivre
+
+1.  Crée un compte sur <https://netlify.com>
+2.  Lien ton compte GitHub
+3.  Clique sur **"New site from Git"**
+4.  Sélectionne ton dépôt contenant le livre
+5.  Configure les options :
+    -   Build command :
+
+        ``` bash
+        Rscript -e "bookdown::render_book('index.Rmd')"
+        ```
+
+    -   Publish directory :
+
+        ``` bash
+        _book/
+        ```
+6.  Clique sur **Deploy site**
+
+Ton livre sera mis en ligne avec une URL du type `https://monlivre.netlify.app`.
+
+## Publication sur [bookdown.org](https://bookdown.org)
+
+Le site [bookdown.org](https://bookdown.org) est une plateforme gratuite proposée par **RStudio/Posit** qui permet d’héberger des livres réalisés avec **Bookdown**. Il est idéal pour les auteurs souhaitant **partager publiquement** leur livre sans avoir à configurer Netlify ou GitHub Pages.
+
+### Avantages de `bookdown.org`
+
+-   Hébergement **gratuit** et maintenu par RStudio
+-   Pas besoin de configurer un serveur ou un dépôt Git
+-   Intégration directe depuis RStudio via le package `rsconnect`
+-   URL publique personnalisée (du type `bookdown.org/tonpseudo/nomdulivre`)
+
+### Étapes pour publier sur `bookdown.org`
+
+#### Créer un compte
+
+-   Va sur : <https://bookdown.org/connect>
+-   Clique sur **Sign Up** avec un compte GitHub ou Google
+
+Tu auras accès à un **espace personnel** pour héberger ton livre.
+
+#### Installer les packages nécessaires
+
+Assure-toi que les packages suivants sont installés :
+
+``` r
+install.packages("bookdown")
+install.packages("rsconnect")
+```
+
+#### Configurer `rsconnect`
+
+Dans RStudio, tu peux **lier ton compte bookdown.org** avec cette commande (tu n’as besoin de le faire qu’une seule fois) :
+
+``` r
+rsconnect::setAccountInfo(
+  name = "tonpseudo",
+  token = "XXXXXX",
+  secret = "YYYYYY"
+)
+```
+
+Tu obtiendras ces informations (`name`, `token`, `secret`) en suivant les instructions dans ton tableau de bord bookdown.org (dans l’onglet **Tokens / Deploy**).
+
+------------------------------------------------------------------------
+
+#### Publier le livre
+
+Compile ton livre une première fois localement :
+
+``` r
+bookdown::render_book("index.Rmd")
+```
+
+Puis publie-le avec :
+
+``` r
+bookdown::publish_book(name = "nomdulivre")
+```
+
+Le nom utilisé dans `name = "..."` deviendra l’URL de ton livre.\
+Par exemple : `https://bookdown.org/tonpseudo/nomdulivre/`
+
+#### Mettre à jour le livre
+
+Quand tu fais des modifications et recompiles ton livre, tu peux le republier simplement avec :
+
+``` r
+bookdown::publish_book()
+```
+
+Bookdown se souvient du nom et de la connexion à bookdown.org.
+
+------------------------------------------------------------------------
+
+#### Bonnes pratiques
+
+-   Choisis un **nom de livre unique et explicite**
+-   Compile d’abord localement pour vérifier que tout fonctionne
+-   Utilise un **`_output.yml` soigné** (menus, formats, style)
+-   Partage ton lien `bookdown.org/tonpseudo/nomdulivre` à tes lecteurs ou collègues
+
+`bookdown.org` est une excellente solution **clé en main** pour publier rapidement un livre R Markdown sans configuration technique.
+
+## Partage manuel (local ou cloud)
+
+Si tu ne veux pas publier ton livre sur Internet, tu peux le partager **localement** :
+
+### Format HTML
+
+-   Compile ton livre : `bookdown::render_book("index.Rmd")`
+-   Copie tout le dossier `_book/` :
+    -   Sur une **clé USB**
+    -   Dans un dossier **Google Drive** ou **OneDrive**
+    -   Dans un **serveur local de ton organisation**
+-   Le fichier `index.html` permet d’ouvrir le livre dans n’importe quel navigateur
+
+### Format PDF
+
+-   Compile ton livre avec `bookdown::pdf_book`
+-   Le fichier `.pdf` peut être envoyé par **email**, **Plateforme pédagogique**, etc.
+
+Tu as maintenant toutes les clés pour **partager ton livre** avec ton public, en ligne ou hors ligne, dans le format le plus adapté à ton objectif.

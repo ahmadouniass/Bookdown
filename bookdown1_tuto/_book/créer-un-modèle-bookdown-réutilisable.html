@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>6 Créer un modèle Bookdown réutilisable | Prise en main du package Bookdown</title>
+  <meta name="description" content="6 Créer un modèle Bookdown réutilisable | Prise en main du package Bookdown" />
+  <meta name="generator" content="bookdown 0.42 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="6 Créer un modèle Bookdown réutilisable | Prise en main du package Bookdown" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="6 Créer un modèle Bookdown réutilisable | Prise en main du package Bookdown" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="insertion-de-contenus-multimédias-images-vidéos-sons.html"/>
+<link rel="next" href="déploiement-dun-livre-bookdown.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<link rel="shortcut icon" href="images/bookdown.ico" type="image/x-icon">
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li style="text-align:center;">
+  <img src="images/bookdown.png" style="max-width:120px; margin-bottom: 0.5em;">
+</li>
+<li><a href="index.html">Prise en main du  <br> package "Bookdown"</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Package Bookdown</a></li>
+<li class="chapter" data-level="2" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>2</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="introduction.html"><a href="introduction.html#quest-ce-que-bookdown"><i class="fa fa-check"></i><b>2.1</b> Qu’est-ce que Bookdown ?</a></li>
+<li class="chapter" data-level="2.2" data-path="introduction.html"><a href="introduction.html#historique-et-contexte"><i class="fa fa-check"></i><b>2.2</b> Historique et Contexte</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html"><i class="fa fa-check"></i><b>3</b> Installation et Configuration</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html#prérequis-r-rstudio-latex-pandoc"><i class="fa fa-check"></i><b>3.1</b> Prérequis : R, RStudio, LaTeX, Pandoc</a></li>
+<li class="chapter" data-level="3.2" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html#installation-de-bookdown"><i class="fa fa-check"></i><b>3.2</b> Installation de Bookdown</a></li>
+<li class="chapter" data-level="3.3" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html#créer-un-projet-bookdown-avec-rstudio"><i class="fa fa-check"></i><b>3.3</b> Créer un projet Bookdown avec RStudio</a></li>
+<li class="chapter" data-level="3.4" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html#créer-un-squelette-de-livre-avec-r-alternative-sans-interface"><i class="fa fa-check"></i><b>3.4</b> Créer un squelette de livre avec R (alternative sans interface)</a></li>
+<li class="chapter" data-level="3.5" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html#contenu-des-fichiers-principaux"><i class="fa fa-check"></i><b>3.5</b> Contenu des fichiers principaux</a></li>
+<li class="chapter" data-level="3.6" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html#a-retenir"><i class="fa fa-check"></i><b>3.6</b> A retenir</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="écriture-du-contenu-avec-bookdown.html"><a href="écriture-du-contenu-avec-bookdown.html"><i class="fa fa-check"></i><b>4</b> Écriture du contenu avec Bookdown</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="écriture-du-contenu-avec-bookdown.html"><a href="écriture-du-contenu-avec-bookdown.html#syntaxe-markdown-rappel-rapide"><i class="fa fa-check"></i><b>4.1</b> Syntaxe Markdown (rappel rapide)</a></li>
+<li class="chapter" data-level="4.2" data-path="écriture-du-contenu-avec-bookdown.html"><a href="écriture-du-contenu-avec-bookdown.html#figures-et-tableaux"><i class="fa fa-check"></i><b>4.2</b> Figures et tableaux</a></li>
+<li class="chapter" data-level="4.3" data-path="écriture-du-contenu-avec-bookdown.html"><a href="écriture-du-contenu-avec-bookdown.html#citations-bibliographiques"><i class="fa fa-check"></i><b>4.3</b> Citations bibliographiques</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="insertion-de-contenus-multimédias-images-vidéos-sons.html"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html"><i class="fa fa-check"></i><b>5</b> Insertion de contenus multimédias (images, vidéos, sons)</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="insertion-de-contenus-multimédias-images-vidéos-sons.html"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#insertion-dimages"><i class="fa fa-check"></i><b>5.1</b> Insertion d’images</a></li>
+<li class="chapter" data-level="5.2" data-path="insertion-de-contenus-multimédias-images-vidéos-sons.html"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#insertion-de-vidéos"><i class="fa fa-check"></i><b>5.2</b> Insertion de vidéos</a></li>
+<li class="chapter" data-level="5.3" data-path="insertion-de-contenus-multimédias-images-vidéos-sons.html"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#insertion-de-fichiers-audio"><i class="fa fa-check"></i><b>5.3</b> Insertion de fichiers audio</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html"><i class="fa fa-check"></i><b>6</b> Créer un modèle Bookdown réutilisable</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#créer-un-dossier-modèle-à-réutiliser-version-simple"><i class="fa fa-check"></i><b>6.1</b> Créer un dossier modèle à réutiliser (version simple)</a></li>
+<li class="chapter" data-level="6.2" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#transformer-ton-modèle-en-package-r-avancé"><i class="fa fa-check"></i><b>6.2</b> Transformer ton modèle en package R (avancé)</a></li>
+<li class="chapter" data-level="6.3" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#créer-un-modèle-rstudio-r-markdown-template"><i class="fa fa-check"></i><b>6.3</b> Créer un modèle RStudio (R Markdown template)</a></li>
+<li class="chapter" data-level="6.4" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#créer-un-modèle-rstudio-réutilisable-r-markdown-template"><i class="fa fa-check"></i><b>6.4</b> Créer un modèle RStudio réutilisable (R Markdown Template)</a></li>
+<li class="chapter" data-level="6.5" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#compilation-du-livre"><i class="fa fa-check"></i><b>6.5</b> Compilation du livre</a></li>
+<li class="chapter" data-level="6.6" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#où-vont-les-fichiers-compilés"><i class="fa fa-check"></i><b>6.6</b> Où vont les fichiers compilés ?</a></li>
+<li class="chapter" data-level="6.7" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#astuces-utiles"><i class="fa fa-check"></i><b>6.7</b> Astuces utiles</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="déploiement-dun-livre-bookdown.html"><a href="déploiement-dun-livre-bookdown.html"><i class="fa fa-check"></i><b>7</b> Déploiement d’un livre Bookdown</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="déploiement-dun-livre-bookdown.html"><a href="déploiement-dun-livre-bookdown.html#publication-avec-github-pages-idéal-pour-html"><i class="fa fa-check"></i><b>7.1</b> Publication avec GitHub Pages (idéal pour HTML)</a></li>
+<li class="chapter" data-level="7.2" data-path="déploiement-dun-livre-bookdown.html"><a href="déploiement-dun-livre-bookdown.html#publication-avec-netlify-flexible-et-automatisé"><i class="fa fa-check"></i><b>7.2</b> Publication avec Netlify (flexible et automatisé)</a></li>
+<li class="chapter" data-level="7.3" data-path="déploiement-dun-livre-bookdown.html"><a href="déploiement-dun-livre-bookdown.html#publication-sur-bookdown.org"><i class="fa fa-check"></i><b>7.3</b> Publication sur bookdown.org</a></li>
+<li class="chapter" data-level="7.4" data-path="déploiement-dun-livre-bookdown.html"><a href="déploiement-dun-livre-bookdown.html#partage-manuel-local-ou-cloud"><i class="fa fa-check"></i><b>7.4</b> Partage manuel (local ou cloud)</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html"><i class="fa fa-check"></i><b>8</b> Pour aller plus loin</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#ajouter-des-bulles-dinformation-au-survol-infobulles"><i class="fa fa-check"></i><b>8.1</b> Ajouter des bulles d’information au survol (infobulles)</a></li>
+<li class="chapter" data-level="8.2" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#astuce-alternative-avec-le-package-tippy-plus-stylé"><i class="fa fa-check"></i><b>8.2</b> Astuce alternative avec le package <code>tippy</code> (plus stylé)</a></li>
+<li class="chapter" data-level="8.3" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#appliquer-des-styles-personnalisés-aux-titres"><i class="fa fa-check"></i><b>8.3</b> Appliquer des styles personnalisés aux titres</a></li>
+<li class="chapter" data-level="8.4" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#références-croisées-internes"><i class="fa fa-check"></i><b>8.4</b> Références croisées internes</a></li>
+<li class="chapter" data-level="8.5" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#générer-plusieurs-formats-à-la-fois"><i class="fa fa-check"></i><b>8.5</b> 🚀 Générer plusieurs formats à la fois</a></li>
+<li class="chapter" data-level="8.6" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#créer-ton-propre-modèle-bookdown"><i class="fa fa-check"></i><b>8.6</b> Créer ton propre modèle Bookdown</a></li>
+<li class="chapter" data-level="8.7" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#bonus-réorganiser-les-fichiers-générés"><i class="fa fa-check"></i><b>8.7</b> Bonus : Réorganiser les fichiers générés</a></li>
+<li class="chapter" data-level="8.8" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#ajouter-un-pied-de-page-footer-dans-bookdown"><i class="fa fa-check"></i><b>8.8</b> Ajouter un pied de page (footer) dans Bookdown</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Publié avec bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Prise en main du package Bookdown</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="créer-un-modèle-bookdown-réutilisable" class="section level1 hasAnchor" number="6">
+<h1><span class="header-section-number">6</span> Créer un modèle Bookdown réutilisable<a href="créer-un-modèle-bookdown-réutilisable.html#créer-un-modèle-bookdown-réutilisable" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Lorsque tu construis un projet Bookdown bien structuré (avec un style, une organisation de chapitres, des fichiers YAML bien définis, etc.), il est naturel de vouloir <strong>réutiliser cette base</strong> pour d’autres livres, rapports ou travaux collaboratifs — sans repartir de zéro à chaque fois.</p>
+<p>Heureusement, Bookdown et l’écosystème R offrent plusieurs moyens de créer un <strong>modèle réutilisable</strong>, aussi appelé <strong>template</strong>. Que tu sois un utilisateur individuel souhaitant gagner du temps, ou un enseignant ou responsable de projet souhaitant fournir un cadre à d’autres, tu peux facilement :</p>
+<ul>
+<li>Copier un dossier modèle déjà configuré</li>
+<li>Créer ton propre <strong>package R</strong> avec un squelette de livre</li>
+<li>Ou même proposer ton modèle directement dans l’interface de RStudio</li>
+</ul>
+<p>Dans cette section, nous explorons <strong>trois approches complémentaires</strong>, de la plus simple à la plus professionnelle, pour créer un <strong>template Bookdown</strong> que tu pourras cloner, distribuer ou améliorer au fil du temps.</p>
+<div id="créer-un-dossier-modèle-à-réutiliser-version-simple" class="section level2 hasAnchor" number="6.1">
+<h2><span class="header-section-number">6.1</span> Créer un dossier modèle à réutiliser (version simple)<a href="créer-un-modèle-bookdown-réutilisable.html#créer-un-dossier-modèle-à-réutiliser-version-simple" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="objectif" class="section level3 hasAnchor" number="6.1.1">
+<h3><span class="header-section-number">6.1.1</span> Objectif<a href="créer-un-modèle-bookdown-réutilisable.html#objectif" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Créer une <strong>base de projet Bookdown personnalisée</strong> que tu pourras <strong>réutiliser à chaque fois</strong> que tu veux écrire un nouveau livre ou rapport, sans repartir de zéro.</p>
+</div>
+<div id="etapes-détaillées" class="section level3 hasAnchor" number="6.1.2">
+<h3><span class="header-section-number">6.1.2</span> Etapes détaillées<a href="créer-un-modèle-bookdown-réutilisable.html#etapes-détaillées" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="crée-un-dossier-modèle" class="section level4 hasAnchor" number="6.1.2.1">
+<h4><span class="header-section-number">6.1.2.1</span> Crée un dossier modèle<a href="créer-un-modèle-bookdown-réutilisable.html#crée-un-dossier-modèle" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Dans ton ordinateur, crée un dossier que tu appelles par exemple :</p>
+<pre><code>bookdown_template/</code></pre>
+<p>Dans ce dossier, place <strong>tous les fichiers de base</strong> nécessaires à un projet Bookdown propre et prêt à être modifié :</p>
+<ul>
+<li><code>index.Rmd</code> : le fichier d’introduction avec un bon YAML</li>
+<li><code>01-intro.Rmd</code>, <code>02-contenu.Rmd</code> : des chapitres vides ou partiellement remplis</li>
+<li><code>_bookdown.yml</code> : où tu définis l’ordre des chapitres et le nom du livre</li>
+<li><code>_output.yml</code> : où tu précises les formats de sortie (HTML, PDF…)</li>
+<li><code>style.css</code> : une feuille de style pour personnaliser le HTML</li>
+<li><code>preamble.tex</code> : optionnel, pour personnaliser le rendu PDF</li>
+<li><code>book.bib</code> : un fichier <code>.bib</code> vide ou avec des références de base</li>
+</ul>
+<p><strong>Tu as ainsi un projet “modèle” tout prêt à cloner.</strong></p>
+</div>
+<div id="réutiliser-ce-modèle-pour-un-nouveau-projet" class="section level4 hasAnchor" number="6.1.2.2">
+<h4><span class="header-section-number">6.1.2.2</span> Réutiliser ce modèle pour un nouveau projet<a href="créer-un-modèle-bookdown-réutilisable.html#réutiliser-ce-modèle-pour-un-nouveau-projet" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Quand tu veux écrire un nouveau livre :</p>
+<div id="avec-une-simple-commande-dans-un-terminal" class="section level5 hasAnchor" number="6.1.2.2.1">
+<h5><span class="header-section-number">6.1.2.2.1</span> Avec une simple commande dans un terminal :<a href="créer-un-modèle-bookdown-réutilisable.html#avec-une-simple-commande-dans-un-terminal" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<div class="sourceCode" id="cb33"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb33-1"><a href="créer-un-modèle-bookdown-réutilisable.html#cb33-1" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-r</span> bookdown_template/ mon_nouveau_livre/</span></code></pre></div>
+<p>Cela crée un <strong>nouveau dossier</strong> appelé <code>mon_nouveau_livre/</code> qui contient <strong>une copie du modèle</strong>.</p>
+</div>
+<div id="ou-depuis-rstudio" class="section level5 hasAnchor" number="6.1.2.2.2">
+<h5><span class="header-section-number">6.1.2.2.2</span> Ou depuis RStudio :<a href="créer-un-modèle-bookdown-réutilisable.html#ou-depuis-rstudio" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<ol style="list-style-type: decimal">
+<li>Clique sur <code>File &gt; New Project</code></li>
+<li>Sélectionne <code>Existing Directory</code></li>
+<li>Navigue vers le dossier <code>mon_nouveau_livre/</code> que tu viens de copier</li>
+<li>Tu peux maintenant éditer les fichiers, changer les titres, les chapitres, etc.</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div id="transformer-ton-modèle-en-package-r-avancé" class="section level2 hasAnchor" number="6.2">
+<h2><span class="header-section-number">6.2</span> Transformer ton modèle en package R (avancé)<a href="créer-un-modèle-bookdown-réutilisable.html#transformer-ton-modèle-en-package-r-avancé" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Tu peux créer un <strong>package R</strong> (pour plus de détail sur le procédé vous pouvez vous référer à l’exposé des camarades sur : la <a href="https://github.com/sambadieng122003/poverty">création de package sur R</a>) qui contient un <strong>squelette Bookdown</strong>. C’est ce que fait le package <a href="https://usethis.r-lib.org/"><code>usethis</code></a> pour les projets.</p>
+<p>Voici un exemple d’approche avec le package <a href="https://github.com/pzhaonet/bookdownplus"><code>bookdownplus</code></a> qui propose plusieurs modèles. Tu pourrais créer le tien ainsi :</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="créer-un-modèle-bookdown-réutilisable.html#cb34-1" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">create_package</span>(<span class="st">&quot;bookdownTemplate&quot;</span>)</span></code></pre></div>
+<p>Et y inclure une fonction comme :</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="créer-un-modèle-bookdown-réutilisable.html#cb35-1" tabindex="-1"></a>create_my_book <span class="ot">&lt;-</span> <span class="cf">function</span>(path) {</span>
+<span id="cb35-2"><a href="créer-un-modèle-bookdown-réutilisable.html#cb35-2" tabindex="-1"></a>  <span class="fu">dir.create</span>(path)</span>
+<span id="cb35-3"><a href="créer-un-modèle-bookdown-réutilisable.html#cb35-3" tabindex="-1"></a>  <span class="fu">file.copy</span>(<span class="fu">system.file</span>(<span class="st">&quot;template/index.Rmd&quot;</span>, <span class="at">package =</span> <span class="st">&quot;bookdownTemplate&quot;</span>), <span class="fu">file.path</span>(path, <span class="st">&quot;index.Rmd&quot;</span>))</span>
+<span id="cb35-4"><a href="créer-un-modèle-bookdown-réutilisable.html#cb35-4" tabindex="-1"></a>  <span class="co"># copier les autres fichiers...</span></span>
+<span id="cb35-5"><a href="créer-un-modèle-bookdown-réutilisable.html#cb35-5" tabindex="-1"></a>}</span></code></pre></div>
+<p>Tu peux ensuite distribuer ce package (localement ou via GitHub), et l’appeler comme :</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="créer-un-modèle-bookdown-réutilisable.html#cb36-1" tabindex="-1"></a>bookdownTemplate<span class="sc">::</span><span class="fu">create_my_book</span>(<span class="st">&quot;nouveau_projet&quot;</span>)</span></code></pre></div>
+<hr />
+</div>
+<div id="créer-un-modèle-rstudio-r-markdown-template" class="section level2 hasAnchor" number="6.3">
+<h2><span class="header-section-number">6.3</span> Créer un modèle RStudio (R Markdown template)<a href="créer-un-modèle-bookdown-réutilisable.html#créer-un-modèle-rstudio-r-markdown-template" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Si tu veux qu’un utilisateur de RStudio voie ton modèle dans <code>File &gt; New File &gt; R Markdown &gt; From Template</code>, tu peux créer un package avec un template Rmd enregistré.</p>
+<p>Exemple :</p>
+<ul>
+<li>Crée un dossier <code>inst/rmarkdown/templates/monbook/</code></li>
+<li>Dans ce dossier, ajoute :
+<ul>
+<li><code>skeleton.Rmd</code> (le modèle du livre)</li>
+<li><code>template.yaml</code> (description)</li>
+</ul></li>
+</ul>
+<p>Le fichier <code>template.yaml</code> pourrait ressembler à :</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb37-1"><a href="créer-un-modèle-bookdown-réutilisable.html#cb37-1" tabindex="-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> Mon modèle Bookdown</span></span>
+<span id="cb37-2"><a href="créer-un-modèle-bookdown-réutilisable.html#cb37-2" tabindex="-1"></a><span class="fu">description</span><span class="kw">:</span><span class="at"> Un modèle Bookdown personnalisé pour les rapports ENSAE</span></span>
+<span id="cb37-3"><a href="créer-un-modèle-bookdown-réutilisable.html#cb37-3" tabindex="-1"></a><span class="fu">create_dir</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span></code></pre></div>
+<p>Ensuite, en important ton package, le modèle apparaîtra dans les menus de RStudio</p>
+<hr />
+</div>
+<div id="créer-un-modèle-rstudio-réutilisable-r-markdown-template" class="section level2 hasAnchor" number="6.4">
+<h2><span class="header-section-number">6.4</span> Créer un modèle RStudio réutilisable (R Markdown Template)<a href="créer-un-modèle-bookdown-réutilisable.html#créer-un-modèle-rstudio-réutilisable-r-markdown-template" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="objectif-1" class="section level3 hasAnchor" number="6.4.1">
+<h3><span class="header-section-number">6.4.1</span> Objectif<a href="créer-un-modèle-bookdown-réutilisable.html#objectif-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Tu veux que quelqu’un puisse aller dans RStudio →<br />
+<strong>File &gt; New File &gt; R Markdown &gt; From Template</strong><br />
+et y trouver ton <strong>propre modèle de livre Bookdown</strong> dans la liste.</p>
+<p>Quand il cliquera dessus, <strong>RStudio va automatiquement créer un nouveau projet avec tous les fichiers de ton modèle</strong> (<code>index.Rmd</code>, <code>_bookdown.yml</code>, etc.).</p>
+<p>C’est exactement ce que font certains packages comme <code>bookdownplus</code> ou <code>rticles</code>.</p>
+</div>
+<div id="étapes-pour-créer-ton-propre-modèle" class="section level3 hasAnchor" number="6.4.2">
+<h3><span class="header-section-number">6.4.2</span> Étapes pour créer ton propre modèle<a href="créer-un-modèle-bookdown-réutilisable.html#étapes-pour-créer-ton-propre-modèle" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Tu dois créer un <strong>package R</strong> qui contient ton modèle, puis le déclarer comme un <strong>template R Markdown</strong>.</p>
+<div id="étape-1-créer-un-package-r-vide" class="section level4 hasAnchor" number="6.4.2.1">
+<h4><span class="header-section-number">6.4.2.1</span> Étape 1 – Créer un package R (vide)<a href="créer-un-modèle-bookdown-réutilisable.html#étape-1-créer-un-package-r-vide" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Dans RStudio, fais :</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="créer-un-modèle-bookdown-réutilisable.html#cb38-1" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">create_package</span>(<span class="st">&quot;MonModeleBookdown&quot;</span>)</span></code></pre></div>
+<p>Cela crée un dossier avec les fichiers de base du package R (DESCRIPTION, NAMESPACE, etc.).</p>
+</div>
+<div id="étape-2-créer-le-dossier-du-modèle-r-markdown" class="section level4 hasAnchor" number="6.4.2.2">
+<h4><span class="header-section-number">6.4.2.2</span> Étape 2 – Créer le dossier du modèle R Markdown<a href="créer-un-modèle-bookdown-réutilisable.html#étape-2-créer-le-dossier-du-modèle-r-markdown" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Dans ton package, crée le chemin suivant :</p>
+<pre><code>MonModeleBookdown/
+└── inst/
+    └── rmarkdown/
+        └── templates/
+            └── monbook/
+                ├── skeleton.Rmd
+                └── template.yaml</code></pre>
+<ul>
+<li><code>skeleton.Rmd</code> : c’est le <strong>fichier de départ</strong>, comme un <code>index.Rmd</code>, avec tout ton modèle (YAML + contenu).</li>
+<li><code>template.yaml</code> : c’est le <strong>descriptif</strong> du modèle (nom, description…).</li>
+</ul>
+</div>
+<div id="contenu-du-fichier-template.yaml" class="section level4 hasAnchor" number="6.4.2.3">
+<h4><span class="header-section-number">6.4.2.3</span> Contenu du fichier <code>template.yaml</code><a href="créer-un-modèle-bookdown-réutilisable.html#contenu-du-fichier-template.yaml" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Voici un exemple très simple :</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb40-1"><a href="créer-un-modèle-bookdown-réutilisable.html#cb40-1" tabindex="-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> Mon modèle Bookdown</span></span>
+<span id="cb40-2"><a href="créer-un-modèle-bookdown-réutilisable.html#cb40-2" tabindex="-1"></a><span class="fu">description</span><span class="kw">:</span><span class="at"> Un modèle Bookdown personnalisé pour les rapports ENSAE</span></span>
+<span id="cb40-3"><a href="créer-un-modèle-bookdown-réutilisable.html#cb40-3" tabindex="-1"></a><span class="fu">create_dir</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span></code></pre></div>
+<ul>
+<li><code>name</code> : le nom qui s’affichera dans RStudio</li>
+<li><code>description</code> : une petite phrase pour décrire ton modèle</li>
+<li><code>create_dir: true</code> : dit à RStudio de créer un dossier pour le projet (indispensable)</li>
+</ul>
+</div>
+<div id="contenu-de-skeleton.rmd" class="section level4 hasAnchor" number="6.4.2.4">
+<h4><span class="header-section-number">6.4.2.4</span> Contenu de <code>skeleton.Rmd</code><a href="créer-un-modèle-bookdown-réutilisable.html#contenu-de-skeleton.rmd" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Tu peux copier ton vrai <code>index.Rmd</code> dedans, ou même faire un squelette de type :</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb41-1"><a href="créer-un-modèle-bookdown-réutilisable.html#cb41-1" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb41-2"><a href="créer-un-modèle-bookdown-réutilisable.html#cb41-2" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Titre par défaut&quot;</span></span>
+<span id="cb41-3"><a href="créer-un-modèle-bookdown-réutilisable.html#cb41-3" tabindex="-1"></a><span class="fu">author</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Nom de l’auteur&quot;</span></span>
+<span id="cb41-4"><a href="créer-un-modèle-bookdown-réutilisable.html#cb41-4" tabindex="-1"></a><span class="fu">date</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;2025-04-18&quot;</span></span>
+<span id="cb41-5"><a href="créer-un-modèle-bookdown-réutilisable.html#cb41-5" tabindex="-1"></a><span class="fu">site</span><span class="kw">:</span><span class="at"> bookdown::bookdown_site</span></span>
+<span id="cb41-6"><a href="créer-un-modèle-bookdown-réutilisable.html#cb41-6" tabindex="-1"></a><span class="fu">output</span><span class="kw">:</span><span class="at"> bookdown::gitbook</span></span>
+<span id="cb41-7"><a href="créer-un-modèle-bookdown-réutilisable.html#cb41-7" tabindex="-1"></a><span class="pp">---</span></span></code></pre></div>
+<p>Et continuer avec un chapitre exemple, un chunk, etc.</p>
+<hr />
+</div>
+<div id="etape-3-installer-ton-package" class="section level4 hasAnchor" number="6.4.2.5">
+<h4><span class="header-section-number">6.4.2.5</span> Etape 3 – Installer ton package<a href="créer-un-modèle-bookdown-réutilisable.html#etape-3-installer-ton-package" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Quand ton package est prêt, installe-le avec :</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="créer-un-modèle-bookdown-réutilisable.html#cb42-1" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install</span>(<span class="st">&quot;MonModeleBookdown&quot;</span>)</span></code></pre></div>
+<p>Ou pour l’installer depuis GitHub si tu le mets en ligne :</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="créer-un-modèle-bookdown-réutilisable.html#cb43-1" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;tonpseudo/MonModeleBookdown&quot;</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="résultat" class="section level3 hasAnchor" number="6.4.3">
+<h3><span class="header-section-number">6.4.3</span> Résultat<a href="créer-un-modèle-bookdown-réutilisable.html#résultat" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Maintenant, dans RStudio :</p>
+<ol style="list-style-type: decimal">
+<li>Va dans <code>File &gt; New File &gt; R Markdown</code></li>
+<li>Clique sur l’onglet <code>From Template</code></li>
+<li>Tu verras ton modèle <code>Mon modèle Bookdown</code> dans la liste</li>
+<li>En cliquant dessus, RStudio génère un projet avec tous tes fichiers prêts à l’emploi</li>
+</ol>
+
+<p>#️ Génération du rendu final</p>
+<p>Une fois ton contenu rédigé et structuré, l’étape suivante consiste à <strong>compiler</strong> ton livre Bookdown, c’est-à-dire à générer le document final dans un ou plusieurs formats : <strong>HTML</strong>, <strong>PDF</strong> ou <strong>EPUB</strong>. Bookdown te permet de produire ces formats à partir des mêmes fichiers <code>.Rmd</code>.</p>
+</div>
+</div>
+<div id="compilation-du-livre" class="section level2 hasAnchor" number="6.5">
+<h2><span class="header-section-number">6.5</span> Compilation du livre<a href="créer-un-modèle-bookdown-réutilisable.html#compilation-du-livre" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>La compilation transforme les fichiers <code>.Rmd</code> en un livre complet, avec :</p>
+<ul>
+<li>Table des matières</li>
+<li>Numérotation automatique des figures, tableaux, équations</li>
+<li>Références croisées, citations bibliographiques</li>
+<li>Fichiers finaux dans un dossier de sortie (par défaut : <code>_book/</code>)</li>
+</ul>
+<div id="méthode-1-via-la-console-r" class="section level3 hasAnchor" number="6.5.1">
+<h3><span class="header-section-number">6.5.1</span> Méthode 1 : via la console R<a href="créer-un-modèle-bookdown-réutilisable.html#méthode-1-via-la-console-r" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Tu peux lancer la compilation avec la commande suivante :</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="créer-un-modèle-bookdown-réutilisable.html#cb44-1" tabindex="-1"></a>bookdown<span class="sc">::</span><span class="fu">render_book</span>(<span class="st">&quot;index.Rmd&quot;</span>)</span></code></pre></div>
+<ul>
+<li>Cela compile tous les fichiers <code>.Rmd</code> listés dans <code>_bookdown.yml</code></li>
+<li>Le résultat est placé dans le dossier <code>_book/</code></li>
+</ul>
+</div>
+<div id="méthode-2-via-linterface-rstudio" class="section level3 hasAnchor" number="6.5.2">
+<h3><span class="header-section-number">6.5.2</span> Méthode 2 : via l’interface RStudio<a href="créer-un-modèle-bookdown-réutilisable.html#méthode-2-via-linterface-rstudio" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Tu peux aussi utiliser l’interface graphique :</p>
+<ol style="list-style-type: decimal">
+<li>Ouvre ton projet Bookdown</li>
+<li>Va dans l’onglet <strong>Build</strong> (ou <code>Ctrl + Shift + B</code>)</li>
+<li>Clique sur <strong>Build Book</strong></li>
+</ol>
+</div>
+<div id="compiler-dans-un-format-spécifique" class="section level3 hasAnchor" number="6.5.3">
+<h3><span class="header-section-number">6.5.3</span> Compiler dans un format spécifique<a href="créer-un-modèle-bookdown-réutilisable.html#compiler-dans-un-format-spécifique" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Bookdown peut générer plusieurs formats. Tu peux cibler un seul format à la fois :</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="créer-un-modèle-bookdown-réutilisable.html#cb45-1" tabindex="-1"></a>bookdown<span class="sc">::</span><span class="fu">render_book</span>(<span class="st">&quot;index.Rmd&quot;</span>, <span class="at">output_format =</span> <span class="st">&quot;bookdown::gitbook&quot;</span>)</span>
+<span id="cb45-2"><a href="créer-un-modèle-bookdown-réutilisable.html#cb45-2" tabindex="-1"></a>bookdown<span class="sc">::</span><span class="fu">render_book</span>(<span class="st">&quot;index.Rmd&quot;</span>, <span class="at">output_format =</span> <span class="st">&quot;bookdown::pdf_book&quot;</span>)</span>
+<span id="cb45-3"><a href="créer-un-modèle-bookdown-réutilisable.html#cb45-3" tabindex="-1"></a>bookdown<span class="sc">::</span><span class="fu">render_book</span>(<span class="st">&quot;index.Rmd&quot;</span>, <span class="at">output_format =</span> <span class="st">&quot;bookdown::epub_book&quot;</span>)</span></code></pre></div>
+<p>Assure-toi d’avoir configuré ces formats dans <code>_output.yml</code>.</p>
+</div>
+<div id="compiler-dans-tous-les-formats" class="section level3 hasAnchor" number="6.5.4">
+<h3><span class="header-section-number">6.5.4</span> Compiler dans tous les formats<a href="créer-un-modèle-bookdown-réutilisable.html#compiler-dans-tous-les-formats" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Pour tout générer en une seule commande :</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="créer-un-modèle-bookdown-réutilisable.html#cb46-1" tabindex="-1"></a>bookdown<span class="sc">::</span><span class="fu">render_book</span>(<span class="st">&quot;index.Rmd&quot;</span>, <span class="at">output_format =</span> <span class="st">&quot;all&quot;</span>)</span></code></pre></div>
+<hr />
+</div>
+</div>
+<div id="où-vont-les-fichiers-compilés" class="section level2 hasAnchor" number="6.6">
+<h2><span class="header-section-number">6.6</span> Où vont les fichiers compilés ?<a href="créer-un-modèle-bookdown-réutilisable.html#où-vont-les-fichiers-compilés" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Par défaut, tous les fichiers générés sont placés dans un dossier appelé :</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb47-1"><a href="créer-un-modèle-bookdown-réutilisable.html#cb47-1" tabindex="-1"></a><span class="ex">_book/</span></span></code></pre></div>
+<p>Tu peux changer ce nom dans <code>_bookdown.yml</code> :</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb48-1"><a href="créer-un-modèle-bookdown-réutilisable.html#cb48-1" tabindex="-1"></a><span class="fu">output_dir</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;docs&quot;</span></span></code></pre></div>
+<p>Ce changement est utile si tu veux <strong>publier sur GitHub Pages</strong>, qui lit le dossier <code>docs/</code>.</p>
+<hr />
+</div>
+<div id="astuces-utiles" class="section level2 hasAnchor" number="6.7">
+<h2><span class="header-section-number">6.7</span> Astuces utiles<a href="créer-un-modèle-bookdown-réutilisable.html#astuces-utiles" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li>Si tu modifies un seul chapitre, utilise <code>bookdown::preview_chapter("02-chapitre.Rmd")</code> pour tester rapidement sans tout recompiler</li>
+<li>Si tu travailles avec LaTeX, installe <strong>TinyTeX</strong> :</li>
+</ul>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="créer-un-modèle-bookdown-réutilisable.html#cb49-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;tinytex&quot;</span>)</span>
+<span id="cb49-2"><a href="créer-un-modèle-bookdown-réutilisable.html#cb49-2" tabindex="-1"></a>tinytex<span class="sc">::</span><span class="fu">install_tinytex</span>()</span></code></pre></div>
+<ul>
+<li>Tu peux forcer le nettoyage du dossier de sortie avec :</li>
+</ul>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="créer-un-modèle-bookdown-réutilisable.html#cb50-1" tabindex="-1"></a>bookdown<span class="sc">::</span><span class="fu">clean_book</span>()</span></code></pre></div>
+<hr />
+<p>A présent, tu sais comment produire un <strong>livre complet</strong> depuis tes fichiers <code>.Rmd</code>.<br />
+Prochaine étape : le <strong>déploiement</strong> en ligne ou l’export pour diffusion !</p>
+
+</div>
+</div>
+<footer style="
+  text-align: center;
+  padding: 1.5em 0;
+  font-size: 0.85em;
+  color: #444;
+  background-color: #f7f7f7;
+  border-top: 1px solid #ddd;
+  margin-top: 3em;
+">
+
+  <p style="margin-bottom: 0.5em;">
+    📘 <strong>Prise en main du package "Bookdown"</strong>
+  </p>
+
+  <p style="margin-bottom: 0.5em;">
+    Projet réalisé par <strong>Ahmadou Niass</strong> et <strong>Samba Sow</strong> – <em>ENSAE Dakar, 2025</em><br>
+    dans le cadre du <em>cours de projets statistiques avec R</em>.
+  </p>
+
+  <p style="font-size: 0.8em; margin-bottom: 0;">
+    📁 Code source disponible sur 
+    <a href="https://github.com/ahmadouniass/Bookdown" target="_blank">GitHub</a> · Powered by <a href="https://bookdown.org" target="_blank">Bookdown</a>
+  </p>
+
+</footer>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="insertion-de-contenus-multimédias-images-vidéos-sons.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="déploiement-dun-livre-bookdown.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": false,
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": null,
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": null,
+    "text": null
+  },
+  "download": ["_main.pdf"],
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "section"
+  }
+});
+});
+</script>
+
+</body>
+
+</html>

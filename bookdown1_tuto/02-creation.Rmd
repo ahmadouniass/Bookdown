@@ -1,0 +1,178 @@
+#Création d’un Livre avec Bookdown
+
+Une fois `bookdown` installé, vous êtes prêt à créer votre premier projet de livre. Bookdown fournit un modèle de projet prêt à l’emploi, que vous pouvez personnaliser facilement.
+
+## Créer un projet Bookdown avec RStudio
+
+La méthode la plus simple consiste à utiliser l’interface de **RStudio** :
+
+1.  Allez dans `File > New Project > New Directory`
+2.  Sélectionnez **Book Project using bookdown**
+3.  Donnez un nom à votre projet (ex. `MonLivre`)
+4.  Cochez l’option pour initialiser un dépôt **Git** (optionnel mais recommandé)
+5.  Cliquez sur **Create Project**
+
+Cette opération crée automatiquement une structure de base
+
+## Créer un squelette de livre avec R (alternative sans interface)
+
+Tu peux aussi générer manuellement un squelette de livre avec cette commande :
+
+``` r
+bookdown::bookdown_skeleton(getwd())
+```
+
+Cela crée les fichiers essentiels dans ton répertoire de travail courant.
+
+Ci-dessous, une vidéo locale illustrant ces étapes dans RStudio :
+
+<video width="720" height="405" controls>
+
+<source src="media/bookdown_record.webm" type="video/webm">
+
+Votre navigateur ne supporte pas la lecture de vidéos HTML5. </video>
+
+------------------------------------------------------------------------
+
+## Contenu des fichiers principaux
+
+### fichier `index.Rmd`
+
+Le fichier `index.Rmd` est le **point de départ** de ton livre Bookdown. Il joue un rôle central :
+
+-   Il contient le bloc **YAML d’en-tête**, où sont définis le titre, l’auteur, la date, les fichiers de bibliographie, le format de sortie (`gitbook`, `pdf_book`, etc.).
+-   Il est **toujours compilé en premier**, même s’il n’est pas listé dans `_bookdown.yml`.
+-   Dans les versions HTML, il fait office de **page d’accueil du site**.
+
+Voici un exemple d’en-tête minimal :
+
+```         
+---
+title: "Titre du Livre"
+author: "Ton Nom"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+bibliography: [book.bib]
+---
+```
+
+Ce fichier peut aussi contenir une **introduction au livre**, une préface ou des objectifs pédagogiques. Il ne doit contenir **qu’un seul titre de niveau `#`**, sinon Bookdown le découpe en plusieurs chapitres.
+
+### fichier `_bookdown.yml`
+
+Ce fichier de configuration contrôle la **structure logique** du livre et le comportement général de la compilation. Il est écrit au format YAML, et accompagne `index.Rmd` dans le dossier racine du projet.
+
+Voici un exemple typique :
+
+```         
+book_filename: "MonLivre"
+rmd_files: [
+  "index.Rmd",
+  "01-introduction.Rmd",
+  "02-methodes.Rmd",
+  "03-resultats.Rmd"
+]
+new_session: true
+```
+
+###Que signifient ces options ?
+
+-   `book_filename` : définit le **nom de base** des fichiers de sortie (par exemple `MonLivre.html`, `MonLivre.pdf`, `MonLivre.epub`).\
+    \> Si cette ligne est omise, le nom du dossier du projet est utilisé par défaut.
+
+-   `rmd_files` : liste, dans l’**ordre souhaité**, les fichiers `.Rmd` à compiler.\
+    \> Cela te permet de forcer un ordre personnalisé, même si les noms de fichiers ne sont pas numérotés.
+
+-   `new_session` : si `true`, chaque chapitre est exécuté dans une **session R indépendante**.\
+    \> Cela améliore la reproductibilité, car aucun objet n’est “hérité” d’un chapitre précédent.\
+    \> Si tu veux partager des objets entre chapitres, tu peux mettre `false`, mais ce n’est pas recommandé.
+
+#### Bonnes pratiques
+
+-   Garde une structure **claire et numérotée** dans `rmd_files` (`01-`, `02-`...) pour t’y retrouver facilement.
+-   Active toujours `new_session: true` pour éviter les effets de bord liés à la mémoire R.
+-   Ne liste que les fichiers que tu veux vraiment voir apparaître dans le livre final.
+
+> Ce fichier est léger mais fondamental : il permet à Bookdown de savoir **quoi compiler**, **dans quel ordre**, et **avec quelle logique d’exécution**.
+
+### fichier `_output.yml`
+
+Le fichier `_output.yml` permet de **définir les formats de sortie** de ton livre (HTML, PDF, ePub, Word, etc.) et de personnaliser leur rendu. Il complète les informations de l’en-tête YAML de `index.Rmd`, en centralisant toutes les options de mise en forme et de style.
+
+#### Exemple typique :
+
+```         
+bookdown::gitbook:
+  css: style.css
+  config:
+    toc:
+      collapse: section
+    download: ["pdf", "epub"]
+
+bookdown::pdf_book:
+  latex_engine: xelatex
+  toc: yes
+  toc_depth: 2
+```
+
+#### Détails des options
+
+##### `bookdown::gitbook`
+
+Ce bloc configure la **version HTML** du livre, idéale pour le web.
+
+-   `css: style.css` : permet d’appliquer une **feuille de style personnalisée** pour modifier l’apparence du site (couleurs, polices, marges, etc.)
+-   `config:` :
+    -   `toc:` : personnalise la **table des matières** (ici, les sections peuvent être repliées)
+    -   `download:` : affiche des **boutons de téléchargement** en haut du site, pour les autres formats disponibles (PDF, EPUB, etc.)
+
+Le format `gitbook` est parfait pour une lecture interactive avec navigation par chapitre à gauche et il offre plus de flexbilité. C'est d'ailleurs sur ce dernier que nous nous concentrerons le plus tout au long de ce traval
+
+
+
+##### `bookdown::pdf_book`
+
+Ce bloc configure la **version PDF** du livre, générée via LaTeX.
+
+-   `latex_engine: xelatex` : moteur LaTeX recommandé (gère mieux les polices modernes et les caractères spéciaux)
+-   `toc: yes` : indique si une **table des matières** doit être incluse dans le PDF
+-   `toc_depth: 2` : spécifie le **niveau de profondeur** de la table des matières (par exemple : chapitre + sections)
+
+Tu peux aussi ajouter d’autres options, comme `keep_tex: true` (pour conserver le fichier `.tex`), ou `includes:` pour inclure un fichier `preamble.tex`.
+
+####️ Ce que tu peux personnaliser
+
+-   **Le style HTML** : en ajoutant un fichier `style.css` dans ton projet (modifie l’aspect du texte, des titres, des liens…)
+-   **Le rendu PDF** : via LaTeX (`xelatex` conseillé pour la langue française)
+-   **Les formats proposés au téléchargement** : tu peux proposer `.pdf`, `.epub`, `.docx`, etc.
+
+En résumé, `_output.yml` te permet de **piloter précisément l’apparence de chaque version** de ton livre, sans toucher au contenu. C’est la couche "design" de Bookdown.
+
+
+## A retenir
+
+À ce stade, tu disposes de tous les éléments de base pour démarrer ton livre avec Bookdown. Voici les points essentiels à retenir :
+
+### `index.Rmd` : le cœur du projet
+
+-   Ce fichier est **indispensable** : il contient les **métadonnées globales** du livre (titre, auteur, bibliographie, format de sortie…).
+-   Il sert aussi de **chapitre d’introduction** ou de **page d’accueil**, notamment dans les formats HTML.
+-   Il est toujours **traité en premier**, même s’il n’est pas listé dans `_bookdown.yml`.
+
+### Les chapitres sont des `.Rmd` numérotés
+
+-   Chaque **chapitre** du livre est un fichier `.Rmd` distinct.
+-   Il est **fortement recommandé** d’utiliser une numérotation (`01-`, `02-`, etc.) pour faciliter la lecture et l’organisation.
+-   Les fichiers sont listés **dans l’ordre voulu** dans `_bookdown.yml`, ce qui détermine la structure logique du livre.
+
+### Configuration centralisée dans les fichiers `.yml`
+
+-   `_bookdown.yml` définit :
+    -   L’ordre des chapitres (`rmd_files`)
+    -   Le nom du fichier de sortie (`book_filename`)
+    -   Le comportement d’exécution (`new_session`)
+-   `_output.yml` précise :
+    -   Les **formats de sortie** du livre (`gitbook`, `pdf_book`, etc.)
+    -   Le **style et les options visuelles** (CSS, moteur LaTeX, table des matières, boutons de téléchargement…)
+

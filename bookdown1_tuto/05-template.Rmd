@@ -1,0 +1,208 @@
+# Créer un modèle Bookdown réutilisable
+
+Lorsque tu construis un projet Bookdown bien structuré (avec un style, une organisation de chapitres, des fichiers YAML bien définis, etc.), il est naturel de vouloir **réutiliser cette base** pour d'autres livres, rapports ou travaux collaboratifs — sans repartir de zéro à chaque fois.
+
+Heureusement, Bookdown et l’écosystème R offrent plusieurs moyens de créer un **modèle réutilisable**, aussi appelé **template**. Que tu sois un utilisateur individuel souhaitant gagner du temps, ou un enseignant ou responsable de projet souhaitant fournir un cadre à d’autres, tu peux facilement :
+
+-   Copier un dossier modèle déjà configuré
+-   Créer ton propre **package R** avec un squelette de livre
+-   Ou même proposer ton modèle directement dans l’interface de RStudio
+
+Dans cette section, nous explorons **trois approches complémentaires**, de la plus simple à la plus professionnelle, pour créer un **template Bookdown** que tu pourras cloner, distribuer ou améliorer au fil du temps.
+
+## Créer un dossier modèle à réutiliser (version simple)
+
+### Objectif
+
+Créer une **base de projet Bookdown personnalisée** que tu pourras **réutiliser à chaque fois** que tu veux écrire un nouveau livre ou rapport, sans repartir de zéro.
+
+### Etapes détaillées
+
+#### Crée un dossier modèle
+
+Dans ton ordinateur, crée un dossier que tu appelles par exemple :
+
+```         
+bookdown_template/
+```
+
+Dans ce dossier, place **tous les fichiers de base** nécessaires à un projet Bookdown propre et prêt à être modifié :
+
+-   `index.Rmd` : le fichier d’introduction avec un bon YAML
+-   `01-intro.Rmd`, `02-contenu.Rmd` : des chapitres vides ou partiellement remplis
+-   `_bookdown.yml` : où tu définis l’ordre des chapitres et le nom du livre
+-   `_output.yml` : où tu précises les formats de sortie (HTML, PDF…)
+-   `style.css` : une feuille de style pour personnaliser le HTML
+-   `preamble.tex` : optionnel, pour personnaliser le rendu PDF
+-   `book.bib` : un fichier `.bib` vide ou avec des références de base
+
+**Tu as ainsi un projet “modèle” tout prêt à cloner.**
+
+#### Réutiliser ce modèle pour un nouveau projet
+
+Quand tu veux écrire un nouveau livre :
+
+##### Avec une simple commande dans un terminal :
+
+``` bash
+cp -r bookdown_template/ mon_nouveau_livre/
+```
+
+Cela crée un **nouveau dossier** appelé `mon_nouveau_livre/` qui contient **une copie du modèle**.
+
+##### Ou depuis RStudio :
+
+1.  Clique sur `File > New Project`
+2.  Sélectionne `Existing Directory`
+3.  Navigue vers le dossier `mon_nouveau_livre/` que tu viens de copier
+4.  Tu peux maintenant éditer les fichiers, changer les titres, les chapitres, etc.
+
+## Transformer ton modèle en package R (avancé)
+
+Tu peux créer un **package R** (pour plus de détail sur le procédé vous pouvez vous référer à l'exposé des camarades sur : la <a href="https://github.com/sambadieng122003/poverty">création de package sur R</a>) qui contient un **squelette Bookdown**. C’est ce que fait le package [`usethis`](https://usethis.r-lib.org/) pour les projets.
+
+Voici un exemple d'approche avec le package [`bookdownplus`](https://github.com/pzhaonet/bookdownplus) qui propose plusieurs modèles. Tu pourrais créer le tien ainsi :
+
+``` r
+usethis::create_package("bookdownTemplate")
+```
+
+Et y inclure une fonction comme :
+
+``` r
+create_my_book <- function(path) {
+  dir.create(path)
+  file.copy(system.file("template/index.Rmd", package = "bookdownTemplate"), file.path(path, "index.Rmd"))
+  # copier les autres fichiers...
+}
+```
+
+Tu peux ensuite distribuer ce package (localement ou via GitHub), et l’appeler comme :
+
+``` r
+bookdownTemplate::create_my_book("nouveau_projet")
+```
+
+------------------------------------------------------------------------
+
+## Créer un modèle RStudio (R Markdown template)
+
+Si tu veux qu’un utilisateur de RStudio voie ton modèle dans `File > New File > R Markdown > From Template`, tu peux créer un package avec un template Rmd enregistré.
+
+Exemple :
+
+-   Crée un dossier `inst/rmarkdown/templates/monbook/`
+-   Dans ce dossier, ajoute :
+    -   `skeleton.Rmd` (le modèle du livre)
+    -   `template.yaml` (description)
+
+Le fichier `template.yaml` pourrait ressembler à :
+
+``` yaml
+name: Mon modèle Bookdown
+description: Un modèle Bookdown personnalisé pour les rapports ENSAE
+create_dir: true
+```
+
+Ensuite, en important ton package, le modèle apparaîtra dans les menus de RStudio
+
+------------------------------------------------------------------------
+
+## Créer un modèle RStudio réutilisable (R Markdown Template)
+
+### Objectif
+
+Tu veux que quelqu’un puisse aller dans RStudio →\
+**File \> New File \> R Markdown \> From Template**\
+et y trouver ton **propre modèle de livre Bookdown** dans la liste.
+
+Quand il cliquera dessus, **RStudio va automatiquement créer un nouveau projet avec tous les fichiers de ton modèle** (`index.Rmd`, `_bookdown.yml`, etc.).
+
+C’est exactement ce que font certains packages comme `bookdownplus` ou `rticles`.
+
+### Étapes pour créer ton propre modèle
+
+Tu dois créer un **package R** qui contient ton modèle, puis le déclarer comme un **template R Markdown**.
+
+#### Étape 1 – Créer un package R (vide)
+
+Dans RStudio, fais :
+
+``` r
+usethis::create_package("MonModeleBookdown")
+```
+
+Cela crée un dossier avec les fichiers de base du package R (DESCRIPTION, NAMESPACE, etc.).
+
+#### Étape 2 – Créer le dossier du modèle R Markdown
+
+Dans ton package, crée le chemin suivant :
+
+```         
+MonModeleBookdown/
+└── inst/
+    └── rmarkdown/
+        └── templates/
+            └── monbook/
+                ├── skeleton.Rmd
+                └── template.yaml
+```
+
+-   `skeleton.Rmd` : c’est le **fichier de départ**, comme un `index.Rmd`, avec tout ton modèle (YAML + contenu).
+-   `template.yaml` : c’est le **descriptif** du modèle (nom, description…).
+
+#### Contenu du fichier `template.yaml`
+
+Voici un exemple très simple :
+
+``` yaml
+name: Mon modèle Bookdown
+description: Un modèle Bookdown personnalisé pour les rapports ENSAE
+create_dir: true
+```
+
+-   `name` : le nom qui s’affichera dans RStudio
+-   `description` : une petite phrase pour décrire ton modèle
+-   `create_dir: true` : dit à RStudio de créer un dossier pour le projet (indispensable)
+
+#### Contenu de `skeleton.Rmd`
+
+Tu peux copier ton vrai `index.Rmd` dedans, ou même faire un squelette de type :
+
+``` yaml
+---
+title: "Titre par défaut"
+author: "Nom de l’auteur"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+---
+```
+
+Et continuer avec un chapitre exemple, un chunk, etc.
+
+------------------------------------------------------------------------
+
+#### Etape 3 – Installer ton package
+
+Quand ton package est prêt, installe-le avec :
+
+``` r
+devtools::install("MonModeleBookdown")
+```
+
+Ou pour l’installer depuis GitHub si tu le mets en ligne :
+
+``` r
+devtools::install_github("tonpseudo/MonModeleBookdown")
+```
+
+
+### Résultat
+
+Maintenant, dans RStudio :
+
+1.  Va dans `File > New File > R Markdown`
+2.  Clique sur l’onglet `From Template`
+3.  Tu verras ton modèle `Mon modèle Bookdown` dans la liste
+4.  En cliquant dessus, RStudio génère un projet avec tous tes fichiers prêts à l’emploi

@@ -1,0 +1,174 @@
+# Écriture du contenu avec Bookdown
+
+Une fois la structure du projet en place, tu peux commencer à écrire les chapitres de ton livre. Bookdown repose sur **R Markdown**, un langage simple et puissant pour mélanger du texte, des équations, du code et des résultats dans un seul document.
+
+## Syntaxe Markdown (rappel rapide)
+
+Tu peux structurer ton texte avec une syntaxe légère :
+
+- `#` : Titre de chapitre (niveau 1)
+- `##`, `###` : Sous-sections (niveaux 2 et 3)
+- `*italique*` ou `_italique_`  
+- `**gras**` ou `__gras__`  
+- `> citation`
+- `-` ou `*` pour des listes à puces  
+- `1.` pour des listes numérotées  
+- `` `code` `` pour du code en ligne
+
+ Pour chaque chapitre, utilise **un seul titre de niveau `#`** au début du fichier `.Rmd` pour qu’il soit reconnu comme un chapitre à part entière.
+
+
+### Blocs de code R (chunks)
+
+Tu peux insérer du **code exécutable en R** dans des blocs appelés *chunks* :
+
+```{r summary}
+summary(mtcars)
+```
+
+
+- Les résultats (textes, graphiques, tableaux) sont automatiquement intégrés dans le livre.
+- Tu peux ajouter des options comme `echo=FALSE`, `fig.width`, `message=FALSE`, etc.
+
+Pour aller plus loin tu peux te réferrer au travail de nos camarades sur le thème : <a href="https://github.com/dior204/Theme13-Autonomisation-des-rapports-avec-R-Le-package-Rmarkdown">Rmarkdown</a>
+
+
+## Figures et tableaux
+
+### Figures
+
+Tu peux générer des graphiques avec `ggplot2`, `plot()`, etc., et leur associer une **légende** :
+
+
+```{r plot-example, fig.cap = "Exemple de graphique"}
+plot(cars)
+```
+
+
+Bookdown **numérote automatiquement** les figures et permet de les **référencer dans le texte** avec `\@ref(fig:plot-example)`.
+
+
+
+### Tableaux
+
+Tu peux créer des tableaux élégants avec :
+
+- `knitr::kable()` (basique)
+- `gt::gt()` (avancé)
+- `kableExtra` (pour plus de mise en forme)
+
+```{r tab-example, results='asis'}
+knitr::kable(head(iris), caption = "Extrait des données iris")
+```
+
+
+Comme les figures, tu peux les référencer dans le texte : `\@ref(tab:tab-example)`.
+
+---
+
+### Mathématiques et équations
+
+Bookdown permet d’écrire des **formules mathématiques en LaTeX** :
+
+- Inline : `\( E = mc^2 \)`
+- Bloc centré :  
+```
+$$ E = mc^2 $$
+```
+
+Tu peux aussi **numéroter une équation** pour y faire référence :
+
+```
+$$
+E = mc^2 (\#eq:energie)
+$$
+
+Comme vu en \@ref(eq:energie), cette équation exprime...
+```
+
+
+### 🔗 Références croisées
+
+Bookdown permet de **lier dynamiquement** les parties du document (chapitres, figures, tableaux, équations…).
+
+- Pour créer une référence : ajoute un **identifiant** à la fin d’un titre ou d’un chunk :
+  ```
+  # Méthodologie {#method}
+  ```
+- Et pour y faire référence :
+  ```markdown
+  Voir la section \@ref(method)
+  ```
+
+---
+
+## Citations bibliographiques
+
+Bookdown prend en charge les références bibliographiques grâce à **Pandoc** et au format **BibTeX**. Cela te permet de citer des articles, des livres ou des sources web de manière dynamique, avec une mise en forme automatique.
+
+### 1. Créer un fichier `.bib`
+
+Commence par créer un fichier texte portant l’extension `.bib` (qui est souvent généré automatiquement sous le nom de`book.bib`) qui contient tes **références bibliographiques** au format **BibTeX**.
+
+Voici un exemple de contenu typique dans `book.bib` :
+
+```bibtex
+@book{xie2016bookdown,
+  title     = {bookdown: Authoring Books and Technical Documents with R Markdown},
+  author    = {Yihui Xie},
+  year      = {2016},
+  publisher = {Chapman and Hall/CRC},
+  url       = {https://bookdown.org/yihui/bookdown/}
+}
+```
+
+Tu peux générer ce fichier à partir de Zotero, Google Scholar, ou d'autres outils de gestion bibliographique.
+
+
+###  Déclarer la bibliographie dans `index.Rmd`
+
+Dans le bloc YAML en tête de `index.Rmd`, indique le nom du fichier `.bib` et le **style bibliographique** :
+
+```yaml
+bibliography: [book.bib]
+biblio-style: apalike
+link-citations: true
+```
+
+- `biblio-style: apalike` : style auteur-année classique
+- Tu peux aussi utiliser d'autres styles (`chicago`, `ieee`, etc.) ou un fichier `.csl` (Citation Style Language)
+- `link-citations: true` ajoute un **lien hypertexte** entre la citation dans le texte et la référence complète
+
+
+### Citer une source dans le texte
+
+Dans ton texte `.Rmd`, tu peux :
+
+- Citer **entre parenthèses** : `[@xie2016bookdown]` → (Xie 2016)
+- Intégrer la citation dans la phrase : `@xie2016bookdown` → Xie (2016)
+
+Exemples :
+
+```markdown
+Selon @xie2016bookdown, Bookdown est très utile pour l’écriture scientifique.
+
+Des extensions ont été proposées dans des travaux récents [@xie2016bookdown; @wickham2019advanced].
+```
+
+
+### Génération automatique de la bibliographie
+
+Lors de la compilation :
+
+- Bookdown **recherche toutes les citations** dans les fichiers `.Rmd`
+- Il **génère automatiquement la section “Références”** à la fin du livre (ou à l’endroit où tu places un fichier `.Rmd` avec un titre `# Références`)
+
+Tu n’as **pas besoin d’écrire la bibliographie à la main** : elle sera construite dynamiquement à partir du fichier `.bib`.
+
+
+- Donne à chaque référence une **clé unique et explicite** (`@xie2016bookdown` plutôt que `@ref1`)
+- Place le fichier `.bib` à la racine de ton projet
+- Utilise des **groupes de références** avec `[@ref1; @ref2]` si nécessaire
+- Teste la compilation en HTML et en PDF pour vérifier que les styles s’affichent bien
+
+

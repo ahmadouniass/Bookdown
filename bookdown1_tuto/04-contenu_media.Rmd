@@ -1,0 +1,147 @@
+# Insertion de contenus multimédias (images, vidéos, sons)
+
+Bookdown te permet d’enrichir ton livre avec des **contenus multimédias** : **images, vidéos, sons**, qu’ils soient en **local** (dans ton dossier) ou hébergés en **ligne**. Cela améliore l’accessibilité et l’interactivité de ton document, surtout en HTML.
+
+
+## Insertion d’images
+
+L’image est le contenu multimédia le plus utilisé dans un document Bookdown, qu’il s’agisse de logos, de cartes, de schémas ou de captures d’écran. Bookdown accepte les images **locales** (placées dans le dossier du projet) ou **hébergées en ligne**.
+
+
+### Image locale (dans le dossier du projet)
+
+Pour insérer une image locale, voici la procédure recommandée :
+
+- Crée un dossier `images/` dans ton projet Bookdown
+- Place l’image à l’intérieur (ex. `logo.png`)
+- Utilise la syntaxe Markdown classique pour l’insérer dans ton `.Rmd` :
+
+```
+![Logo du projet](images/logo.png)
+```
+
+Cette méthode fonctionne aussi bien en HTML qu’en PDF ou EPUB, à condition que l’image soit disponible au moment de la compilation.
+
+---
+
+#### Options supplémentaires avec HTML
+
+Markdown ne permet pas de contrôler finement la taille ou la position. Pour cela, tu peux utiliser du HTML à la place :
+
+```html
+<p align="center">
+  <img src="images/logo.png" width="300px" />
+</p>
+```
+
+Cela permet de :
+- **Centrer** l’image (`align="center"`)
+- **Contrôler sa largeur** (`width="300px"`, ou `width="50%"`)
+- **Conserver la compatibilité** avec tous les formats HTML
+
+Si tu veux forcer une image à occuper toute la largeur de la page en HTML :
+
+```html
+<img src="images/schema.png" style="width:100%;"/>
+```
+
+
+#### Astuces bonnes pratiques
+
+- Utilise des formats d’image légers : `.png`, `.jpg`, `.svg` (PDF-friendly)
+- Préfère les **chemins relatifs** (`images/monimage.png`) plutôt que des chemins absolus
+- Pour les graphiques produits dans R, utilise plutôt un chunk R avec `fig.cap`
+
+
+### Image hébergée en ligne
+
+Tu peux aussi insérer une image stockée en ligne avec la même syntaxe Markdown :
+
+```markdown
+![Logo ENSAE](https://example.com/images/logo_ensae.png)
+```
+
+Cela fonctionne uniquement si la page peut accéder à Internet. Pour les PDF, l’image sera téléchargée à la compilation.
+
+Cette méthode est utile si tu ne veux pas alourdir ton dépôt GitHub ou ton dossier de projet avec des fichiers image.
+
+
+#### Résumé
+
+| Type d’image     | Syntaxe recommandée                | Compatible HTML | Compatible PDF |
+|------------------|------------------------------------|------------------|----------------|
+| Image locale     | `![Légende](images/img.png)`       | ✅               | ✅             |
+| Image en ligne   | `![Légende](https://...)`          | ✅               | ✅*            |
+| Image stylée     | `<img src=... width=...>` (HTML)   | ✅               | ⚠️ (ignore le style) |
+
+Si l’image en ligne n’est pas disponible lors de la compilation, elle ne s’affichera pas dans le PDF.
+
+
+## Insertion de vidéos
+
+#### Vidéo locale (`.mp4` ou `.webm`)
+
+Crée un dossier `videos/` et ajoute ce code dans ton `.Rmd` :
+
+```html
+<video width="720" height="405" controls>
+  <source src="videos/creation_bookdown.webm" type="video/webm">
+  Votre navigateur ne supporte pas la lecture de vidéos HTML5.
+</video>
+```
+
+Utilise `.webm` ou `.mp4` pour un bon support navigateur. Pour une vidéo responsive :
+
+```html
+<div style="max-width: 100%;">
+  <video controls style="width: 100%;">
+    <source src="videos/demo.mp4" type="video/mp4">
+  </video>
+</div>
+```
+
+#### Vidéo hébergée (YouTube, PeerTube…)
+
+Pour insérer une vidéo YouTube :
+
+```html
+<iframe width="720" height="405" src="https://www.youtube.com/embed/3rOXFJ0F1iE" frameborder="0" allowfullscreen></iframe>
+```
+
+---
+
+## Insertion de fichiers audio
+
+Tu peux intégrer des **sons** ou **commentaires vocaux** dans tes chapitres.
+
+#### Exemple (audio local `.mp3`) :
+
+```html
+<audio controls>
+  <source src="audio/intro.mp3" type="audio/mpeg">
+  Votre navigateur ne supporte pas l'audio HTML5.
+</audio>
+```
+
+Place tes fichiers audio dans un dossier `audio/` dans ton projet.
+
+
+### Limitations selon le format de sortie
+
+| Contenu        | HTML | PDF  | EPUB |
+|----------------|------|------|------|
+| Images         | ✅    | ✅    | ✅    |
+| Vidéos (.mp4)  | ✅    | ❌    | ⚠️ (souvent ignoré) |
+| YouTube        | ✅    | ❌    | ❌    |
+| Audio (.mp3)   | ✅    | ❌    | ⚠️ (selon lecteur) |
+
+Pour le PDF, les médias interactifs **ne sont pas intégrés** : il vaut mieux fournir un lien externe ou une capture.
+
+
+### Astuces pratiques
+
+- Organise tes fichiers multimédias dans des sous-dossiers : `images/`, `videos/`, `audio/`
+- Vérifie que les chemins sont **relatifs** à la racine du projet
+- Préfère les formats **.webm** et **.mp4** pour les vidéos, **.mp3** pour les sons
+- Pour les versions PDF : remplace les vidéos par des **liens cliquables** ou des **captures d’écran**
+

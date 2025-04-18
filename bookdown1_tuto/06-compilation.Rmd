@@ -1,0 +1,98 @@
+#️ Génération du rendu final
+
+Une fois ton contenu rédigé et structuré, l'étape suivante consiste à **compiler** ton livre Bookdown, c’est-à-dire à générer le document final dans un ou plusieurs formats : **HTML**, **PDF** ou **EPUB**. Bookdown te permet de produire ces formats à partir des mêmes fichiers `.Rmd`.
+
+
+## Compilation du livre
+
+La compilation transforme les fichiers `.Rmd` en un livre complet, avec :
+
+- Table des matières
+- Numérotation automatique des figures, tableaux, équations
+- Références croisées, citations bibliographiques
+- Fichiers finaux dans un dossier de sortie (par défaut : `_book/`)
+
+
+### Méthode 1 : via la console R
+
+Tu peux lancer la compilation avec la commande suivante :
+
+```r
+bookdown::render_book("index.Rmd")
+```
+
+- Cela compile tous les fichiers `.Rmd` listés dans `_bookdown.yml`
+- Le résultat est placé dans le dossier `_book/`
+
+
+### Méthode 2 : via l’interface RStudio
+
+Tu peux aussi utiliser l’interface graphique :
+
+1. Ouvre ton projet Bookdown
+2. Va dans l’onglet **Build** (ou `Ctrl + Shift + B`)
+3. Clique sur **Build Book**
+
+
+### Compiler dans un format spécifique
+
+Bookdown peut générer plusieurs formats. Tu peux cibler un seul format à la fois :
+
+```r
+bookdown::render_book("index.Rmd", output_format = "bookdown::gitbook")
+bookdown::render_book("index.Rmd", output_format = "bookdown::pdf_book")
+bookdown::render_book("index.Rmd", output_format = "bookdown::epub_book")
+```
+
+Assure-toi d’avoir configuré ces formats dans `_output.yml`.
+
+
+### Compiler dans tous les formats
+
+Pour tout générer en une seule commande :
+
+```r
+bookdown::render_book("index.Rmd", output_format = "all")
+```
+
+---
+
+## Où vont les fichiers compilés ?
+
+Par défaut, tous les fichiers générés sont placés dans un dossier appelé :
+
+```bash
+_book/
+```
+
+Tu peux changer ce nom dans `_bookdown.yml` :
+
+```yaml
+output_dir: "docs"
+```
+
+Ce changement est utile si tu veux **publier sur GitHub Pages**, qui lit le dossier `docs/`.
+
+---
+
+## Astuces utiles
+
+- Si tu modifies un seul chapitre, utilise `bookdown::preview_chapter("02-chapitre.Rmd")` pour tester rapidement sans tout recompiler
+- Si tu travailles avec LaTeX, installe **TinyTeX** :
+
+```r
+install.packages("tinytex")
+tinytex::install_tinytex()
+```
+
+- Tu peux forcer le nettoyage du dossier de sortie avec :
+
+```r
+bookdown::clean_book()
+```
+
+---
+
+A présent, tu sais comment produire un **livre complet** depuis tes fichiers `.Rmd`.  
+Prochaine étape : le **déploiement** en ligne ou l’export pour diffusion !
+

@@ -1,0 +1,15 @@
+delete_merged_file: true
+language:
+  ui:
+    chapter_name:
+rmd_files:
+  - index.Rmd
+  - 00-Introduction.Rmd
+  - 01-Installation_Configuration.Rmd
+  - 02-creation.Rmd
+  - 03-contenu.Rmd
+  - 04-contenu_media.Rmd
+  - 05-template.Rmd
+  - 06-compilation.Rmd
+  - 07-deploiement.Rmd
+  - 08-plus_loin.Rmd

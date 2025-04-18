@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>7 Déploiement d’un livre Bookdown | Prise en main du package Bookdown</title>
+  <meta name="description" content="7 Déploiement d’un livre Bookdown | Prise en main du package Bookdown" />
+  <meta name="generator" content="bookdown 0.42 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="7 Déploiement d’un livre Bookdown | Prise en main du package Bookdown" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="7 Déploiement d’un livre Bookdown | Prise en main du package Bookdown" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="créer-un-modèle-bookdown-réutilisable.html"/>
+<link rel="next" href="pour-aller-plus-loin.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<link rel="shortcut icon" href="images/bookdown.ico" type="image/x-icon">
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li style="text-align:center;">
+  <img src="images/bookdown.png" style="max-width:120px; margin-bottom: 0.5em;">
+</li>
+<li><a href="index.html">Prise en main du  <br> package "Bookdown"</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Package Bookdown</a></li>
+<li class="chapter" data-level="2" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>2</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="introduction.html"><a href="introduction.html#quest-ce-que-bookdown"><i class="fa fa-check"></i><b>2.1</b> Qu’est-ce que Bookdown ?</a></li>
+<li class="chapter" data-level="2.2" data-path="introduction.html"><a href="introduction.html#historique-et-contexte"><i class="fa fa-check"></i><b>2.2</b> Historique et Contexte</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html"><i class="fa fa-check"></i><b>3</b> Installation et Configuration</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html#prérequis-r-rstudio-latex-pandoc"><i class="fa fa-check"></i><b>3.1</b> Prérequis : R, RStudio, LaTeX, Pandoc</a></li>
+<li class="chapter" data-level="3.2" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html#installation-de-bookdown"><i class="fa fa-check"></i><b>3.2</b> Installation de Bookdown</a></li>
+<li class="chapter" data-level="3.3" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html#créer-un-projet-bookdown-avec-rstudio"><i class="fa fa-check"></i><b>3.3</b> Créer un projet Bookdown avec RStudio</a></li>
+<li class="chapter" data-level="3.4" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html#créer-un-squelette-de-livre-avec-r-alternative-sans-interface"><i class="fa fa-check"></i><b>3.4</b> Créer un squelette de livre avec R (alternative sans interface)</a></li>
+<li class="chapter" data-level="3.5" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html#contenu-des-fichiers-principaux"><i class="fa fa-check"></i><b>3.5</b> Contenu des fichiers principaux</a></li>
+<li class="chapter" data-level="3.6" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html#a-retenir"><i class="fa fa-check"></i><b>3.6</b> A retenir</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="écriture-du-contenu-avec-bookdown.html"><a href="écriture-du-contenu-avec-bookdown.html"><i class="fa fa-check"></i><b>4</b> Écriture du contenu avec Bookdown</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="écriture-du-contenu-avec-bookdown.html"><a href="écriture-du-contenu-avec-bookdown.html#syntaxe-markdown-rappel-rapide"><i class="fa fa-check"></i><b>4.1</b> Syntaxe Markdown (rappel rapide)</a></li>
+<li class="chapter" data-level="4.2" data-path="écriture-du-contenu-avec-bookdown.html"><a href="écriture-du-contenu-avec-bookdown.html#figures-et-tableaux"><i class="fa fa-check"></i><b>4.2</b> Figures et tableaux</a></li>
+<li class="chapter" data-level="4.3" data-path="écriture-du-contenu-avec-bookdown.html"><a href="écriture-du-contenu-avec-bookdown.html#citations-bibliographiques"><i class="fa fa-check"></i><b>4.3</b> Citations bibliographiques</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="insertion-de-contenus-multimédias-images-vidéos-sons.html"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html"><i class="fa fa-check"></i><b>5</b> Insertion de contenus multimédias (images, vidéos, sons)</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="insertion-de-contenus-multimédias-images-vidéos-sons.html"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#insertion-dimages"><i class="fa fa-check"></i><b>5.1</b> Insertion d’images</a></li>
+<li class="chapter" data-level="5.2" data-path="insertion-de-contenus-multimédias-images-vidéos-sons.html"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#insertion-de-vidéos"><i class="fa fa-check"></i><b>5.2</b> Insertion de vidéos</a></li>
+<li class="chapter" data-level="5.3" data-path="insertion-de-contenus-multimédias-images-vidéos-sons.html"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#insertion-de-fichiers-audio"><i class="fa fa-check"></i><b>5.3</b> Insertion de fichiers audio</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html"><i class="fa fa-check"></i><b>6</b> Créer un modèle Bookdown réutilisable</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#créer-un-dossier-modèle-à-réutiliser-version-simple"><i class="fa fa-check"></i><b>6.1</b> Créer un dossier modèle à réutiliser (version simple)</a></li>
+<li class="chapter" data-level="6.2" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#transformer-ton-modèle-en-package-r-avancé"><i class="fa fa-check"></i><b>6.2</b> Transformer ton modèle en package R (avancé)</a></li>
+<li class="chapter" data-level="6.3" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#créer-un-modèle-rstudio-r-markdown-template"><i class="fa fa-check"></i><b>6.3</b> Créer un modèle RStudio (R Markdown template)</a></li>
+<li class="chapter" data-level="6.4" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#créer-un-modèle-rstudio-réutilisable-r-markdown-template"><i class="fa fa-check"></i><b>6.4</b> Créer un modèle RStudio réutilisable (R Markdown Template)</a></li>
+<li class="chapter" data-level="6.5" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#compilation-du-livre"><i class="fa fa-check"></i><b>6.5</b> Compilation du livre</a></li>
+<li class="chapter" data-level="6.6" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#où-vont-les-fichiers-compilés"><i class="fa fa-check"></i><b>6.6</b> Où vont les fichiers compilés ?</a></li>
+<li class="chapter" data-level="6.7" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#astuces-utiles"><i class="fa fa-check"></i><b>6.7</b> Astuces utiles</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="déploiement-dun-livre-bookdown.html"><a href="déploiement-dun-livre-bookdown.html"><i class="fa fa-check"></i><b>7</b> Déploiement d’un livre Bookdown</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="déploiement-dun-livre-bookdown.html"><a href="déploiement-dun-livre-bookdown.html#publication-avec-github-pages-idéal-pour-html"><i class="fa fa-check"></i><b>7.1</b> Publication avec GitHub Pages (idéal pour HTML)</a></li>
+<li class="chapter" data-level="7.2" data-path="déploiement-dun-livre-bookdown.html"><a href="déploiement-dun-livre-bookdown.html#publication-avec-netlify-flexible-et-automatisé"><i class="fa fa-check"></i><b>7.2</b> Publication avec Netlify (flexible et automatisé)</a></li>
+<li class="chapter" data-level="7.3" data-path="déploiement-dun-livre-bookdown.html"><a href="déploiement-dun-livre-bookdown.html#publication-sur-bookdown.org"><i class="fa fa-check"></i><b>7.3</b> Publication sur bookdown.org</a></li>
+<li class="chapter" data-level="7.4" data-path="déploiement-dun-livre-bookdown.html"><a href="déploiement-dun-livre-bookdown.html#partage-manuel-local-ou-cloud"><i class="fa fa-check"></i><b>7.4</b> Partage manuel (local ou cloud)</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html"><i class="fa fa-check"></i><b>8</b> Pour aller plus loin</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#ajouter-des-bulles-dinformation-au-survol-infobulles"><i class="fa fa-check"></i><b>8.1</b> Ajouter des bulles d’information au survol (infobulles)</a></li>
+<li class="chapter" data-level="8.2" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#astuce-alternative-avec-le-package-tippy-plus-stylé"><i class="fa fa-check"></i><b>8.2</b> Astuce alternative avec le package <code>tippy</code> (plus stylé)</a></li>
+<li class="chapter" data-level="8.3" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#appliquer-des-styles-personnalisés-aux-titres"><i class="fa fa-check"></i><b>8.3</b> Appliquer des styles personnalisés aux titres</a></li>
+<li class="chapter" data-level="8.4" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#références-croisées-internes"><i class="fa fa-check"></i><b>8.4</b> Références croisées internes</a></li>
+<li class="chapter" data-level="8.5" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#générer-plusieurs-formats-à-la-fois"><i class="fa fa-check"></i><b>8.5</b> 🚀 Générer plusieurs formats à la fois</a></li>
+<li class="chapter" data-level="8.6" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#créer-ton-propre-modèle-bookdown"><i class="fa fa-check"></i><b>8.6</b> Créer ton propre modèle Bookdown</a></li>
+<li class="chapter" data-level="8.7" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#bonus-réorganiser-les-fichiers-générés"><i class="fa fa-check"></i><b>8.7</b> Bonus : Réorganiser les fichiers générés</a></li>
+<li class="chapter" data-level="8.8" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#ajouter-un-pied-de-page-footer-dans-bookdown"><i class="fa fa-check"></i><b>8.8</b> Ajouter un pied de page (footer) dans Bookdown</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Publié avec bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Prise en main du package Bookdown</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="déploiement-dun-livre-bookdown" class="section level1 hasAnchor" number="7">
+<h1><span class="header-section-number">7</span> Déploiement d’un livre Bookdown<a href="déploiement-dun-livre-bookdown.html#déploiement-dun-livre-bookdown" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Une fois ton livre généré (HTML, PDF ou EPUB), tu peux le <strong>diffuser facilement</strong> à ton public. Bookdown permet plusieurs méthodes de <strong>déploiement</strong>, que tu choisiras selon tes besoins :</p>
+<ul>
+<li>Publication sur le web (lecture en ligne)</li>
+<li>Partage de fichiers en local (clé USB, mail…)</li>
+<li>Diffusion académique (GitHub Pages, Netlify, Bookdown.org…)</li>
+</ul>
+<p>Dans ce chapitre, nous passons en revue les <strong>alternatives principales</strong>, avec les <strong>étapes détaillées pour chacune</strong>.</p>
+<div id="publication-avec-github-pages-idéal-pour-html" class="section level2 hasAnchor" number="7.1">
+<h2><span class="header-section-number">7.1</span> Publication avec GitHub Pages (idéal pour HTML)<a href="déploiement-dun-livre-bookdown.html#publication-avec-github-pages-idéal-pour-html" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><strong>GitHub Pages</strong> permet d’héberger gratuitement ton livre HTML. Tu n’as besoin que d’un compte GitHub et d’un projet Bookdown.</p>
+<div id="etapes-à-suivre" class="section level3 hasAnchor" number="7.1.1">
+<h3><span class="header-section-number">7.1.1</span> Etapes à suivre<a href="déploiement-dun-livre-bookdown.html#etapes-à-suivre" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ol style="list-style-type: decimal">
+<li>Dans le fichier <code>_bookdown.yml</code>, change le dossier de sortie :</li>
+</ol>
+<div class="sourceCode" id="cb51"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb51-1"><a href="déploiement-dun-livre-bookdown.html#cb51-1" tabindex="-1"></a><span class="fu">output_dir</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;docs&quot;</span></span></code></pre></div>
+<ol start="2" style="list-style-type: decimal">
+<li>Compile ton livre en HTML :</li>
+</ol>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="déploiement-dun-livre-bookdown.html#cb52-1" tabindex="-1"></a>bookdown<span class="sc">::</span><span class="fu">render_book</span>(<span class="st">&quot;index.Rmd&quot;</span>, <span class="at">output_format =</span> <span class="st">&quot;bookdown::gitbook&quot;</span>)</span></code></pre></div>
+<ol start="3" style="list-style-type: decimal">
+<li>Initialise un dépôt Git dans ton projet (si ce n’est pas déjà fait) :</li>
+</ol>
+<div class="sourceCode" id="cb53"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb53-1"><a href="déploiement-dun-livre-bookdown.html#cb53-1" tabindex="-1"></a><span class="fu">git</span> init</span>
+<span id="cb53-2"><a href="déploiement-dun-livre-bookdown.html#cb53-2" tabindex="-1"></a><span class="fu">git</span> add .</span>
+<span id="cb53-3"><a href="déploiement-dun-livre-bookdown.html#cb53-3" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">&quot;Initial commit&quot;</span></span></code></pre></div>
+<ol start="4" style="list-style-type: decimal">
+<li>Crée un nouveau dépôt sur GitHub (ex : <code>monlivre</code>), puis connecte-le :</li>
+</ol>
+<div class="sourceCode" id="cb54"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb54-1"><a href="déploiement-dun-livre-bookdown.html#cb54-1" tabindex="-1"></a><span class="fu">git</span> remote add origin https://github.com/tonpseudo/monlivre.git</span>
+<span id="cb54-2"><a href="déploiement-dun-livre-bookdown.html#cb54-2" tabindex="-1"></a><span class="fu">git</span> push <span class="at">-u</span> origin main</span></code></pre></div>
+<ol start="5" style="list-style-type: decimal">
+<li>Sur GitHub, va dans <strong>Settings &gt; Pages</strong><br />
+→ Choisis la branche <code>main</code> et le dossier <code>/docs/</code></li>
+</ol>
+<p>🎉 Ton livre sera visible à l’adresse :<br />
+<code>https://tonpseudo.github.io/monlivre/</code></p>
+</div>
+<div id="vidéo-tutorielle" class="section level3 hasAnchor" number="7.1.2">
+<h3><span class="header-section-number">7.1.2</span> Vidéo tutorielle<a href="déploiement-dun-livre-bookdown.html#vidéo-tutorielle" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<!-- only in HTML -->
+<div style="text-align:center; margin-top: 1em;">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/RdSmYvbQkhs?si=8KTJu8_zqdOJcCC3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</div>
+</div>
+</div>
+<div id="publication-avec-netlify-flexible-et-automatisé" class="section level2 hasAnchor" number="7.2">
+<h2><span class="header-section-number">7.2</span> Publication avec Netlify (flexible et automatisé)<a href="déploiement-dun-livre-bookdown.html#publication-avec-netlify-flexible-et-automatisé" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Netlify est une plateforme de déploiement moderne qui se connecte à GitHub et compile automatiquement ton livre à chaque modification.</p>
+<div id="etapes-à-suivre-1" class="section level3 hasAnchor" number="7.2.1">
+<h3><span class="header-section-number">7.2.1</span> Etapes à suivre<a href="déploiement-dun-livre-bookdown.html#etapes-à-suivre-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ol style="list-style-type: decimal">
+<li>Crée un compte sur <a href="https://netlify.com" class="uri">https://netlify.com</a></li>
+<li>Lien ton compte GitHub</li>
+<li>Clique sur <strong>“New site from Git”</strong></li>
+<li>Sélectionne ton dépôt contenant le livre</li>
+<li>Configure les options :
+<ul>
+<li><p>Build command :</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb55-1"><a href="déploiement-dun-livre-bookdown.html#cb55-1" tabindex="-1"></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">&quot;bookdown::render_book(&#39;index.Rmd&#39;)&quot;</span></span></code></pre></div></li>
+<li><p>Publish directory :</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb56-1"><a href="déploiement-dun-livre-bookdown.html#cb56-1" tabindex="-1"></a><span class="ex">_book/</span></span></code></pre></div></li>
+</ul></li>
+<li>Clique sur <strong>Deploy site</strong></li>
+</ol>
+<p>Ton livre sera mis en ligne avec une URL du type <code>https://monlivre.netlify.app</code>.</p>
+</div>
+</div>
+<div id="publication-sur-bookdown.org" class="section level2 hasAnchor" number="7.3">
+<h2><span class="header-section-number">7.3</span> Publication sur <a href="https://bookdown.org">bookdown.org</a><a href="déploiement-dun-livre-bookdown.html#publication-sur-bookdown.org" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Le site <a href="https://bookdown.org">bookdown.org</a> est une plateforme gratuite proposée par <strong>RStudio/Posit</strong> qui permet d’héberger des livres réalisés avec <strong>Bookdown</strong>. Il est idéal pour les auteurs souhaitant <strong>partager publiquement</strong> leur livre sans avoir à configurer Netlify ou GitHub Pages.</p>
+<div id="avantages-de-bookdown.org" class="section level3 hasAnchor" number="7.3.1">
+<h3><span class="header-section-number">7.3.1</span> Avantages de <code>bookdown.org</code><a href="déploiement-dun-livre-bookdown.html#avantages-de-bookdown.org" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>Hébergement <strong>gratuit</strong> et maintenu par RStudio</li>
+<li>Pas besoin de configurer un serveur ou un dépôt Git</li>
+<li>Intégration directe depuis RStudio via le package <code>rsconnect</code></li>
+<li>URL publique personnalisée (du type <code>bookdown.org/tonpseudo/nomdulivre</code>)</li>
+</ul>
+</div>
+<div id="étapes-pour-publier-sur-bookdown.org" class="section level3 hasAnchor" number="7.3.2">
+<h3><span class="header-section-number">7.3.2</span> Étapes pour publier sur <code>bookdown.org</code><a href="déploiement-dun-livre-bookdown.html#étapes-pour-publier-sur-bookdown.org" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="créer-un-compte" class="section level4 hasAnchor" number="7.3.2.1">
+<h4><span class="header-section-number">7.3.2.1</span> Créer un compte<a href="déploiement-dun-livre-bookdown.html#créer-un-compte" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<ul>
+<li>Va sur : <a href="https://bookdown.org/connect" class="uri">https://bookdown.org/connect</a></li>
+<li>Clique sur <strong>Sign Up</strong> avec un compte GitHub ou Google</li>
+</ul>
+<p>Tu auras accès à un <strong>espace personnel</strong> pour héberger ton livre.</p>
+</div>
+<div id="installer-les-packages-nécessaires" class="section level4 hasAnchor" number="7.3.2.2">
+<h4><span class="header-section-number">7.3.2.2</span> Installer les packages nécessaires<a href="déploiement-dun-livre-bookdown.html#installer-les-packages-nécessaires" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Assure-toi que les packages suivants sont installés :</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="déploiement-dun-livre-bookdown.html#cb57-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;bookdown&quot;</span>)</span>
+<span id="cb57-2"><a href="déploiement-dun-livre-bookdown.html#cb57-2" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;rsconnect&quot;</span>)</span></code></pre></div>
+</div>
+<div id="configurer-rsconnect" class="section level4 hasAnchor" number="7.3.2.3">
+<h4><span class="header-section-number">7.3.2.3</span> Configurer <code>rsconnect</code><a href="déploiement-dun-livre-bookdown.html#configurer-rsconnect" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Dans RStudio, tu peux <strong>lier ton compte bookdown.org</strong> avec cette commande (tu n’as besoin de le faire qu’une seule fois) :</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="déploiement-dun-livre-bookdown.html#cb58-1" tabindex="-1"></a>rsconnect<span class="sc">::</span><span class="fu">setAccountInfo</span>(</span>
+<span id="cb58-2"><a href="déploiement-dun-livre-bookdown.html#cb58-2" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">&quot;tonpseudo&quot;</span>,</span>
+<span id="cb58-3"><a href="déploiement-dun-livre-bookdown.html#cb58-3" tabindex="-1"></a>  <span class="at">token =</span> <span class="st">&quot;XXXXXX&quot;</span>,</span>
+<span id="cb58-4"><a href="déploiement-dun-livre-bookdown.html#cb58-4" tabindex="-1"></a>  <span class="at">secret =</span> <span class="st">&quot;YYYYYY&quot;</span></span>
+<span id="cb58-5"><a href="déploiement-dun-livre-bookdown.html#cb58-5" tabindex="-1"></a>)</span></code></pre></div>
+<p>Tu obtiendras ces informations (<code>name</code>, <code>token</code>, <code>secret</code>) en suivant les instructions dans ton tableau de bord bookdown.org (dans l’onglet <strong>Tokens / Deploy</strong>).</p>
+<hr />
+</div>
+<div id="publier-le-livre" class="section level4 hasAnchor" number="7.3.2.4">
+<h4><span class="header-section-number">7.3.2.4</span> Publier le livre<a href="déploiement-dun-livre-bookdown.html#publier-le-livre" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Compile ton livre une première fois localement :</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="déploiement-dun-livre-bookdown.html#cb59-1" tabindex="-1"></a>bookdown<span class="sc">::</span><span class="fu">render_book</span>(<span class="st">&quot;index.Rmd&quot;</span>)</span></code></pre></div>
+<p>Puis publie-le avec :</p>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="déploiement-dun-livre-bookdown.html#cb60-1" tabindex="-1"></a>bookdown<span class="sc">::</span><span class="fu">publish_book</span>(<span class="at">name =</span> <span class="st">&quot;nomdulivre&quot;</span>)</span></code></pre></div>
+<p>Le nom utilisé dans <code>name = "..."</code> deviendra l’URL de ton livre.<br />
+Par exemple : <code>https://bookdown.org/tonpseudo/nomdulivre/</code></p>
+</div>
+<div id="mettre-à-jour-le-livre" class="section level4 hasAnchor" number="7.3.2.5">
+<h4><span class="header-section-number">7.3.2.5</span> Mettre à jour le livre<a href="déploiement-dun-livre-bookdown.html#mettre-à-jour-le-livre" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Quand tu fais des modifications et recompiles ton livre, tu peux le republier simplement avec :</p>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="déploiement-dun-livre-bookdown.html#cb61-1" tabindex="-1"></a>bookdown<span class="sc">::</span><span class="fu">publish_book</span>()</span></code></pre></div>
+<p>Bookdown se souvient du nom et de la connexion à bookdown.org.</p>
+<hr />
+</div>
+<div id="bonnes-pratiques-1" class="section level4 hasAnchor" number="7.3.2.6">
+<h4><span class="header-section-number">7.3.2.6</span> Bonnes pratiques<a href="déploiement-dun-livre-bookdown.html#bonnes-pratiques-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<ul>
+<li>Choisis un <strong>nom de livre unique et explicite</strong></li>
+<li>Compile d’abord localement pour vérifier que tout fonctionne</li>
+<li>Utilise un <strong><code>_output.yml</code> soigné</strong> (menus, formats, style)</li>
+<li>Partage ton lien <code>bookdown.org/tonpseudo/nomdulivre</code> à tes lecteurs ou collègues</li>
+</ul>
+<p><code>bookdown.org</code> est une excellente solution <strong>clé en main</strong> pour publier rapidement un livre R Markdown sans configuration technique.</p>
+</div>
+</div>
+</div>
+<div id="partage-manuel-local-ou-cloud" class="section level2 hasAnchor" number="7.4">
+<h2><span class="header-section-number">7.4</span> Partage manuel (local ou cloud)<a href="déploiement-dun-livre-bookdown.html#partage-manuel-local-ou-cloud" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Si tu ne veux pas publier ton livre sur Internet, tu peux le partager <strong>localement</strong> :</p>
+<div id="format-html" class="section level3 hasAnchor" number="7.4.1">
+<h3><span class="header-section-number">7.4.1</span> Format HTML<a href="déploiement-dun-livre-bookdown.html#format-html" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>Compile ton livre : <code>bookdown::render_book("index.Rmd")</code></li>
+<li>Copie tout le dossier <code>_book/</code> :
+<ul>
+<li>Sur une <strong>clé USB</strong></li>
+<li>Dans un dossier <strong>Google Drive</strong> ou <strong>OneDrive</strong></li>
+<li>Dans un <strong>serveur local de ton organisation</strong></li>
+</ul></li>
+<li>Le fichier <code>index.html</code> permet d’ouvrir le livre dans n’importe quel navigateur</li>
+</ul>
+</div>
+<div id="format-pdf" class="section level3 hasAnchor" number="7.4.2">
+<h3><span class="header-section-number">7.4.2</span> Format PDF<a href="déploiement-dun-livre-bookdown.html#format-pdf" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>Compile ton livre avec <code>bookdown::pdf_book</code></li>
+<li>Le fichier <code>.pdf</code> peut être envoyé par <strong>email</strong>, <strong>Plateforme pédagogique</strong>, etc.</li>
+</ul>
+<p>Tu as maintenant toutes les clés pour <strong>partager ton livre</strong> avec ton public, en ligne ou hors ligne, dans le format le plus adapté à ton objectif.</p>
+
+</div>
+</div>
+</div>
+<footer style="
+  text-align: center;
+  padding: 1.5em 0;
+  font-size: 0.85em;
+  color: #444;
+  background-color: #f7f7f7;
+  border-top: 1px solid #ddd;
+  margin-top: 3em;
+">
+
+  <p style="margin-bottom: 0.5em;">
+    📘 <strong>Prise en main du package "Bookdown"</strong>
+  </p>
+
+  <p style="margin-bottom: 0.5em;">
+    Projet réalisé par <strong>Ahmadou Niass</strong> et <strong>Samba Sow</strong> – <em>ENSAE Dakar, 2025</em><br>
+    dans le cadre du <em>cours de projets statistiques avec R</em>.
+  </p>
+
+  <p style="font-size: 0.8em; margin-bottom: 0;">
+    📁 Code source disponible sur 
+    <a href="https://github.com/ahmadouniass/Bookdown" target="_blank">GitHub</a> · Powered by <a href="https://bookdown.org" target="_blank">Bookdown</a>
+  </p>
+
+</footer>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="créer-un-modèle-bookdown-réutilisable.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="pour-aller-plus-loin.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": false,
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": null,
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": null,
+    "text": null
+  },
+  "download": ["_main.pdf"],
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "section"
+  }
+});
+});
+</script>
+
+</body>
+
+</html>

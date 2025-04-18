@@ -1,0 +1,137 @@
+# Installation et Configuration
+
+
+## Prérequis : R, RStudio, LaTeX, Pandoc
+
+
+Avant de commencer à créer un livre avec **Bookdown**, il est essentiel d’avoir un environnement de travail bien configuré. Cette section présente les outils requis ainsi que leur rôle.
+
+
+
+### R
+
+Bookdown est un package du langage **R**. Il faut donc que R soit installé sur votre ordinateur.
+
+- 🔗 Téléchargement : [https://cran.r-project.org](https://cran.r-project.org)
+- Version recommandée : 4.0 ou supérieure
+
+Vérifiez votre version avec :
+
+```
+version
+```
+
+
+### RStudio
+
+[RStudio](https://posit.co/download/rstudio-desktop/) est l’environnement de développement recommandé. Il facilite la création, l’organisation et la compilation de projets Bookdown.
+
+- Il intègre **Pandoc**, le moteur de conversion utilisé par Bookdown
+- Il fournit une interface graphique simple pour créer un projet et le compiler
+
+
+
+### LaTeX (pour la génération PDF)
+
+Pour produire un livre en **PDF**, il faut une distribution LaTeX. La méthode la plus simple consiste à utiliser le package `tinytex`, qui fournit une version légère et portable de LaTeX.
+
+```r
+# Installation du package tinytex
+install.packages("tinytex")
+
+# Installation de TinyTeX (LaTeX minimal)
+tinytex::install_tinytex()
+
+# Vérification de l’installation
+tinytex::is_tinytex()
+```
+
+🕒 L’installation de TinyTeX peut prendre quelques minutes mais ne doit être faite qu’une seule fois.
+
+
+### Package `remotes` (optionnel)
+
+Le package `remotes` permet d’installer Bookdown depuis GitHub (utile pour accéder à la version de développement avec les dernières fonctionnalités).
+
+```r
+install.packages("remotes")
+```
+
+
+### Récapitulatif
+
+| Outil         | Rôle                                              | Obligatoire ? |
+|---------------|---------------------------------------------------|---------------|
+| R             | Langage principal utilisé par Bookdown            | ✅ Oui        |
+| RStudio       | Environnement de développement intégré            | ✅ Oui        |
+| Pandoc        | Conversion vers HTML/PDF/EPUB/Word                | ✅ Oui (inclus)|
+| LaTeX         | Génération de documents PDF                       | ✅ Oui        |
+| tinytex       | Distribution LaTeX recommandée                    | ✅ Oui        |
+| remotes       | Installation avancée depuis GitHub                | ❌ Optionnel  |
+
+
+> Une fois ces outils en place, vous pouvez passer à l’installation du package `bookdown`.
+
+
+---
+
+## Installation de Bookdown
+
+Une fois R, RStudio, Pandoc et LaTeX installés, vous pouvez procéder à l’installation du package `bookdown`.
+
+
+### Installation stable depuis le CRAN
+
+La version stable du package `bookdown` est disponible sur le **CRAN** (le dépôt officiel de R).
+
+```r
+install.packages("bookdown")
+```
+
+> Cela garantit une version stable, testée et compatible avec les autres packages du CRAN.
+
+
+### Vérification de l’installation
+
+Après l’installation, chargez le package pour vérifier qu’il fonctionne correctement :
+
+```r
+library(bookdown)
+```
+
+> Pour afficher la version installée :
+
+```r
+packageVersion("bookdown")
+```
+
+
+### Installation de la version de développement (optionnel)
+
+Si vous souhaitez accéder aux toutes dernières fonctionnalités ou corriger un bug résolu récemment, vous pouvez installer la **version de développement** directement depuis **GitHub** :
+
+```
+r
+# Assurez-vous d'avoir installé 'remotes' (voir Partie 1)
+remotes::install_github("rstudio/bookdown")
+```
+
+Attention : cette version peut contenir des changements encore en test. À réserver à des utilisateurs expérimentés ou à ceux qui veulent contribuer au développement.
+
+
+### Exemple de vérification automatisée
+
+Voici un script simple qui installe `bookdown` seulement s’il n’est pas encore installé :
+
+```r
+if (!requireNamespace("bookdown", quietly = TRUE)) {
+  message("Le package 'bookdown' n'est pas installé. Installation en cours...")
+  install.packages("bookdown")
+} else {
+  message("Le package 'bookdown' est déjà installé. Version actuelle : ", packageVersion("bookdown"))
+}
+```
+
+
+Avec `bookdown` installé et fonctionnel, vous êtes prêt à créer votre premier projet.  
+Passons maintenant à la **création d’un projet Bookdown dans RStudio**.

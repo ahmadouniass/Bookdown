@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>5 Insertion de contenus multimédias (images, vidéos, sons) | Prise en main du package Bookdown</title>
+  <meta name="description" content="5 Insertion de contenus multimédias (images, vidéos, sons) | Prise en main du package Bookdown" />
+  <meta name="generator" content="bookdown 0.42 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="5 Insertion de contenus multimédias (images, vidéos, sons) | Prise en main du package Bookdown" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="5 Insertion de contenus multimédias (images, vidéos, sons) | Prise en main du package Bookdown" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="écriture-du-contenu-avec-bookdown.html"/>
+<link rel="next" href="créer-un-modèle-bookdown-réutilisable.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<link rel="shortcut icon" href="images/bookdown.ico" type="image/x-icon">
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li style="text-align:center;">
+  <img src="images/bookdown.png" style="max-width:120px; margin-bottom: 0.5em;">
+</li>
+<li><a href="index.html">Prise en main du  <br> package "Bookdown"</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Package Bookdown</a></li>
+<li class="chapter" data-level="2" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>2</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="introduction.html"><a href="introduction.html#quest-ce-que-bookdown"><i class="fa fa-check"></i><b>2.1</b> Qu’est-ce que Bookdown ?</a></li>
+<li class="chapter" data-level="2.2" data-path="introduction.html"><a href="introduction.html#historique-et-contexte"><i class="fa fa-check"></i><b>2.2</b> Historique et Contexte</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html"><i class="fa fa-check"></i><b>3</b> Installation et Configuration</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html#prérequis-r-rstudio-latex-pandoc"><i class="fa fa-check"></i><b>3.1</b> Prérequis : R, RStudio, LaTeX, Pandoc</a></li>
+<li class="chapter" data-level="3.2" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html#installation-de-bookdown"><i class="fa fa-check"></i><b>3.2</b> Installation de Bookdown</a></li>
+<li class="chapter" data-level="3.3" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html#créer-un-projet-bookdown-avec-rstudio"><i class="fa fa-check"></i><b>3.3</b> Créer un projet Bookdown avec RStudio</a></li>
+<li class="chapter" data-level="3.4" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html#créer-un-squelette-de-livre-avec-r-alternative-sans-interface"><i class="fa fa-check"></i><b>3.4</b> Créer un squelette de livre avec R (alternative sans interface)</a></li>
+<li class="chapter" data-level="3.5" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html#contenu-des-fichiers-principaux"><i class="fa fa-check"></i><b>3.5</b> Contenu des fichiers principaux</a></li>
+<li class="chapter" data-level="3.6" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html#a-retenir"><i class="fa fa-check"></i><b>3.6</b> A retenir</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="écriture-du-contenu-avec-bookdown.html"><a href="écriture-du-contenu-avec-bookdown.html"><i class="fa fa-check"></i><b>4</b> Écriture du contenu avec Bookdown</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="écriture-du-contenu-avec-bookdown.html"><a href="écriture-du-contenu-avec-bookdown.html#syntaxe-markdown-rappel-rapide"><i class="fa fa-check"></i><b>4.1</b> Syntaxe Markdown (rappel rapide)</a></li>
+<li class="chapter" data-level="4.2" data-path="écriture-du-contenu-avec-bookdown.html"><a href="écriture-du-contenu-avec-bookdown.html#figures-et-tableaux"><i class="fa fa-check"></i><b>4.2</b> Figures et tableaux</a></li>
+<li class="chapter" data-level="4.3" data-path="écriture-du-contenu-avec-bookdown.html"><a href="écriture-du-contenu-avec-bookdown.html#citations-bibliographiques"><i class="fa fa-check"></i><b>4.3</b> Citations bibliographiques</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="insertion-de-contenus-multimédias-images-vidéos-sons.html"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html"><i class="fa fa-check"></i><b>5</b> Insertion de contenus multimédias (images, vidéos, sons)</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="insertion-de-contenus-multimédias-images-vidéos-sons.html"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#insertion-dimages"><i class="fa fa-check"></i><b>5.1</b> Insertion d’images</a></li>
+<li class="chapter" data-level="5.2" data-path="insertion-de-contenus-multimédias-images-vidéos-sons.html"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#insertion-de-vidéos"><i class="fa fa-check"></i><b>5.2</b> Insertion de vidéos</a></li>
+<li class="chapter" data-level="5.3" data-path="insertion-de-contenus-multimédias-images-vidéos-sons.html"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#insertion-de-fichiers-audio"><i class="fa fa-check"></i><b>5.3</b> Insertion de fichiers audio</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html"><i class="fa fa-check"></i><b>6</b> Créer un modèle Bookdown réutilisable</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#créer-un-dossier-modèle-à-réutiliser-version-simple"><i class="fa fa-check"></i><b>6.1</b> Créer un dossier modèle à réutiliser (version simple)</a></li>
+<li class="chapter" data-level="6.2" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#transformer-ton-modèle-en-package-r-avancé"><i class="fa fa-check"></i><b>6.2</b> Transformer ton modèle en package R (avancé)</a></li>
+<li class="chapter" data-level="6.3" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#créer-un-modèle-rstudio-r-markdown-template"><i class="fa fa-check"></i><b>6.3</b> Créer un modèle RStudio (R Markdown template)</a></li>
+<li class="chapter" data-level="6.4" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#créer-un-modèle-rstudio-réutilisable-r-markdown-template"><i class="fa fa-check"></i><b>6.4</b> Créer un modèle RStudio réutilisable (R Markdown Template)</a></li>
+<li class="chapter" data-level="6.5" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#compilation-du-livre"><i class="fa fa-check"></i><b>6.5</b> Compilation du livre</a></li>
+<li class="chapter" data-level="6.6" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#où-vont-les-fichiers-compilés"><i class="fa fa-check"></i><b>6.6</b> Où vont les fichiers compilés ?</a></li>
+<li class="chapter" data-level="6.7" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#astuces-utiles"><i class="fa fa-check"></i><b>6.7</b> Astuces utiles</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="déploiement-dun-livre-bookdown.html"><a href="déploiement-dun-livre-bookdown.html"><i class="fa fa-check"></i><b>7</b> Déploiement d’un livre Bookdown</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="déploiement-dun-livre-bookdown.html"><a href="déploiement-dun-livre-bookdown.html#publication-avec-github-pages-idéal-pour-html"><i class="fa fa-check"></i><b>7.1</b> Publication avec GitHub Pages (idéal pour HTML)</a></li>
+<li class="chapter" data-level="7.2" data-path="déploiement-dun-livre-bookdown.html"><a href="déploiement-dun-livre-bookdown.html#publication-avec-netlify-flexible-et-automatisé"><i class="fa fa-check"></i><b>7.2</b> Publication avec Netlify (flexible et automatisé)</a></li>
+<li class="chapter" data-level="7.3" data-path="déploiement-dun-livre-bookdown.html"><a href="déploiement-dun-livre-bookdown.html#publication-sur-bookdown.org"><i class="fa fa-check"></i><b>7.3</b> Publication sur bookdown.org</a></li>
+<li class="chapter" data-level="7.4" data-path="déploiement-dun-livre-bookdown.html"><a href="déploiement-dun-livre-bookdown.html#partage-manuel-local-ou-cloud"><i class="fa fa-check"></i><b>7.4</b> Partage manuel (local ou cloud)</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html"><i class="fa fa-check"></i><b>8</b> Pour aller plus loin</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#ajouter-des-bulles-dinformation-au-survol-infobulles"><i class="fa fa-check"></i><b>8.1</b> Ajouter des bulles d’information au survol (infobulles)</a></li>
+<li class="chapter" data-level="8.2" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#astuce-alternative-avec-le-package-tippy-plus-stylé"><i class="fa fa-check"></i><b>8.2</b> Astuce alternative avec le package <code>tippy</code> (plus stylé)</a></li>
+<li class="chapter" data-level="8.3" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#appliquer-des-styles-personnalisés-aux-titres"><i class="fa fa-check"></i><b>8.3</b> Appliquer des styles personnalisés aux titres</a></li>
+<li class="chapter" data-level="8.4" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#références-croisées-internes"><i class="fa fa-check"></i><b>8.4</b> Références croisées internes</a></li>
+<li class="chapter" data-level="8.5" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#générer-plusieurs-formats-à-la-fois"><i class="fa fa-check"></i><b>8.5</b> 🚀 Générer plusieurs formats à la fois</a></li>
+<li class="chapter" data-level="8.6" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#créer-ton-propre-modèle-bookdown"><i class="fa fa-check"></i><b>8.6</b> Créer ton propre modèle Bookdown</a></li>
+<li class="chapter" data-level="8.7" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#bonus-réorganiser-les-fichiers-générés"><i class="fa fa-check"></i><b>8.7</b> Bonus : Réorganiser les fichiers générés</a></li>
+<li class="chapter" data-level="8.8" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#ajouter-un-pied-de-page-footer-dans-bookdown"><i class="fa fa-check"></i><b>8.8</b> Ajouter un pied de page (footer) dans Bookdown</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Publié avec bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Prise en main du package Bookdown</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="insertion-de-contenus-multimédias-images-vidéos-sons" class="section level1 hasAnchor" number="5">
+<h1><span class="header-section-number">5</span> Insertion de contenus multimédias (images, vidéos, sons)<a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#insertion-de-contenus-multimédias-images-vidéos-sons" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Bookdown te permet d’enrichir ton livre avec des <strong>contenus multimédias</strong> : <strong>images, vidéos, sons</strong>, qu’ils soient en <strong>local</strong> (dans ton dossier) ou hébergés en <strong>ligne</strong>. Cela améliore l’accessibilité et l’interactivité de ton document, surtout en HTML.</p>
+<div id="insertion-dimages" class="section level2 hasAnchor" number="5.1">
+<h2><span class="header-section-number">5.1</span> Insertion d’images<a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#insertion-dimages" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>L’image est le contenu multimédia le plus utilisé dans un document Bookdown, qu’il s’agisse de logos, de cartes, de schémas ou de captures d’écran. Bookdown accepte les images <strong>locales</strong> (placées dans le dossier du projet) ou <strong>hébergées en ligne</strong>.</p>
+<div id="image-locale-dans-le-dossier-du-projet" class="section level3 hasAnchor" number="5.1.1">
+<h3><span class="header-section-number">5.1.1</span> Image locale (dans le dossier du projet)<a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#image-locale-dans-le-dossier-du-projet" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Pour insérer une image locale, voici la procédure recommandée :</p>
+<ul>
+<li>Crée un dossier <code>images/</code> dans ton projet Bookdown</li>
+<li>Place l’image à l’intérieur (ex. <code>logo.png</code>)</li>
+<li>Utilise la syntaxe Markdown classique pour l’insérer dans ton <code>.Rmd</code> :</li>
+</ul>
+<pre><code>![Logo du projet](images/logo.png)</code></pre>
+<p>Cette méthode fonctionne aussi bien en HTML qu’en PDF ou EPUB, à condition que l’image soit disponible au moment de la compilation.</p>
+<hr />
+<div id="options-supplémentaires-avec-html" class="section level4 hasAnchor" number="5.1.1.1">
+<h4><span class="header-section-number">5.1.1.1</span> Options supplémentaires avec HTML<a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#options-supplémentaires-avec-html" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Markdown ne permet pas de contrôler finement la taille ou la position. Pour cela, tu peux utiliser du HTML à la place :</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb25-1"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb25-1" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">&quot;center&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb25-2"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb25-2" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">&quot;images/logo.png&quot;</span><span class="ot"> width</span><span class="op">=</span><span class="st">&quot;300px&quot;</span><span class="ot"> </span><span class="dt">/&gt;</span></span>
+<span id="cb25-3"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb25-3" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>Cela permet de :
+- <strong>Centrer</strong> l’image (<code>align="center"</code>)
+- <strong>Contrôler sa largeur</strong> (<code>width="300px"</code>, ou <code>width="50%"</code>)
+- <strong>Conserver la compatibilité</strong> avec tous les formats HTML</p>
+<p>Si tu veux forcer une image à occuper toute la largeur de la page en HTML :</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb26-1"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb26-1" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">&quot;images/schema.png&quot;</span><span class="ot"> style</span><span class="op">=</span><span class="st">&quot;width:100%;&quot;</span><span class="dt">/&gt;</span></span></code></pre></div>
+</div>
+<div id="astuces-bonnes-pratiques" class="section level4 hasAnchor" number="5.1.1.2">
+<h4><span class="header-section-number">5.1.1.2</span> Astuces bonnes pratiques<a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#astuces-bonnes-pratiques" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<ul>
+<li>Utilise des formats d’image légers : <code>.png</code>, <code>.jpg</code>, <code>.svg</code> (PDF-friendly)</li>
+<li>Préfère les <strong>chemins relatifs</strong> (<code>images/monimage.png</code>) plutôt que des chemins absolus</li>
+<li>Pour les graphiques produits dans R, utilise plutôt un chunk R avec <code>fig.cap</code></li>
+</ul>
+</div>
+</div>
+<div id="image-hébergée-en-ligne" class="section level3 hasAnchor" number="5.1.2">
+<h3><span class="header-section-number">5.1.2</span> Image hébergée en ligne<a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#image-hébergée-en-ligne" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Tu peux aussi insérer une image stockée en ligne avec la même syntaxe Markdown :</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb27-1"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb27-1" tabindex="-1"></a><span class="al">![Logo ENSAE](https://example.com/images/logo_ensae.png)</span></span></code></pre></div>
+<p>Cela fonctionne uniquement si la page peut accéder à Internet. Pour les PDF, l’image sera téléchargée à la compilation.</p>
+<p>Cette méthode est utile si tu ne veux pas alourdir ton dépôt GitHub ou ton dossier de projet avec des fichiers image.</p>
+<div id="résumé" class="section level4 hasAnchor" number="5.1.2.1">
+<h4><span class="header-section-number">5.1.2.1</span> Résumé<a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#résumé" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<table>
+<colgroup>
+<col width="20%" />
+<col width="40%" />
+<col width="20%" />
+<col width="18%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Type d’image</th>
+<th>Syntaxe recommandée</th>
+<th>Compatible HTML</th>
+<th>Compatible PDF</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Image locale</td>
+<td><code>![Légende](images/img.png)</code></td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr class="even">
+<td>Image en ligne</td>
+<td><code>![Légende](https://...)</code></td>
+<td>✅</td>
+<td>✅*</td>
+</tr>
+<tr class="odd">
+<td>Image stylée</td>
+<td><code>&lt;img src=... width=...&gt;</code> (HTML)</td>
+<td>✅</td>
+<td>⚠️ (ignore le style)</td>
+</tr>
+</tbody>
+</table>
+<p>Si l’image en ligne n’est pas disponible lors de la compilation, elle ne s’affichera pas dans le PDF.</p>
+</div>
+</div>
+</div>
+<div id="insertion-de-vidéos" class="section level2 hasAnchor" number="5.2">
+<h2><span class="header-section-number">5.2</span> Insertion de vidéos<a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#insertion-de-vidéos" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="vidéo-locale-.mp4-ou-.webm" class="section level4 hasAnchor" number="5.2.0.1">
+<h4><span class="header-section-number">5.2.0.1</span> Vidéo locale (<code>.mp4</code> ou <code>.webm</code>)<a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#vidéo-locale-.mp4-ou-.webm" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Crée un dossier <code>videos/</code> et ajoute ce code dans ton <code>.Rmd</code> :</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb28-1"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb28-1" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">video</span><span class="ot"> width</span><span class="op">=</span><span class="st">&quot;720&quot;</span><span class="ot"> height</span><span class="op">=</span><span class="st">&quot;405&quot;</span><span class="ot"> controls</span><span class="dt">&gt;</span></span>
+<span id="cb28-2"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb28-2" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">source</span><span class="ot"> src</span><span class="op">=</span><span class="st">&quot;videos/creation_bookdown.webm&quot;</span><span class="ot"> type</span><span class="op">=</span><span class="st">&quot;video/webm&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb28-3"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb28-3" tabindex="-1"></a>  Votre navigateur ne supporte pas la lecture de vidéos HTML5.</span>
+<span id="cb28-4"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb28-4" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">video</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>Utilise <code>.webm</code> ou <code>.mp4</code> pour un bon support navigateur. Pour une vidéo responsive :</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb29-1"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb29-1" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> style</span><span class="op">=</span><span class="st">&quot;max-width: 100%;&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb29-2"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb29-2" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">video</span><span class="ot"> controls style</span><span class="op">=</span><span class="st">&quot;width: 100%;&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb29-3"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb29-3" tabindex="-1"></a>    <span class="dt">&lt;</span><span class="kw">source</span><span class="ot"> src</span><span class="op">=</span><span class="st">&quot;videos/demo.mp4&quot;</span><span class="ot"> type</span><span class="op">=</span><span class="st">&quot;video/mp4&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb29-4"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb29-4" tabindex="-1"></a>  <span class="dt">&lt;/</span><span class="kw">video</span><span class="dt">&gt;</span></span>
+<span id="cb29-5"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb29-5" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span></code></pre></div>
+</div>
+<div id="vidéo-hébergée-youtube-peertube" class="section level4 hasAnchor" number="5.2.0.2">
+<h4><span class="header-section-number">5.2.0.2</span> Vidéo hébergée (YouTube, PeerTube…)<a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#vidéo-hébergée-youtube-peertube" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Pour insérer une vidéo YouTube :</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb30-1"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb30-1" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">iframe</span><span class="ot"> width</span><span class="op">=</span><span class="st">&quot;720&quot;</span><span class="ot"> height</span><span class="op">=</span><span class="st">&quot;405&quot;</span><span class="ot"> src</span><span class="op">=</span><span class="st">&quot;https://www.youtube.com/embed/3rOXFJ0F1iE&quot;</span><span class="ot"> frameborder</span><span class="op">=</span><span class="st">&quot;0&quot;</span><span class="ot"> allowfullscreen</span><span class="dt">&gt;&lt;/</span><span class="kw">iframe</span><span class="dt">&gt;</span></span></code></pre></div>
+<hr />
+</div>
+</div>
+<div id="insertion-de-fichiers-audio" class="section level2 hasAnchor" number="5.3">
+<h2><span class="header-section-number">5.3</span> Insertion de fichiers audio<a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#insertion-de-fichiers-audio" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Tu peux intégrer des <strong>sons</strong> ou <strong>commentaires vocaux</strong> dans tes chapitres.</p>
+<div id="exemple-audio-local-.mp3" class="section level4 hasAnchor" number="5.3.0.1">
+<h4><span class="header-section-number">5.3.0.1</span> Exemple (audio local <code>.mp3</code>) :<a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#exemple-audio-local-.mp3" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb31"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb31-1"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb31-1" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">audio</span><span class="ot"> controls</span><span class="dt">&gt;</span></span>
+<span id="cb31-2"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb31-2" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">source</span><span class="ot"> src</span><span class="op">=</span><span class="st">&quot;audio/intro.mp3&quot;</span><span class="ot"> type</span><span class="op">=</span><span class="st">&quot;audio/mpeg&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb31-3"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb31-3" tabindex="-1"></a>  Votre navigateur ne supporte pas l&#39;audio HTML5.</span>
+<span id="cb31-4"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb31-4" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">audio</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>Place tes fichiers audio dans un dossier <code>audio/</code> dans ton projet.</p>
+</div>
+<div id="limitations-selon-le-format-de-sortie" class="section level3 hasAnchor" number="5.3.1">
+<h3><span class="header-section-number">5.3.1</span> Limitations selon le format de sortie<a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#limitations-selon-le-format-de-sortie" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<table>
+<thead>
+<tr class="header">
+<th>Contenu</th>
+<th>HTML</th>
+<th>PDF</th>
+<th>EPUB</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Images</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr class="even">
+<td>Vidéos (.mp4)</td>
+<td>✅</td>
+<td>❌</td>
+<td>⚠️ (souvent ignoré)</td>
+</tr>
+<tr class="odd">
+<td>YouTube</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr class="even">
+<td>Audio (.mp3)</td>
+<td>✅</td>
+<td>❌</td>
+<td>⚠️ (selon lecteur)</td>
+</tr>
+</tbody>
+</table>
+<p>Pour le PDF, les médias interactifs <strong>ne sont pas intégrés</strong> : il vaut mieux fournir un lien externe ou une capture.</p>
+</div>
+<div id="astuces-pratiques" class="section level3 hasAnchor" number="5.3.2">
+<h3><span class="header-section-number">5.3.2</span> Astuces pratiques<a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#astuces-pratiques" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>Organise tes fichiers multimédias dans des sous-dossiers : <code>images/</code>, <code>videos/</code>, <code>audio/</code></li>
+<li>Vérifie que les chemins sont <strong>relatifs</strong> à la racine du projet</li>
+<li>Préfère les formats <strong>.webm</strong> et <strong>.mp4</strong> pour les vidéos, <strong>.mp3</strong> pour les sons</li>
+<li>Pour les versions PDF : remplace les vidéos par des <strong>liens cliquables</strong> ou des <strong>captures d’écran</strong></li>
+</ul>
+
+</div>
+</div>
+</div>
+<footer style="
+  text-align: center;
+  padding: 1.5em 0;
+  font-size: 0.85em;
+  color: #444;
+  background-color: #f7f7f7;
+  border-top: 1px solid #ddd;
+  margin-top: 3em;
+">
+
+  <p style="margin-bottom: 0.5em;">
+    📘 <strong>Prise en main du package "Bookdown"</strong>
+  </p>
+
+  <p style="margin-bottom: 0.5em;">
+    Projet réalisé par <strong>Ahmadou Niass</strong> et <strong>Samba Sow</strong> – <em>ENSAE Dakar, 2025</em><br>
+    dans le cadre du <em>cours de projets statistiques avec R</em>.
+  </p>
+
+  <p style="font-size: 0.8em; margin-bottom: 0;">
+    📁 Code source disponible sur 
+    <a href="https://github.com/ahmadouniass/Bookdown" target="_blank">GitHub</a> · Powered by <a href="https://bookdown.org" target="_blank">Bookdown</a>
+  </p>
+
+</footer>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="écriture-du-contenu-avec-bookdown.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="créer-un-modèle-bookdown-réutilisable.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": false,
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": null,
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": null,
+    "text": null
+  },
+  "download": ["_main.pdf"],
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "section"
+  }
+});
+});
+</script>
+
+</body>
+
+</html>
