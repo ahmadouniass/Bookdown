@@ -1,4 +1,4 @@
-# Insertion de contenus multimédias (images, vidéos, sons)
+# Insertion de contenus 
 
 Bookdown te permet d’enrichir ton livre avec des **contenus multimédias** : **images, vidéos, sons**, qu’ils soient en **local** (dans ton dossier) ou hébergés en **ligne**. Cela améliore l’accessibilité et l’interactivité de ton document, surtout en HTML.
 
@@ -144,4 +144,58 @@ Pour le PDF, les médias interactifs **ne sont pas intégrés** : il vaut mieux 
 - Vérifie que les chemins sont **relatifs** à la racine du projet
 - Préfère les formats **.webm** et **.mp4** pour les vidéos, **.mp3** pour les sons
 - Pour les versions PDF : remplace les vidéos par des **liens cliquables** ou des **captures d’écran**
+
+# Comment intégrer une application Shiny dans un livre *Bookdown* ?
+
+Il existe plusieurs façons d’ajouter une application Shiny dans un livre *Bookdown*. Voici un tour d’horizon des méthodes possibles, avec leurs avantages et limites.
+
+---
+
+## Méthode 1 : **App Shiny *inline*** dans un chapitre `.Rmd`
+
+Tu peux insérer une **mini app Shiny directement dans un chunk R** de ton fichier `.Rmd`. C’est simple à mettre en place pour tester une idée rapidement.
+
+### 🔧 Exemple :
+```markdown
+## 🎛️ Petite appli Shiny intégrée
+
+```{r, echo=FALSE}
+library(shiny)
+
+shinyApp(
+  ui = fluidPage(
+    sliderInput("x", "Choisir une valeur", 1, 100, 50),
+    plotOutput("hist")
+  ),
+  server = function(input, output, session) {
+    output$hist <- renderPlot({
+      hist(rnorm(input$x))
+    })
+  }
+)
+```
+```
+
+ Cette méthode fonctionne **dans un environnement interactif**, comme avec `rmarkdown::run()` ou dans le **Viewer de RStudio**.
+
+**Attention :** cette solution **ne fonctionne pas** dans le livre HTML final généré avec `bookdown::render_book()` : les applications Shiny ne peuvent pas être embarquées statiquement.
+
+---
+
+## Méthode 2 : **Lien vers une app Shiny hébergée**
+
+C’est la solution **préférée** pour intégrer une vraie app dans un livre *Bookdown* publié en ligne.
+
+Tu héberges ton application Shiny (par exemple via [shinyapps.io](https://www.shinyapps.io), un serveur personnel ou RStudio Connect), puis tu l’intègres **dans une iframe**.
+
+### Exemple avec iframe
+
+```html
+<iframe src="https://senemalick.shinyapps.io/projetfinal/" width="100%" height="600px" frameborder="0"></iframe>
+```
+
+Résultat : ton app est **intégrée directement dans la page du livre**.
+
+*L’application doit être hébergée en HTTPS* (sinon l’iframe sera bloquée dans le navigateur).
+
 

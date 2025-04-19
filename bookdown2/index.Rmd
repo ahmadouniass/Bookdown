@@ -24,10 +24,11 @@ bibliography: references.bib
 <div style="text-align: center;">
 
 <!-- Logos -->
-<img src="images/LOGO1.jpg" width="150" style="margin-right: 20px;"> <br>
+<img src="images/LOGO3.jpg" width="150" style="margin-right: 20px;"> <br>
+<i>Ministère de l'Economie du Plan et de la Coopération</i> <br>
 <img src="images/LOGO2.jpg" width="100" style="margin-right: 20px;"> <br>
 <i>Agence nationale de la Statistique et de la Démographie (ANSD)</i> <br>
-<img src="images/LOGO3.jpg" width="60"> <br>
+<img src="images/LOGO1.jpg" width="60"> <br>
 <i>Ecole nationale de la Statistique et de l'Analyse économique Pierre Ndiaye (ENSAE)</i> <br>
 <br><br>
 
@@ -70,4 +71,3 @@ Année scolaire : 2024/2025
 </div>
 
 <!----------------------------------FIN DE SCRIPT - Page de garde---------------------------------------->
-

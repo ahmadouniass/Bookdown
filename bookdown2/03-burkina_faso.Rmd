@@ -123,14 +123,11 @@ plot_raster_aggregated_leaflet <- function(raster_obj, shapefile_path, palette =
 
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+```{r calcul_moyenne_regionale_bf, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 
-
-# 📂 Chargement unique du shapefile
 shapefile_path <- "data/shapes/regions_burkina.shp"
 regions <- st_read(shapefile_path)
 
-# 🔁 Fonction générique pour calculer les moyennes régionales
 get_moyennes_region <- function(indicateur, suffixe = "_burkina.tif", decimals = 3) {
   raster_path <- paste0("data/", indicateur, "/", indicateur, suffixe)
   rast <- raster(raster_path)
@@ -150,6 +147,9 @@ df_aweinsh <- get_moyennes_region("aweinsh", decimals = 4)
 
 
 ```
+
+
+------------------------------------------------------------------------
 ## Végétation – <span title="(NIR - Blue) / (NIR + Blue)">BNDVI</span>
 
 Le **<span title="(NIR - Blue) / (NIR + Blue)">BNDVI</span> (Blue Normalized Difference Vegetation Index)** est une variante du NDVI qui utilise la bande bleue au lieu de la bande rouge dans son calcul. Il permet de mesurer la densité et la vigueur de la végétation verte, en particulier dans les zones à faible couverture végétale ou soumises à des effets atmosphériques importants comme les aérosols ou la poussière, fréquents dans les environnements sahéliens.
@@ -160,7 +160,7 @@ Dans le cas du Burkina Faso, nous avons extrait les valeurs moyennes du <span ti
 
 ### Carte interactive du <span title="(NIR - Blue) / (NIR + Blue)">BNDVI</span> au Burkina-Faso en 2024
 
-```{r, echo=FALSE, message=FALSE, include=FALSE}
+```{r calcul_bndvi_bf, echo=FALSE, message=FALSE, include=FALSE}
 bndvi_out <- render_indicator_raster("bndvi", palette = "YlGn")
 ```
 
@@ -225,7 +225,7 @@ Dans le cas du **Burkina Faso**, nous avons extrait les **valeurs moyennes du <s
 
 ### Carte interactive du <span title="1 / ((0.1 - Red)² + (0.06 - NIR)²)">BAI</span> au Burkina-Faso en 2024
 
-```{r echo=FALSE, message=FALSE, include=FALSE}
+```{r calcul_bai_bf, echo=FALSE, message=FALSE, include=FALSE}
 bai_out <- render_indicator_raster("bai", palette = "OrRd")
 ```
 
@@ -286,7 +286,7 @@ Dans le cas du **Burkina Faso**, les **valeurs moyennes du <span title="4 × (Gr
 
 ### Carte interactive de l'<span title="4 × (Green - SWIR) - (0.25 × NIR + 2.75 × Red)">AWEInsh</span> au Burkina-Faso en 2024
 
-```{r echo=FALSE, message=FALSE, include=FALSE}
+```{r aweinsh_calcul_bf, echo=FALSE, message=FALSE, include=FALSE}
 aweinsh_out <- render_indicator_raster("aweinsh", palette = "OrRd")
 ```
 

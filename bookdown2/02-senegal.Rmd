@@ -121,14 +121,14 @@ plot_raster_aggregated_leaflet <- function(raster_obj, shapefile_path, palette =
 
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+```{r fonction_moyenne_regionale, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 
 
-# 📂 Chargement unique du shapefile
+
 shapefile_path <- "data/shapes/regions_senegal.shp"
 regions <- st_read(shapefile_path)
 
-# 🔁 Fonction générique pour calculer les moyennes régionales
+
 get_moyennes_region <- function(indicateur, suffixe = "_senegal.tif", decimals = 3) {
   raster_path <- paste0("data/", indicateur, "/", indicateur, suffixe)
   rast <- raster(raster_path)
@@ -140,7 +140,7 @@ get_moyennes_region <- function(indicateur, suffixe = "_senegal.tif", decimals =
     mutate(!!toupper(indicateur) := round(moyennes, decimals))
 }
 
-# 📈 Génération des tableaux
+
 df_ndvi <- get_moyennes_region("ndvi", decimals = 3)
 df_ndvi <- df_ndvi %>%
   mutate(NDVI = round(NDVI / 10000, 3)) 
@@ -160,7 +160,7 @@ Dans le cas du Sénégal, nous avons extrait les valeurs **moyennes du NDVI pour
 
 ### Carte interactive du NDVI au Sénégal en 2024
 
-```{r, echo=FALSE, message=FALSE, include=FALSE}
+```{r calcul_ndvi, echo=FALSE, message=FALSE, include=FALSE}
 ndvi_out <- render_indicator_raster("ndvi", palette = "YlGn")
 ```
 
@@ -234,7 +234,7 @@ Dans le cas du Sénégal, nous avons extrait les valeurs moyennes de l’ARI pou
 
 ### Carte interactive de l'ARI au Sénégal en 2024
 
-```{r echo=FALSE, message=FALSE, include=FALSE}
+```{r calcul_ari, echo=FALSE, message=FALSE, include=FALSE}
 ari_out <- render_indicator_raster("ari", palette = "OrRd")
 ```
 
@@ -288,7 +288,7 @@ Dans le cas du Sénégal, les valeurs moyennes du LSWI pour l’année 2024 ont 
 
 ### Carte interactive du LSWI au Sénégal en 2024
 
-```{r echo=FALSE, message=FALSE, include=FALSE}
+```{r calcul_lswi_sn, echo=FALSE, message=FALSE, include=FALSE}
 lswi_out <- render_indicator_raster("lswi", palette = "Blues")
 ```
 

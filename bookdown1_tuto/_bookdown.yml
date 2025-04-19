@@ -13,3 +13,4 @@ rmd_files:
   - 06-compilation.Rmd
   - 07-deploiement.Rmd
   - 08-plus_loin.Rmd
+  - 09-integration_shiny.Rmd

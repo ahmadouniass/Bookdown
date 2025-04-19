@@ -348,7 +348,7 @@ Cela peut surprendre pour **Sikasso**, habituellement considérée comme une ré
 
 Globalement, cette carte du ANDWI révèle une **teneur hydrique très faible dans la majorité des régions maliennes en 2024**, ce qui confirme la **fragilité hydrologique** du pays, y compris dans certaines zones agricoles du sud. Ces résultats justifient l’importance d’un **suivi continu de l’humidité des sols**, en appui aux **décisions agricoles**, à la **gestion de l’eau** et aux **programmes d’adaptation climatique**.
 
----
+------------------------------------------------------------------------
 
 ## Conclusion 
 

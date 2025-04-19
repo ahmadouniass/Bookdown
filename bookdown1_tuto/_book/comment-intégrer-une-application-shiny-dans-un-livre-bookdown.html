@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>6 Comment intégrer une application Shiny dans un livre Bookdown ? | Prise en main du package Bookdown</title>
+  <meta name="description" content="6 Comment intégrer une application Shiny dans un livre Bookdown ? | Prise en main du package Bookdown" />
+  <meta name="generator" content="bookdown 0.42 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="6 Comment intégrer une application Shiny dans un livre Bookdown ? | Prise en main du package Bookdown" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="6 Comment intégrer une application Shiny dans un livre Bookdown ? | Prise en main du package Bookdown" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="insertion-de-contenus.html"/>
+<link rel="next" href="créer-un-modèle-bookdown-réutilisable.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<link rel="shortcut icon" href="images/bookdown.ico" type="image/x-icon">
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li style="text-align:center;">
+  <img src="images/bookdown.png" style="max-width:120px; margin-bottom: 0.5em;">
+</li>
+<li><a href="index.html">Prise en main du  <br> package "Bookdown"</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Package Bookdown</a></li>
+<li class="chapter" data-level="2" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i><b>2</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="introduction.html"><a href="introduction.html#quest-ce-que-bookdown"><i class="fa fa-check"></i><b>2.1</b> Qu’est-ce que Bookdown ?</a></li>
+<li class="chapter" data-level="2.2" data-path="introduction.html"><a href="introduction.html#outils-nécessaires"><i class="fa fa-check"></i><b>2.2</b> Outils nécessaires</a></li>
+<li class="chapter" data-level="2.3" data-path="introduction.html"><a href="introduction.html#pourquoi-apprendre-bookdown"><i class="fa fa-check"></i><b>2.3</b> Pourquoi apprendre Bookdown ?</a></li>
+<li class="chapter" data-level="2.4" data-path="introduction.html"><a href="introduction.html#ce-que-tu-vas-apprendre-dans-ce-livre"><i class="fa fa-check"></i><b>2.4</b> Ce que tu vas apprendre dans ce livre</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html"><i class="fa fa-check"></i><b>3</b> Installation et Configuration</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html#prérequis-r-rstudio-latex-pandoc"><i class="fa fa-check"></i><b>3.1</b> Prérequis : R, RStudio, LaTeX, Pandoc</a></li>
+<li class="chapter" data-level="3.2" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html#installation-de-bookdown"><i class="fa fa-check"></i><b>3.2</b> Installation de Bookdown</a></li>
+<li class="chapter" data-level="3.3" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html#créer-un-projet-bookdown-avec-rstudio"><i class="fa fa-check"></i><b>3.3</b> Créer un projet Bookdown avec RStudio</a></li>
+<li class="chapter" data-level="3.4" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html#créer-un-squelette-de-livre-avec-r-alternative-sans-interface"><i class="fa fa-check"></i><b>3.4</b> Créer un squelette de livre avec R (alternative sans interface)</a></li>
+<li class="chapter" data-level="3.5" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html#contenu-des-fichiers-principaux"><i class="fa fa-check"></i><b>3.5</b> Contenu des fichiers principaux</a></li>
+<li class="chapter" data-level="3.6" data-path="installation-et-configuration.html"><a href="installation-et-configuration.html#a-retenir"><i class="fa fa-check"></i><b>3.6</b> A retenir</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="écriture-du-contenu-avec-bookdown.html"><a href="écriture-du-contenu-avec-bookdown.html"><i class="fa fa-check"></i><b>4</b> Écriture du contenu avec Bookdown</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="écriture-du-contenu-avec-bookdown.html"><a href="écriture-du-contenu-avec-bookdown.html#syntaxe-markdown-rappel-rapide"><i class="fa fa-check"></i><b>4.1</b> Syntaxe Markdown (rappel rapide)</a></li>
+<li class="chapter" data-level="4.2" data-path="écriture-du-contenu-avec-bookdown.html"><a href="écriture-du-contenu-avec-bookdown.html#figures-et-tableaux"><i class="fa fa-check"></i><b>4.2</b> Figures et tableaux</a></li>
+<li class="chapter" data-level="4.3" data-path="écriture-du-contenu-avec-bookdown.html"><a href="écriture-du-contenu-avec-bookdown.html#citations-bibliographiques"><i class="fa fa-check"></i><b>4.3</b> Citations bibliographiques</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="insertion-de-contenus.html"><a href="insertion-de-contenus.html"><i class="fa fa-check"></i><b>5</b> Insertion de contenus</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="insertion-de-contenus.html"><a href="insertion-de-contenus.html#insertion-dimages"><i class="fa fa-check"></i><b>5.1</b> Insertion d’images</a></li>
+<li class="chapter" data-level="5.2" data-path="insertion-de-contenus.html"><a href="insertion-de-contenus.html#insertion-de-vidéos"><i class="fa fa-check"></i><b>5.2</b> Insertion de vidéos</a></li>
+<li class="chapter" data-level="5.3" data-path="insertion-de-contenus.html"><a href="insertion-de-contenus.html#insertion-de-fichiers-audio"><i class="fa fa-check"></i><b>5.3</b> Insertion de fichiers audio</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html"><a href="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html"><i class="fa fa-check"></i><b>6</b> Comment intégrer une application Shiny dans un livre <em>Bookdown</em> ?</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html"><a href="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html#méthode-1-app-shiny-inline-dans-un-chapitre-.rmd"><i class="fa fa-check"></i><b>6.1</b> Méthode 1 : <strong>App Shiny <em>inline</em></strong> dans un chapitre <code>.Rmd</code></a></li>
+<li class="chapter" data-level="6.2" data-path="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html"><a href="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html#section"><i class="fa fa-check"></i><b>6.2</b> </a></li>
+<li class="chapter" data-level="6.3" data-path="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html"><a href="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html#listening-on-http127.0.0.15297"><i class="fa fa-check"></i><b>6.3</b> Listening on http://127.0.0.1:5297</a></li>
+<li class="chapter" data-level="6.4" data-path="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html"><a href="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html#méthode-2-lien-vers-une-app-shiny-hébergée"><i class="fa fa-check"></i><b>6.4</b> Méthode 2 : <strong>Lien vers une app Shiny hébergée</strong></a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html"><i class="fa fa-check"></i><b>7</b> Créer un modèle Bookdown réutilisable</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#créer-un-dossier-modèle-à-réutiliser-version-simple"><i class="fa fa-check"></i><b>7.1</b> Créer un dossier modèle à réutiliser (version simple)</a></li>
+<li class="chapter" data-level="7.2" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#transformer-ton-modèle-en-package-r-avancé"><i class="fa fa-check"></i><b>7.2</b> Transformer ton modèle en package R (avancé)</a></li>
+<li class="chapter" data-level="7.3" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#créer-un-modèle-rstudio-r-markdown-template"><i class="fa fa-check"></i><b>7.3</b> Créer un modèle RStudio (R Markdown template)</a></li>
+<li class="chapter" data-level="7.4" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#créer-un-modèle-rstudio-réutilisable-r-markdown-template"><i class="fa fa-check"></i><b>7.4</b> Créer un modèle RStudio réutilisable (R Markdown Template)</a></li>
+<li class="chapter" data-level="7.5" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#compilation-du-livre"><i class="fa fa-check"></i><b>7.5</b> Compilation du livre</a></li>
+<li class="chapter" data-level="7.6" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#où-vont-les-fichiers-compilés"><i class="fa fa-check"></i><b>7.6</b> Où vont les fichiers compilés ?</a></li>
+<li class="chapter" data-level="7.7" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html#astuces-utiles"><i class="fa fa-check"></i><b>7.7</b> Astuces utiles</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="déploiement-dun-livre-bookdown.html"><a href="déploiement-dun-livre-bookdown.html"><i class="fa fa-check"></i><b>8</b> Déploiement d’un livre Bookdown</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="déploiement-dun-livre-bookdown.html"><a href="déploiement-dun-livre-bookdown.html#publication-avec-github-pages-idéal-pour-html"><i class="fa fa-check"></i><b>8.1</b> Publication avec GitHub Pages (idéal pour HTML)</a></li>
+<li class="chapter" data-level="8.2" data-path="déploiement-dun-livre-bookdown.html"><a href="déploiement-dun-livre-bookdown.html#publication-avec-netlify-flexible-et-automatisé"><i class="fa fa-check"></i><b>8.2</b> Publication avec Netlify (flexible et automatisé)</a></li>
+<li class="chapter" data-level="8.3" data-path="déploiement-dun-livre-bookdown.html"><a href="déploiement-dun-livre-bookdown.html#publication-sur-bookdown.org"><i class="fa fa-check"></i><b>8.3</b> Publication sur bookdown.org</a></li>
+<li class="chapter" data-level="8.4" data-path="déploiement-dun-livre-bookdown.html"><a href="déploiement-dun-livre-bookdown.html#partage-manuel-local-ou-cloud"><i class="fa fa-check"></i><b>8.4</b> Partage manuel (local ou cloud)</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html"><i class="fa fa-check"></i><b>9</b> Pour aller plus loin</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#ajouter-des-bulles-dinformation-au-survol-infobulles"><i class="fa fa-check"></i><b>9.1</b> Ajouter des bulles d’information au survol (infobulles)</a></li>
+<li class="chapter" data-level="9.2" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#astuce-alternative-avec-le-package-tippy-plus-stylé"><i class="fa fa-check"></i><b>9.2</b> Astuce alternative avec le package <code>tippy</code> (plus stylé)</a></li>
+<li class="chapter" data-level="9.3" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#appliquer-des-styles-personnalisés-aux-titres"><i class="fa fa-check"></i><b>9.3</b> Appliquer des styles personnalisés aux titres</a></li>
+<li class="chapter" data-level="9.4" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#références-croisées-internes"><i class="fa fa-check"></i><b>9.4</b> Références croisées internes</a></li>
+<li class="chapter" data-level="9.5" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#générer-plusieurs-formats-à-la-fois"><i class="fa fa-check"></i><b>9.5</b> 🚀 Générer plusieurs formats à la fois</a></li>
+<li class="chapter" data-level="9.6" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#créer-ton-propre-modèle-bookdown"><i class="fa fa-check"></i><b>9.6</b> Créer ton propre modèle Bookdown</a></li>
+<li class="chapter" data-level="9.7" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#bonus-réorganiser-les-fichiers-générés"><i class="fa fa-check"></i><b>9.7</b> Bonus : Réorganiser les fichiers générés</a></li>
+<li class="chapter" data-level="9.8" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#ajouter-un-pied-de-page-footer-dans-bookdown"><i class="fa fa-check"></i><b>9.8</b> Ajouter un pied de page (footer) dans Bookdown</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Publié avec bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Prise en main du package Bookdown</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="comment-intégrer-une-application-shiny-dans-un-livre-bookdown" class="section level1 hasAnchor" number="6">
+<h1><span class="header-section-number">6</span> Comment intégrer une application Shiny dans un livre <em>Bookdown</em> ?<a href="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html#comment-intégrer-une-application-shiny-dans-un-livre-bookdown" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Il existe plusieurs façons d’ajouter une application Shiny dans un livre <em>Bookdown</em>. Voici un tour d’horizon des méthodes possibles, avec leurs avantages et limites.</p>
+<hr />
+<div id="méthode-1-app-shiny-inline-dans-un-chapitre-.rmd" class="section level2 hasAnchor" number="6.1">
+<h2><span class="header-section-number">6.1</span> Méthode 1 : <strong>App Shiny <em>inline</em></strong> dans un chapitre <code>.Rmd</code><a href="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html#méthode-1-app-shiny-inline-dans-un-chapitre-.rmd" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Tu peux insérer une <strong>mini app Shiny directement dans un chunk R</strong> de ton fichier <code>.Rmd</code>. C’est simple à mettre en place pour tester une idée rapidement.</p>
+<div id="exemple" class="section level3 hasAnchor" number="6.1.1">
+<h3><span class="header-section-number">6.1.1</span> 🔧 Exemple :<a href="#exemple" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb32"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb32-1"><a href="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html#cb32-1" tabindex="-1"></a><span class="fu">## 🎛️ Petite appli Shiny intégrée</span></span>
+<span id="cb32-2"><a href="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html#cb32-2" tabindex="-1"></a></span></code></pre></div>
+</div>
+</div>
+<div id="section" class="section level2" number="6.2">
+<h2><span class="header-section-number">6.2</span> </h2>
+</div>
+<div id="listening-on-http127.0.0.15297" class="section level2 hasAnchor" number="6.3">
+<h2><span class="header-section-number">6.3</span> Listening on <a href="http://127.0.0.1:5297" class="uri">http://127.0.0.1:5297</a><a href="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html#listening-on-http127.0.0.15297" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<pre><code>
+&lt;img src=&quot;_main_files/figure-html/unnamed-chunk-1-1.png&quot; width=&quot;672&quot; /&gt;</code></pre>
+<p>Cette méthode fonctionne <strong>dans un environnement interactif</strong>, comme avec <code>rmarkdown::run()</code> ou dans le <strong>Viewer de RStudio</strong>.</p>
+<p><strong>Attention :</strong> cette solution <strong>ne fonctionne pas</strong> dans le livre HTML final généré avec <code>bookdown::render_book()</code> : les applications Shiny ne peuvent pas être embarquées statiquement.</p>
+<hr />
+</div>
+<div id="méthode-2-lien-vers-une-app-shiny-hébergée" class="section level2 hasAnchor" number="6.4">
+<h2><span class="header-section-number">6.4</span> Méthode 2 : <strong>Lien vers une app Shiny hébergée</strong><a href="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html#méthode-2-lien-vers-une-app-shiny-hébergée" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>C’est la solution <strong>préférée</strong> pour intégrer une vraie app dans un livre <em>Bookdown</em> publié en ligne.</p>
+<p>Tu héberges ton application Shiny (par exemple via <a href="https://www.shinyapps.io">shinyapps.io</a>, un serveur personnel ou RStudio Connect), puis tu l’intègres <strong>dans une iframe</strong>.</p>
+<div id="exemple-avec-iframe" class="section level3 hasAnchor" number="6.4.1">
+<h3><span class="header-section-number">6.4.1</span> Exemple avec iframe<a href="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html#exemple-avec-iframe" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb34"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb34-1"><a href="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html#cb34-1" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">iframe</span><span class="ot"> src</span><span class="op">=</span><span class="st">&quot;https://senemalick.shinyapps.io/projetfinal/&quot;</span><span class="ot"> width</span><span class="op">=</span><span class="st">&quot;100%&quot;</span><span class="ot"> height</span><span class="op">=</span><span class="st">&quot;600px&quot;</span><span class="ot"> frameborder</span><span class="op">=</span><span class="st">&quot;0&quot;</span><span class="dt">&gt;&lt;/</span><span class="kw">iframe</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>Résultat : ton app est <strong>intégrée directement dans la page du livre</strong>.</p>
+<p><em>L’application doit être hébergée en HTTPS</em> (sinon l’iframe sera bloquée dans le navigateur).</p>
+
+</div>
+</div>
+</div>
+<footer style="
+  text-align: center;
+  padding: 1.5em 0;
+  font-size: 0.85em;
+  color: #444;
+  background-color: #f7f7f7;
+  border-top: 1px solid #ddd;
+  margin-top: 3em;
+">
+
+  <p style="margin-bottom: 0.5em;">
+    📘 <strong>Prise en main du package "Bookdown"</strong>
+  </p>
+
+  <p style="margin-bottom: 0.5em;">
+    Projet réalisé par <strong>Ahmadou Niass</strong> et <strong>Samba Sow</strong> – <em>ENSAE Dakar, 2025</em><br>
+    dans le cadre du <em>cours de projets statistiques avec R</em>.
+  </p>
+
+  <p style="font-size: 0.8em; margin-bottom: 0;">
+    📁 Code source disponible sur 
+    <a href="https://github.com/ahmadouniass/Bookdown" target="_blank">GitHub</a> · Powered by <a href="https://bookdown.org" target="_blank">Bookdown</a>
+  </p>
+
+</footer>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="insertion-de-contenus.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="créer-un-modèle-bookdown-réutilisable.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": false,
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": null,
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": null,
+    "text": null
+  },
+  "download": ["_main.pdf"],
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "section"
+  }
+});
+});
+</script>
+
+</body>
+
+</html>

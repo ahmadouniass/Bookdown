@@ -32,6 +32,7 @@ library(tmap)
 library(ggplot2)
 library(DT)
 
+
 # Fonction générique pour tout pays et tout indicateur
 render_indicator_raster <- function(indicator_name, country, palette = "viridis", extension = ".tif") {
   raster_path <- paste0("data/", indicator_name, "/", indicator_name, "_", tolower(country), extension)
@@ -94,12 +95,7 @@ plot_raster_aggregated_leaflet <- function(raster_obj, shapefile_path, palette =
 
 ```
 ```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
-library(raster)
-library(sf)
-library(exactextractr)
-library(dplyr)
-library(ggplot2)   
-library(DT)        
+      
 get_indicator_data <- function(indicator, country, raster_path, shapefile_path, region_id = "ADM1_FR", scale = FALSE) {
   rast <- raster(raster_path)
   regions <- st_read(shapefile_path, quiet = TRUE)
@@ -118,7 +114,6 @@ get_indicator_data <- function(indicator, country, raster_path, shapefile_path, 
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
-# Exemple pour 3 indicateurs – ajoute-en autant que tu veux
 indicator_config <- list(
   ndvi = list(
     scale = TRUE,
@@ -177,55 +172,21 @@ df_global <- bind_rows(all_indicators_data)
 ```
 ---
 
-## Introduction
-
-L’objectif de ce chapitre est de comparer les dynamiques environnementales entre les quatre pays étudiés — **Sénégal**, **Burkina Faso**, **Mali** et **Niger** — à partir d’une sélection d’**indicateurs spectraux homogènes**, calculés sur l’ensemble du territoire national de chaque pays à l’échelle régionale.
-
-Contrairement aux chapitres précédents qui abordaient chaque pays individuellement, l’approche ici est **transversale** : elle vise à identifier les **points communs**, les **disparités**, et les **profils écologiques contrastés** à travers l’espace sahélien ouest-africain.
-
-Nous nous focalisons sur trois dimensions fondamentales :
-
--  **La vigueur de la végétation** à travers l’indice **NDVI** (Normalized Difference Vegetation Index), indicateur standard de la couverture végétale active ;
-- **Le stress ou la dégradation écologique** via le **BAI** (Burned Area Index), utilisé comme proxy de la perturbation de surface (sols nus, végétation appauvrie, zones brûlées) ;
-- **L’humidité résiduelle des surfaces** à travers l’indice **WI2** (Water Index 2), mesurant la présence d’eau ou d’humidité dans le sol et la végétation.
-
-Pour chaque indicateur, nous présentons :
-
-- Des **cartes par pays**,
-- Un **graphique comparatif** des moyennes nationales,
-- Un **tableau régional détaillé** des valeurs.
-
-Cette démarche permet d'établir un **diagnostic spatial comparé**, et d’alimenter une réflexion plus large sur la résilience écologique, les pressions climatiques et les marges d’action pour une gestion durable des ressources naturelles à l’échelle régionale.
+## Passons à l'exploration 
 
 
+Pour procéder à l'exploration vous pouvez consulter l'application directement ci-dessous (format HTML uniquement) :
+
+<iframe src="https://ahmedniass.shinyapps.io/Comparaison/"
+        width="100%" height="600" frameborder="0"
+        style="border:1px solid #ccc; border-radius: 8px;">
+</iframe>
 
 ## Comparaison de la couverture végétale 
 
 L’indice NDVI (Normalized Difference Vegetation Index) est un indicateur standard de la densité de la végétation verte active. Il permet d’observer les zones à fort potentiel de biomasse ainsi que les zones dégradées. Dans ce cadre comparatif, nous utilisons le NDVI pour analyser les différences de couverture végétale entre les pays sahéliens.
 
 
-### Cartes NDVI par pays
-
-
-```{r ndvi-cartes, echo=FALSE, message=FALSE, warning=FALSE}
-plot_country_map("ndvi", "senegal",  palette = "YlGn", shape_path = "data/shapes/regions_senegal.shp")
-plot_country_map("ndvi", "burkina",  palette = "YlGn", shape_path = "data/shapes/regions_burkina.shp")
-plot_country_map("ndvi", "mali",     palette = "YlGn", shape_path = "data/shapes/regions_mali.shp")
-plot_country_map("ndvi", "niger",    palette = "YlGn", shape_path = "data/shapes/regions_niger.shp")
-
-```
-### Moyenne NDVI par pays
-```{r ndvi-plot, echo=FALSE}
-df_global %>%
-  filter(Indicateur == "NDVI") %>%
-  group_by(Pays) %>%
-  summarise(Moyenne = mean(Valeur)) %>%
-  ggplot(aes(x = reorder(Pays, Moyenne), y = Moyenne, fill = Pays)) +
-  geom_col(width = 0.6) +
-  coord_flip() +
-  labs(title = "NDVI moyen par pays (2024)", y = "NDVI", x = NULL) +
-  theme_minimal()
-```
 
 ### Tableau des valeurs régionales NDVI
 ```{r ndvi-table, echo=FALSE}
@@ -295,32 +256,6 @@ Le graphique comparatif inter-pays révèle des écarts significatifs :
 L’indice BAI (Burned Area Index) est conçu pour détecter les zones brûlées ou fortement dégradées, en mettant en évidence les sols sombres, nus ou perturbés. Bien qu’initialement utilisé pour cartographier les feux de végétation, le BAI est aussi un indicateur pertinent du stress écologique dans les environnements sahéliens, où il révèle les zones de déforestation, surpâturage, sécheresse prolongée ou dégradation des sols.
 
 
-### Cartes BAI par pays 
-
-```{r bai-cartes, echo=FALSE, message=FALSE, warning=FALSE}
-plot_country_map("bai", "senegal",  palette = "YlGn", shape_path = "data/shapes/regions_senegal.shp")
-plot_country_map("bai", "burkina",  palette = "YlGn", shape_path = "data/shapes/regions_burkina.shp")
-plot_country_map("bai", "mali",     palette = "YlGn", shape_path = "data/shapes/regions_mali.shp")
-plot_country_map("bai", "niger",    palette = "YlGn", shape_path = "data/shapes/regions_niger.shp")
-
-```
-
-### Moyenne BAI par pays
-```{r bai-plot, echo=FALSE}
-df_global %>%
-  filter(Indicateur == "BAI") %>%
-  group_by(Pays) %>%
-  summarise(Moyenne = mean(Valeur, na.rm = TRUE)) %>%
-  ggplot(aes(x = reorder(Pays, Moyenne), y = Moyenne)) +
-  geom_segment(aes(xend = Pays, y = 0, yend = Moyenne), color = "grey70", size = 1) +
-  geom_point(aes(color = Pays), size = 5) +
-  geom_text(aes(label = round(Moyenne, 3)), hjust = -0.4, size = 4.2) +
-  coord_flip() +
-  labs(title = "BAI moyen par pays (2024)", y = "BAI", x = NULL) +
-  theme_minimal() +
-  theme(legend.position = "none")
-
-```
 
 ### Tableau des valeurs régionales du BAI
 
@@ -388,37 +323,11 @@ L’**indice WI2 (Water Index 2)** est un indicateur spectral conçu pour mesure
 
 Un WI2 faible traduit une **situation de sécheresse ou de faible disponibilité hydrique**, tandis qu’un WI2 élevé indique une **humidité importante des surfaces**. Cet indice est donc essentiel pour détecter les zones en **stress hydrique**, et comprendre les contrastes hydrologiques dans les pays sahéliens.
 
-### Cartes WI2 par pays
 
-```{r wi2-carte, echo=FALSE}
-wi2_out <- render_indicator_raster("wi2", country = "senegal", palette = "Blues")
-plot_raster_aggregated_leaflet(
-  raster_obj = wi2_out$raster,
-  shapefile_path = "data/shapes/regions_senegal.shp",
-  palette = "Blues",
-  region_id = "ADM1_FR", 
-  title = "WI2 – Sénégal 2024"
-)
-```
 
-### Moyenne des valeurs du WI2 par pays
-
-```{r wi2-plot, echo=FALSE}
-df_global %>%
-  filter(Indicateur == "BAI") %>%
-  group_by(Pays) %>%
-  summarise(Moyenne = mean(Valeur, na.rm = TRUE)) %>%
-  ggplot(aes(x = Moyenne, y = reorder(Pays, Moyenne), color = Pays)) +
-  geom_point(size = 5) +
-  geom_text(aes(label = round(Moyenne, 3)), hjust = -0.3) +
-  labs(title = "BAI moyen par pays (2024)", x = "Valeur moyenne", y = NULL) +
-  theme_minimal() +
-  theme(legend.position = "none")
-
-```
 
 ### Moyenne des tableaux du WI2 par pays
-```{r wi2-table, echo=FALSE}
+```{r wi2-table, echo=FALSE, warning=FALSE}
 df_global %>%
   filter(Indicateur == "WI2") %>%
   datatable(filter = "top", options = list(pageLength = 10)) %>%
