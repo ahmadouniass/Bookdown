@@ -50,7 +50,7 @@ Sous la supervision de **M. Aboubacar HEMA**, Research Analyst
 
 ## 📦 Licence
 
-Ce projet est distribué sous licence [MIT](LICENSE) ou CC-BY selon ton choix.
+Ce projet est distribué sous licence [MIT](LICENSE).
 
 ---
 
