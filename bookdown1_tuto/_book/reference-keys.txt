@@ -47,7 +47,7 @@ créer-un-fichier-.bib
 déclarer-la-bibliographie-dans-index.rmd
 citer-une-source-dans-le-texte
 génération-automatique-de-la-bibliographie
-insertion-de-contenus
+insertion-de-contenus-multimédias-images-vidéos-sons
 insertion-dimages
 image-locale-dans-le-dossier-du-projet
 options-supplémentaires-avec-html
@@ -61,13 +61,10 @@ insertion-de-fichiers-audio
 exemple-audio-local-.mp3
 limitations-selon-le-format-de-sortie
 astuces-pratiques
-comment-intégrer-une-application-shiny-dans-un-livre-bookdown
-méthode-1-app-shiny-inline-dans-un-chapitre-.rmd
-exemple
-section
-listening-on-http127.0.0.15297
-méthode-2-lien-vers-une-app-shiny-hébergée
-exemple-avec-iframe
+intégration-dun-shiny
+méthode-universelle-tous-formats-lien-cliquable
+méthode-html-uniquement-intégration-en-iframe
+astuce-supplémentaire-bouton-stylisé-html
 créer-un-modèle-bookdown-réutilisable
 créer-un-dossier-modèle-à-réutiliser-version-simple
 objectif

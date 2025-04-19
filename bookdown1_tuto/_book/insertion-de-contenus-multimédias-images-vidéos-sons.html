@@ -170,6 +170,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.1" data-path="insertion-de-contenus-multimédias-images-vidéos-sons.html"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#insertion-dimages"><i class="fa fa-check"></i><b>5.1</b> Insertion d’images</a></li>
 <li class="chapter" data-level="5.2" data-path="insertion-de-contenus-multimédias-images-vidéos-sons.html"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#insertion-de-vidéos"><i class="fa fa-check"></i><b>5.2</b> Insertion de vidéos</a></li>
 <li class="chapter" data-level="5.3" data-path="insertion-de-contenus-multimédias-images-vidéos-sons.html"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#insertion-de-fichiers-audio"><i class="fa fa-check"></i><b>5.3</b> Insertion de fichiers audio</a></li>
+<li class="chapter" data-level="5.4" data-path="insertion-de-contenus-multimédias-images-vidéos-sons.html"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#intégration-dun-shiny"><i class="fa fa-check"></i><b>5.4</b> Intégration d’un Shiny</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="créer-un-modèle-bookdown-réutilisable.html"><a href="créer-un-modèle-bookdown-réutilisable.html"><i class="fa fa-check"></i><b>6</b> Créer un modèle Bookdown réutilisable</a>
 <ul>
@@ -198,16 +199,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.6" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#créer-ton-propre-modèle-bookdown"><i class="fa fa-check"></i><b>8.6</b> Créer ton propre modèle Bookdown</a></li>
 <li class="chapter" data-level="8.7" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#bonus-réorganiser-les-fichiers-générés"><i class="fa fa-check"></i><b>8.7</b> Bonus : Réorganiser les fichiers générés</a></li>
 <li class="chapter" data-level="8.8" data-path="pour-aller-plus-loin.html"><a href="pour-aller-plus-loin.html#ajouter-un-pied-de-page-footer-dans-bookdown"><i class="fa fa-check"></i><b>8.8</b> Ajouter un pied de page (footer) dans Bookdown</a></li>
-</ul></li>
-<li class="chapter" data-level="9" data-path="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html"><a href="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html"><i class="fa fa-check"></i><b>9</b> Comment intégrer une application Shiny dans un livre <em>Bookdown</em> ?</a>
-<ul>
-<li class="chapter" data-level="9.1" data-path="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html"><a href="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html#méthode-1-app-shiny-inline-dans-un-chapitre-.rmd"><i class="fa fa-check"></i><b>9.1</b> Méthode 1 : <strong>App Shiny <em>inline</em></strong> dans un chapitre <code>.Rmd</code></a></li>
-<li class="chapter" data-level="9.2" data-path="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html"><a href="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html#warning-le-package-shiny-a-été-compilé-avec-la-version-r-4.3.3"><i class="fa fa-check"></i><b>9.2</b> Warning: le package ‘shiny’ a été compilé avec la version R 4.3.3</a></li>
-<li class="chapter" data-level="9.3" data-path="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html"><a href="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html#section"><i class="fa fa-check"></i><b>9.3</b> </a></li>
-<li class="chapter" data-level="9.4" data-path="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html"><a href="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html#listening-on-http127.0.0.13374"><i class="fa fa-check"></i><b>9.4</b> Listening on http://127.0.0.1:3374</a></li>
-<li class="chapter" data-level="9.5" data-path="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html"><a href="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html#méthode-2-lien-vers-une-app-shiny-hébergée"><i class="fa fa-check"></i><b>9.5</b> Méthode 2 : <strong>Lien vers une app Shiny hébergée</strong></a></li>
-<li class="chapter" data-level="9.6" data-path="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html"><a href="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html#méthode-bonus-transformer-le-livre-en-app-shiny"><i class="fa fa-check"></i><b>9.6</b> Méthode bonus : <strong>Transformer le livre en app Shiny !</strong></a></li>
-<li class="chapter" data-level="9.7" data-path="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html"><a href="comment-intégrer-une-application-shiny-dans-un-livre-bookdown.html#récapitulatif-des-options"><i class="fa fa-check"></i><b>9.7</b> 🧠 Récapitulatif des options</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Publié avec bookdown</a></li>
@@ -398,6 +389,51 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Préfère les formats <strong>.webm</strong> et <strong>.mp4</strong> pour les vidéos, <strong>.mp3</strong> pour les sons</li>
 <li>Pour les versions PDF : remplace les vidéos par des <strong>liens cliquables</strong> ou des <strong>captures d’écran</strong></li>
 </ul>
+</div>
+</div>
+<div id="intégration-dun-shiny" class="section level2 hasAnchor" number="5.4">
+<h2><span class="header-section-number">5.4</span> Intégration d’un Shiny<a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#intégration-dun-shiny" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Tu as deux options :<br />
+<strong>Un lien cliquable</strong> (fonctionne dans tous les formats : HTML, PDF, EPUB)<br />
+<strong>Une iframe intégrée</strong> (uniquement pour la version HTML)</p>
+<hr />
+<div id="méthode-universelle-tous-formats-lien-cliquable" class="section level3 hasAnchor" number="5.4.1">
+<h3><span class="header-section-number">5.4.1</span> ✅ 1. <strong>Méthode universelle (tous formats)</strong> – lien cliquable<a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#méthode-universelle-tous-formats-lien-cliquable" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb32"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb32-1"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb32-1" tabindex="-1"></a><span class="fu">## Passons à l&#39;exploration</span></span>
+<span id="cb32-2"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb32-2" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb32-3" tabindex="-1"></a>Pour explorer l&#39;application interactive de comparaison dynamique, cliquez ici :</span>
+<span id="cb32-4"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb32-4" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb32-5" tabindex="-1"></a>👉 <span class="co">[</span><span class="ot">Accéder à l&#39;application Shiny</span><span class="co">](https://ahmedniass.shinyapps.io/Comparaison/)</span></span>
+<span id="cb32-6"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb32-6" tabindex="-1"></a></span>
+<span id="cb32-7"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb32-7" tabindex="-1"></a>L&#39;application vous permet de visualiser, filtrer et comparer les résultats de manière interactive.</span></code></pre></div>
+<p>➡️ <strong>Recommandée</strong> si tu veux générer aussi une version PDF ou EPUB.</p>
+<hr />
+</div>
+<div id="méthode-html-uniquement-intégration-en-iframe" class="section level3 hasAnchor" number="5.4.2">
+<h3><span class="header-section-number">5.4.2</span> <strong>Méthode HTML uniquement</strong> – intégration en iframe<a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#méthode-html-uniquement-intégration-en-iframe" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<pre><code>## Passons à l&#39;exploration
+
+Vous pouvez également consulter l&#39;application directement ci-dessous (format HTML uniquement) :
+
+&lt;iframe src=&quot;https://ahmedniass.shinyapps.io/Comparaison/&quot;
+        width=&quot;100%&quot; height=&quot;600&quot; frameborder=&quot;0&quot;
+        style=&quot;border:1px solid #ccc; border-radius: 8px;&quot;&gt;
+&lt;/iframe&gt;</code></pre>
+<p>Cela intègre l’application <strong>directement dans la page</strong> de ton livre HTML (comme une vidéo YouTube).</p>
+<p>⚠️ Cela <strong>ne fonctionnera pas</strong> si tu compiles en PDF ou EPUB. Pour éviter l’erreur Pandoc, entoure ce bloc d’un commentaire conditionnel :</p>
+<pre><code>&lt;!-- only in HTML --&gt;
+&lt;iframe ...&gt;&lt;/iframe&gt;</code></pre>
+<hr />
+</div>
+<div id="astuce-supplémentaire-bouton-stylisé-html" class="section level3 hasAnchor" number="5.4.3">
+<h3><span class="header-section-number">5.4.3</span> Astuce supplémentaire : bouton stylisé (HTML)<a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#astuce-supplémentaire-bouton-stylisé-html" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Si tu veux un bouton dans la version HTML :</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb35-1"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb35-1" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> style</span><span class="op">=</span><span class="st">&quot;text-align:center;&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb35-2"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb35-2" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">a</span><span class="ot"> href</span><span class="op">=</span><span class="st">&quot;https://ahmedniass.shinyapps.io/Comparaison/&quot;</span><span class="ot"> target</span><span class="op">=</span><span class="st">&quot;_blank&quot;</span></span>
+<span id="cb35-3"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb35-3" tabindex="-1"></a><span class="ot">     style</span><span class="op">=</span><span class="st">&quot;background-color:#0077cc; color:white; padding:10px 20px; text-decoration:none; border-radius:6px;&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb35-4"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb35-4" tabindex="-1"></a>     🚀 Lancer l&#39;application Shiny</span>
+<span id="cb35-5"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb35-5" tabindex="-1"></a>  <span class="dt">&lt;/</span><span class="kw">a</span><span class="dt">&gt;</span></span>
+<span id="cb35-6"><a href="insertion-de-contenus-multimédias-images-vidéos-sons.html#cb35-6" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span></code></pre></div>
 
 </div>
 </div>

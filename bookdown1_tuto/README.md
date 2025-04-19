@@ -2,6 +2,8 @@
 
 Ce projet est un **livre tutoriel interactif** conçu avec le package **Bookdown** de R. Il s’adresse aux étudiants, enseignants et utilisateurs souhaitant apprendre à structurer et publier des documents dynamiques, reproductibles et bien formatés avec R Markdown.
 
+🔗 **Accéder au livre en ligne** : [Cliquez-ici](https://bookdown.org/ahmadouniass2/Atlas_des_dynamiques_environnementales_du_Sahel/)
+
 ---
 
 ## 📖 Présentation
@@ -25,25 +27,16 @@ Le livre est organisé en plusieurs chapitres :
 
 Chaque chapitre est contenu dans un fichier `.Rmd` listé dans `_bookdown.yml`.
 
----
-
-## 🌍 Visualiser le livre
-
-Tu peux consulter le livre en ligne (si publié) :
-
-🔗 [Version HTML interactive](https://tonpseudo.github.io/nom-du-livre/)  
-📄 [Télécharger la version PDF](docs/nom-du-livre.pdf)
 
 ---
 
 ## 🛠️ Technologies utilisées
 
-- [R](https://cran.r-project.org/)
-- [RStudio](https://posit.co/)
-- [bookdown](https://bookdown.org/)
-- [Pandoc](https://pandoc.org/)
-- [TinyTeX](https://yihui.org/tinytex/)
-- [GitHub Pages / Netlify](https://pages.github.com/), pour le déploiement
+- [R]([https://cran.r-project.org/])
+- [RStudio]([https://posit.co/])
+- [bookdown]([https://bookdown.org/])
+- [Pandoc]([https://pandoc.org/])
+- [TinyTeX]([https://yihui.org/tinytex/])
 
 ---
 

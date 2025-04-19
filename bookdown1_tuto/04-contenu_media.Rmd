@@ -1,4 +1,4 @@
-# Insertion de contenus 
+# Insertion de contenus multimédias (images, vidéos, sons)
 
 Bookdown te permet d’enrichir ton livre avec des **contenus multimédias** : **images, vidéos, sons**, qu’ils soient en **local** (dans ton dossier) ou hébergés en **ligne**. Cela améliore l’accessibilité et l’interactivité de ton document, surtout en HTML.
 
@@ -145,57 +145,64 @@ Pour le PDF, les médias interactifs **ne sont pas intégrés** : il vaut mieux 
 - Préfère les formats **.webm** et **.mp4** pour les vidéos, **.mp3** pour les sons
 - Pour les versions PDF : remplace les vidéos par des **liens cliquables** ou des **captures d’écran**
 
-# Comment intégrer une application Shiny dans un livre *Bookdown* ?
+## Intégration d'un Shiny
 
-Il existe plusieurs façons d’ajouter une application Shiny dans un livre *Bookdown*. Voici un tour d’horizon des méthodes possibles, avec leurs avantages et limites.
+Tu as deux options :  
+**Un lien cliquable** (fonctionne dans tous les formats : HTML, PDF, EPUB)  
+**Une iframe intégrée** (uniquement pour la version HTML)
 
 ---
 
-## Méthode 1 : **App Shiny *inline*** dans un chapitre `.Rmd`
+### ✅ 1. **Méthode universelle (tous formats)** – lien cliquable
 
-Tu peux insérer une **mini app Shiny directement dans un chunk R** de ton fichier `.Rmd`. C’est simple à mettre en place pour tester une idée rapidement.
-
-### 🔧 Exemple :
 ```markdown
-## 🎛️ Petite appli Shiny intégrée
+## Passons à l'exploration
 
-```{r, echo=FALSE}
-library(shiny)
+Pour explorer l'application interactive de comparaison dynamique, cliquez ici :
 
-shinyApp(
-  ui = fluidPage(
-    sliderInput("x", "Choisir une valeur", 1, 100, 50),
-    plotOutput("hist")
-  ),
-  server = function(input, output, session) {
-    output$hist <- renderPlot({
-      hist(rnorm(input$x))
-    })
-  }
-)
-```
+👉 [Accéder à l'application Shiny](https://ahmedniass.shinyapps.io/Comparaison/)
+
+L'application vous permet de visualiser, filtrer et comparer les résultats de manière interactive.
 ```
 
- Cette méthode fonctionne **dans un environnement interactif**, comme avec `rmarkdown::run()` ou dans le **Viewer de RStudio**.
-
-**Attention :** cette solution **ne fonctionne pas** dans le livre HTML final généré avec `bookdown::render_book()` : les applications Shiny ne peuvent pas être embarquées statiquement.
+➡️ **Recommandée** si tu veux générer aussi une version PDF ou EPUB.
 
 ---
 
-## Méthode 2 : **Lien vers une app Shiny hébergée**
+###  **Méthode HTML uniquement** – intégration en iframe
 
-C’est la solution **préférée** pour intégrer une vraie app dans un livre *Bookdown* publié en ligne.
+```
+## Passons à l'exploration
 
-Tu héberges ton application Shiny (par exemple via [shinyapps.io](https://www.shinyapps.io), un serveur personnel ou RStudio Connect), puis tu l’intègres **dans une iframe**.
+Vous pouvez également consulter l'application directement ci-dessous (format HTML uniquement) :
 
-### Exemple avec iframe
+<iframe src="https://ahmedniass.shinyapps.io/Comparaison/"
+        width="100%" height="600" frameborder="0"
+        style="border:1px solid #ccc; border-radius: 8px;">
+</iframe>
+```
+
+Cela intègre l'application **directement dans la page** de ton livre HTML (comme une vidéo YouTube).
+
+⚠️ Cela **ne fonctionnera pas** si tu compiles en PDF ou EPUB. Pour éviter l’erreur Pandoc, entoure ce bloc d’un commentaire conditionnel :
+
+```
+<!-- only in HTML -->
+<iframe ...></iframe>
+```
+
+---
+
+### Astuce supplémentaire : bouton stylisé (HTML)
+
+Si tu veux un bouton dans la version HTML :
 
 ```html
-<iframe src="https://senemalick.shinyapps.io/projetfinal/" width="100%" height="600px" frameborder="0"></iframe>
+<p style="text-align:center;">
+  <a href="https://ahmedniass.shinyapps.io/Comparaison/" target="_blank"
+     style="background-color:#0077cc; color:white; padding:10px 20px; text-decoration:none; border-radius:6px;">
+     🚀 Lancer l'application Shiny
+  </a>
+</p>
 ```
-
-Résultat : ton app est **intégrée directement dans la page du livre**.
-
-*L’application doit être hébergée en HTTPS* (sinon l’iframe sera bloquée dans le navigateur).
-
 
