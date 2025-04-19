@@ -1,0 +1,12 @@
+name: Comparaison
+title: Comparaison
+username: ahmedniass
+account: ahmedniass
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 14554287
+bundleId: 10138238
+url: https://ahmedniass.shinyapps.io/Comparaison/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE

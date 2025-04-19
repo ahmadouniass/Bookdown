@@ -1,0 +1,30 @@
+body {
+  background-color: #f0f4f8;
+}
+
+h4, h3 {
+  color: #005f86;
+  font-weight: bold;
+}
+
+.sidebar-panel {
+  background-color: #ffffff;
+  padding: 15px;
+  border-radius: 6px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.1);
+}
+
+.nav-tabs > li > a {
+  font-weight: bold;
+  color: #0077B6;
+}
+
+.nav-tabs > li.active > a {
+  background-color: #0077B6 !important;
+  color: white !important;
+  border-color: #0077B6 !important;
+}
+
+.nav-tabs > li > a:hover {
+  background-color: #e0f4ff !important;
+}
