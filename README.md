@@ -21,7 +21,7 @@ Ce dossier contient un **livre tutoriel interactif** destiné aux étudiants et 
 - Créer un template réutilisable
 
 🔗 **Lire en ligne**  :  
-👉 [Cliquez ici](https://bookdown.org/ahmadouniass2/Prise_en_main_de_Bookdown/)
+👉 [Cliquez ici](https://bookdown.org/ahmadouniass2/bookdown1_tuto/)
 
 ---
 
@@ -34,8 +34,8 @@ Ce dossier contient un **livre thématique structuré avec Bookdown**, basé sur
 - Utilisation de graphiques, d’analyses R, et de citations
 - Organisation avancée avec `_bookdown.yml`, `preamble.tex` et `style.css`
 
-🔗 **Lire l’application Bookdown**  :  
-👉 🔗 **Accéder au livre en ligne** : [Cliquez-ici](https://bookdown.org/ahmadouniass2/Atlas_des_dynamiques_environnementales_du_Sahel/)
+🔗 **Lire en ligne**  :  
+👉 [Cliquez ici](https://bookdown.org/ahmadouniass2/Atlas-Spectral-Sahel/)
 ---
 
 ## 🚀 Technologies utilisées
@@ -74,7 +74,7 @@ Pour toute remarque ou collaboration, n’hésitez pas à ouvrir une **issue** o
 
 ---
 
-> _Ce projet pédagogique illustre les possibilités de production de documents interactifs et reproductibles avec R Markdown et Bookdown._
+> _Ce projet pédagogique illustre les possibilités de production de documents interactifs et reproductibles avec Bookdown._
 ```
 
 ---
