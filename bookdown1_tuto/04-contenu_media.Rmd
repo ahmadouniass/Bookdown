@@ -1,147 +1,174 @@
-# Insertion de contenus multimédias (images, vidéos, sons)
+# Écriture du contenu avec Bookdown
 
-Bookdown te permet d’enrichir ton livre avec des **contenus multimédias** : **images, vidéos, sons**, qu’ils soient en **local** (dans ton dossier) ou hébergés en **ligne**. Cela améliore l’accessibilité et l’interactivité de ton document, surtout en HTML.
+Une fois la structure du projet en place, tu peux commencer à écrire les chapitres de ton livre. Bookdown repose sur **R Markdown**, un langage simple et puissant pour mélanger du texte, des équations, du code et des résultats dans un seul document.
+
+## Syntaxe Markdown (rappel rapide)
+
+Tu peux structurer ton texte avec une syntaxe légère :
+
+- `#` : Titre de chapitre (niveau 1)
+- `##`, `###` : Sous-sections (niveaux 2 et 3)
+- `*italique*` ou `_italique_`  
+- `**gras**` ou `__gras__`  
+- `> citation`
+- `-` ou `*` pour des listes à puces  
+- `1.` pour des listes numérotées  
+- `` `code` `` pour du code en ligne
+
+ Pour chaque chapitre, utilise **un seul titre de niveau `#`** au début du fichier `.Rmd` pour qu’il soit reconnu comme un chapitre à part entière.
 
 
-## Insertion d’images
+### Blocs de code R (chunks)
 
-L’image est le contenu multimédia le plus utilisé dans un document Bookdown, qu’il s’agisse de logos, de cartes, de schémas ou de captures d’écran. Bookdown accepte les images **locales** (placées dans le dossier du projet) ou **hébergées en ligne**.
+Tu peux insérer du **code exécutable en R** dans des blocs appelés *chunks* :
 
-
-### Image locale (dans le dossier du projet)
-
-Pour insérer une image locale, voici la procédure recommandée :
-
-- Crée un dossier `images/` dans ton projet Bookdown
-- Place l’image à l’intérieur (ex. `logo.png`)
-- Utilise la syntaxe Markdown classique pour l’insérer dans ton `.Rmd` :
-
+```{r summary}
+summary(mtcars)
 ```
-![Logo du projet](images/logo.png)
+
+
+- Les résultats (textes, graphiques, tableaux) sont automatiquement intégrés dans le livre.
+- Tu peux ajouter des options comme `echo=FALSE`, `fig.width`, `message=FALSE`, etc.
+
+Pour aller plus loin tu peux te réferrer au travail de nos camarades sur le thème : <a href="https://github.com/dior204/Theme13-Autonomisation-des-rapports-avec-R-Le-package-Rmarkdown">Rmarkdown</a>
+
+
+## Figures et tableaux
+
+### Figures
+
+Tu peux générer des graphiques avec `ggplot2`, `plot()`, etc., et leur associer une **légende** :
+
+
+```{r plot-example, fig.cap = "Exemple de graphique"}
+plot(cars)
 ```
 
-Cette méthode fonctionne aussi bien en HTML qu’en PDF ou EPUB, à condition que l’image soit disponible au moment de la compilation.
+
+Bookdown **numérote automatiquement** les figures et permet de les **référencer dans le texte** avec `\@ref(fig:plot-example)`.
+
+
+
+### Tableaux
+
+Tu peux créer des tableaux élégants avec :
+
+- `knitr::kable()` (basique)
+- `gt::gt()` (avancé)
+- `kableExtra` (pour plus de mise en forme)
+
+```{r tab-example, results='asis'}
+knitr::kable(head(iris), caption = "Extrait des données iris")
+```
+
+
+Comme les figures, tu peux les référencer dans le texte : `\@ref(tab:tab-example)`.
 
 ---
 
-#### Options supplémentaires avec HTML
+### Mathématiques et équations
 
-Markdown ne permet pas de contrôler finement la taille ou la position. Pour cela, tu peux utiliser du HTML à la place :
+Bookdown permet d’écrire des **formules mathématiques en LaTeX** :
 
-```html
-<p align="center">
-  <img src="images/logo.png" width="300px" />
-</p>
+- Inline : `\( E = mc^2 \)`
+- Bloc centré :  
+```
+$$ E = mc^2 $$
 ```
 
-Cela permet de :
-- **Centrer** l’image (`align="center"`)
-- **Contrôler sa largeur** (`width="300px"`, ou `width="50%"`)
-- **Conserver la compatibilité** avec tous les formats HTML
+Tu peux aussi **numéroter une équation** pour y faire référence :
 
-Si tu veux forcer une image à occuper toute la largeur de la page en HTML :
+```
+$$
+E = mc^2 (\#eq:energie)
+$$
 
-```html
-<img src="images/schema.png" style="width:100%;"/>
+Comme vu en \@ref(eq:energie), cette équation exprime...
 ```
 
 
-#### Astuces bonnes pratiques
+### 🔗 Références croisées
 
-- Utilise des formats d’image légers : `.png`, `.jpg`, `.svg` (PDF-friendly)
-- Préfère les **chemins relatifs** (`images/monimage.png`) plutôt que des chemins absolus
-- Pour les graphiques produits dans R, utilise plutôt un chunk R avec `fig.cap`
+Bookdown permet de **lier dynamiquement** les parties du document (chapitres, figures, tableaux, équations…).
+
+- Pour créer une référence : ajoute un **identifiant** à la fin d’un titre ou d’un chunk :
+  ```
+  # Méthodologie {#method}
+  ```
+- Et pour y faire référence :
+  ```markdown
+  Voir la section \@ref(method)
+  ```
+
+---
+
+## Citations bibliographiques
+
+Bookdown prend en charge les références bibliographiques grâce à **Pandoc** et au format **BibTeX**. Cela te permet de citer des articles, des livres ou des sources web de manière dynamique, avec une mise en forme automatique.
+
+### 1. Créer un fichier `.bib`
+
+Commence par créer un fichier texte portant l’extension `.bib` (qui est souvent généré automatiquement sous le nom de`book.bib`) qui contient tes **références bibliographiques** au format **BibTeX**.
+
+Voici un exemple de contenu typique dans `book.bib` :
+
+```bibtex
+@book{xie2016bookdown,
+  title     = {bookdown: Authoring Books and Technical Documents with R Markdown},
+  author    = {Yihui Xie},
+  year      = {2016},
+  publisher = {Chapman and Hall/CRC},
+  url       = {https://bookdown.org/yihui/bookdown/}
+}
+```
+
+Tu peux générer ce fichier à partir de Zotero, Google Scholar, ou d'autres outils de gestion bibliographique.
 
 
-### Image hébergée en ligne
+###  Déclarer la bibliographie dans `index.Rmd`
 
-Tu peux aussi insérer une image stockée en ligne avec la même syntaxe Markdown :
+Dans le bloc YAML en tête de `index.Rmd`, indique le nom du fichier `.bib` et le **style bibliographique** :
+
+```yaml
+bibliography: [book.bib]
+biblio-style: apalike
+link-citations: true
+```
+
+- `biblio-style: apalike` : style auteur-année classique
+- Tu peux aussi utiliser d'autres styles (`chicago`, `ieee`, etc.) ou un fichier `.csl` (Citation Style Language)
+- `link-citations: true` ajoute un **lien hypertexte** entre la citation dans le texte et la référence complète
+
+
+### Citer une source dans le texte
+
+Dans ton texte `.Rmd`, tu peux :
+
+- Citer **entre parenthèses** : `[@xie2016bookdown]` → (Xie 2016)
+- Intégrer la citation dans la phrase : `@xie2016bookdown` → Xie (2016)
+
+Exemples :
 
 ```markdown
-![Logo ENSAE](https://example.com/images/logo_ensae.png)
+Selon @xie2016bookdown, Bookdown est très utile pour l’écriture scientifique.
+
+Des extensions ont été proposées dans des travaux récents [@xie2016bookdown; @wickham2019advanced].
 ```
 
-Cela fonctionne uniquement si la page peut accéder à Internet. Pour les PDF, l’image sera téléchargée à la compilation.
 
-Cette méthode est utile si tu ne veux pas alourdir ton dépôt GitHub ou ton dossier de projet avec des fichiers image.
+### Génération automatique de la bibliographie
 
+Lors de la compilation :
 
-#### Résumé
+- Bookdown **recherche toutes les citations** dans les fichiers `.Rmd`
+- Il **génère automatiquement la section “Références”** à la fin du livre (ou à l’endroit où tu places un fichier `.Rmd` avec un titre `# Références`)
 
-| Type d’image     | Syntaxe recommandée                | Compatible HTML | Compatible PDF |
-|------------------|------------------------------------|------------------|----------------|
-| Image locale     | `![Légende](images/img.png)`       | ✅               | ✅             |
-| Image en ligne   | `![Légende](https://...)`          | ✅               | ✅*            |
-| Image stylée     | `<img src=... width=...>` (HTML)   | ✅               | ⚠️ (ignore le style) |
-
-Si l’image en ligne n’est pas disponible lors de la compilation, elle ne s’affichera pas dans le PDF.
+Tu n’as **pas besoin d’écrire la bibliographie à la main** : elle sera construite dynamiquement à partir du fichier `.bib`.
 
 
-## Insertion de vidéos
+- Donne à chaque référence une **clé unique et explicite** (`@xie2016bookdown` plutôt que `@ref1`)
+- Place le fichier `.bib` à la racine de ton projet
+- Utilise des **groupes de références** avec `[@ref1; @ref2]` si nécessaire
+- Teste la compilation en HTML et en PDF pour vérifier que les styles s’affichent bien
 
-#### Vidéo locale (`.mp4` ou `.webm`)
-
-Crée un dossier `videos/` et ajoute ce code dans ton `.Rmd` :
-
-```html
-<video width="720" height="405" controls>
-  <source src="videos/creation_bookdown.webm" type="video/webm">
-  Votre navigateur ne supporte pas la lecture de vidéos HTML5.
-</video>
-```
-
-Utilise `.webm` ou `.mp4` pour un bon support navigateur. Pour une vidéo responsive :
-
-```html
-<div style="max-width: 100%;">
-  <video controls style="width: 100%;">
-    <source src="videos/demo.mp4" type="video/mp4">
-  </video>
-</div>
-```
-
-#### Vidéo hébergée (YouTube, PeerTube…)
-
-Pour insérer une vidéo YouTube :
-
-```html
-<iframe width="720" height="405" src="https://www.youtube.com/embed/3rOXFJ0F1iE" frameborder="0" allowfullscreen></iframe>
-```
-
----
-
-## Insertion de fichiers audio
-
-Tu peux intégrer des **sons** ou **commentaires vocaux** dans tes chapitres.
-
-#### Exemple (audio local `.mp3`) :
-
-```html
-<audio controls>
-  <source src="audio/intro.mp3" type="audio/mpeg">
-  Votre navigateur ne supporte pas l'audio HTML5.
-</audio>
-```
-
-Place tes fichiers audio dans un dossier `audio/` dans ton projet.
-
-
-### Limitations selon le format de sortie
-
-| Contenu        | HTML | PDF  | EPUB |
-|----------------|------|------|------|
-| Images         | ✅    | ✅    | ✅    |
-| Vidéos (.mp4)  | ✅    | ❌    | ⚠️ (souvent ignoré) |
-| YouTube        | ✅    | ❌    | ❌    |
-| Audio (.mp3)   | ✅    | ❌    | ⚠️ (selon lecteur) |
-
-Pour le PDF, les médias interactifs **ne sont pas intégrés** : il vaut mieux fournir un lien externe ou une capture.
-
-
-### Astuces pratiques
-
-- Organise tes fichiers multimédias dans des sous-dossiers : `images/`, `videos/`, `audio/`
-- Vérifie que les chemins sont **relatifs** à la racine du projet
-- Préfère les formats **.webm** et **.mp4** pour les vidéos, **.mp3** pour les sons
-- Pour les versions PDF : remplace les vidéos par des **liens cliquables** ou des **captures d’écran**
 
