@@ -2,7 +2,7 @@
 
 Ce projet est un **livre tutoriel interactif** conçu avec le package **Bookdown** de R. Il s’adresse aux étudiants, enseignants et utilisateurs souhaitant apprendre à structurer et publier des documents dynamiques, reproductibles et bien formatés avec R Markdown.
 
-🔗 **Accéder au livre en ligne** : [Cliquez-ici](https://bookdown.org/ahmadouniass2/Atlas-Spectral-Sahel/)
+🔗 **Accéder au livre en ligne** : [Cliquez-ici](https://bookdown.org/ahmadouniass2/bookdown1_tuto/)
 
 ---
 
