@@ -4,7 +4,7 @@ Ce projet est un **livre interactif** développé avec **R Bookdown**. Il vise �
 
 📘 L'atlas propose une lecture **multi-échelle** des dynamiques végétales, hydriques et de stress écologique, avec un accent particulier sur les contrastes régionaux et les vulnérabilités environnementales.
 
-🔗 **Accéder au livre en ligne** : [Cliquez-ici](https://bookdown.org/ahmadouniass2/Atlas_des_dynamiques_environnementales_du_Sahel/)
+🔗 **Accéder au livre en ligne** : [Cliquez-ici](https://bookdown.org/ahmadouniass2/Atlas-Spectral-Sahel/)
 
 ---
 
