@@ -60,4 +60,4 @@ Pour toute remarque ou contribution, n'hésitez pas à ouvrir une **issue** ou p
 
 ---
 
-> _Projet réalisé dans le cadre d’un cours de projet statistique et d’initiation à l’édition scientifique avec R._
+> _Projet réalisé dans le cadre d’un cours de projet statistique avec R._
