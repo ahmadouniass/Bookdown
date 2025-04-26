@@ -72,9 +72,3 @@ Bookdown/
 
 Pour toute remarque ou collaboration, n’hésitez pas à ouvrir une **issue** ou proposer une **pull request**.
 
----
-
-> _Ce projet pédagogique illustre les possibilités de production de documents interactifs et reproductibles avec Bookdown._
-```
-
----
