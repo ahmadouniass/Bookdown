@@ -20,8 +20,7 @@ Ce dossier contient un **livre tutoriel interactif** destiné aux étudiants et 
 - Publier en ligne via GitHub Pages, Netlify ou bookdown.org
 - Créer un template réutilisable
 
-🔗 **Lire en ligne**  :  
-👉 [Cliquez ici](https://bookdown.org/ahmadouniass2/bookdown1_tuto/)
+🔗 **Lire en ligne**  :   [Cliquez ici](https://bookdown.org/ahmadouniass2/bookdown1_tuto/)
 
 ---
 
@@ -34,8 +33,7 @@ Ce dossier contient un **livre thématique structuré avec Bookdown**, basé sur
 - Utilisation de graphiques, d’analyses R, et de citations
 - Organisation avancée avec `_bookdown.yml`, `preamble.tex` et `style.css`
 
-🔗 **Lire en ligne**  :  
-👉 [Cliquez ici](https://bookdown.org/ahmadouniass2/Atlas-Spectral-Sahel/)
+🔗 **Lire en ligne**  :  [Cliquez ici](https://bookdown.org/ahmadouniass2/Atlas-Spectral-Sahel/)
 ---
 
 ## 🚀 Technologies utilisées
