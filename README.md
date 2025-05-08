@@ -20,7 +20,7 @@ Ce dossier contient un **livre tutoriel interactif** destiné aux étudiants et 
 - Publier en ligne via GitHub Pages, Netlify ou bookdown.org
 - Créer un template réutilisable
 
-🔗 **Lire en ligne**  :   [Cliquez ici](https://bookdown.org/ahmadouniass2/bookdown1_tuto/)
+🔗 **Lire en ligne**  :   [Cliquez ici](https://bookdown.org/ahmadouniass2/Bookdown_tutorial/)
 
 ---
 
