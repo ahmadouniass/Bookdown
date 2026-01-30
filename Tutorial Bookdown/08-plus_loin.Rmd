@@ -85,7 +85,7 @@ Ce qui donne :
 
 ---
 
-## 🚀 Générer plusieurs formats à la fois
+## Générer plusieurs formats à la fois
 
 Tu peux compiler ton livre en HTML, PDF et EPUB avec :
 
