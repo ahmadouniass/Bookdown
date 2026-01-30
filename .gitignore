@@ -1,4 +1,13 @@
-.Rproj.user
+# Bookdown / R Markdown outputs
+_book/
+docs/
+*_files/
+*_cache/
+
+# RStudio / R
+.Rproj.user/
 .Rhistory
 .RData
-.Ruserdata
+
+# Deploy
+rsconnect/
