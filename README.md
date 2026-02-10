@@ -32,7 +32,7 @@ Ce dossier contient un **livre tutoriel interactif** destiné aux étudiants, en
 - publier un livre en ligne (GitHub Pages, Netlify, bookdown.org)
 - concevoir un **template Bookdown réutilisable**
 
-🔗 **Lire le tutoriel en ligne** :  [Cliquez-ici](https://bookdown-master.netlify.app/) (Bookdown a rendu son serveur payant :-) du coup on a migré vers Netlify)
+🔗 **Lire le tutoriel en ligne** :  [Cliquez-ici](https://bookdown.org/ahmadouniass2/Bookdown_tutorial) 
 
 ---
 
@@ -51,8 +51,7 @@ Il illustre notamment :
 - l’organisation avancée des fichiers (YAML, CSS, préambule LaTeX)
 - l’enrichissement du contenu avec des éléments interactifs
 
-🔗 **Lire le livre d’application en ligne** :  [Cliquez-ici](https://bookdown-atlas-spectral.netlify.app/)
-
+🔗 **Lire le livre d’application en ligne** :  [Cliquez-ici](https://bookdown.org/ahmadouniass2/Atlas-Spectral-Sahel/)
 ---
 
 ## 🧩 Module Shiny (support d’interactivité)
